@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>LifeHub AI - Notes & Tasks</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#00e5ff",
+                      "surface": "#131315",
+                      "inverse-primary": "#006875",
+                      "secondary-container": "#5203d5",
+                      "surface-container-low": "#1c1b1d",
+                      "surface-container-high": "#2a2a2c",
+                      "on-surface": "#e5e1e4",
+                      "on-surface-variant": "#bac9cc",
+                      "secondary": "#cdbdff",
+                      "background": "#131315"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "margin-desktop": "48px",
+                      "stack-md": "16px",
+                      "stack-sm": "8px",
+                      "gutter": "24px",
+                      "container-max": "1280px",
+                      "stack-lg": "32px"
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        .glass-panel { background: rgba(32, 31, 34, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .premium-border { position: relative; }
+        .premium-border::before { content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; background: linear-gradient(135deg, #5203d5 0%, #00e5ff 100%); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude; opacity: 0.5; pointer-events: none; }
+        .abstract-glow { position: absolute; border-radius: 50%; filter: blur(80px); z-index: 0; opacity: 0.4; pointer-events: none; }
+        
+        #task-list::-webkit-scrollbar, #notes-grid::-webkit-scrollbar { width: 6px; }
+        #task-list::-webkit-scrollbar-track, #notes-grid::-webkit-scrollbar-track { background: transparent; }
+        #task-list::-webkit-scrollbar-thumb, #notes-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-sans overflow-x-hidden">
+
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="abstract-glow bg-secondary-container w-[600px] h-[600px] top-[-200px] left-[-100px]"></div>
+    <div class="abstract-glow bg-primary-container w-[400px] h-[400px] top-[20%] right-[-100px] opacity-20"></div>
+</div>
+
+<nav class="hidden md:flex flex-col h-full py-stack-lg bg-surface/70 backdrop-blur-xl h-screen w-64 fixed left-0 top-0 border-r border-white/10 z-50">
+    <div class="px-gutter mb-stack-lg">
+        <h1 class="text-2xl font-bold tracking-tighter text-primary-container">LifeHub AI</h1>
+        <p class="text-xs text-on-surface-variant uppercase mt-1">System Active</p>
+    </div>
+    <div class="flex-1 flex flex-col gap-1 px-2">
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="dashboard.html">
+            <span class="material-symbols-outlined">dashboard</span> Dashboard
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="ai.html">
+            <span class="material-symbols-outlined">smart_toy</span> AI Assistant
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="finance.html">
+            <span class="material-symbols-outlined">payments</span> Finance
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="music.html">
+            <span class="material-symbols-outlined">library_music</span> Music
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="movies.html">
+            <span class="material-symbols-outlined">movie</span> Movies
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-primary-container bg-primary-container/10 border-r-2 border-primary-container font-bold transition-all" href="notes.html">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">edit_note</span> Notes & Tasks
+        </a>
+    </div>
+</nav>
+
+<header class="hidden md:flex justify-between items-center px-margin-desktop bg-surface/70 backdrop-blur-md fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 border-b border-white/5">
+    <div class="relative w-64">
+        <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant">search</span>
+        <input id="search-input" class="w-full bg-surface-container-low border border-white/5 rounded-full py-2 pl-10 pr-4 text-sm focus:border-primary-container outline-none text-on-surface" placeholder="Cari tugas / catatan..." type="text"/>
+    </div>
+    <div class="flex items-center gap-4">
+        <span class="material-symbols-outlined text-on-surface-variant cursor-pointer">notifications</span>
+        <div class="w-8 h-8 rounded-full bg-primary-container/20 text-primary-container flex items-center justify-center font-bold border border-primary-container">RS</div>
+    </div>
+</header>
+
+<main class="relative z-10 md:ml-64 pt-24 px-margin-desktop pb-32 min-h-screen flex flex-col max-w-container-max mx-auto">
+    
+    <header class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <h2 class="text-4xl font-bold text-on-surface tracking-tight">Notes & Workspace</h2>
+            <p class="text-on-surface-variant mt-1">Kelola daftar tugas harian dan simpan ide penting lu di satu tempat.</p>
+        </div>
+        
+        <div class="flex bg-surface-container-low p-1 rounded-xl border border-white/10 self-start sm:self-auto">
+            <button id="tab-btn-tasks" onclick="switchTab('tasks')" class="px-5 py-2 rounded-lg text-xs font-bold bg-primary-container text-black transition-all">
+                To-Do Tasks (<span id="task-count">0</span>)
+            </button>
+            <button id="tab-btn-notes" onclick="switchTab('notes')" class="px-5 py-2 rounded-lg text-xs font-bold text-on-surface-variant hover:text-white transition-all">
+                Quick Notes (<span id="note-count">0</span>)
+            </button>
+        </div>
+    </header>
+
+    <section id="tasks-section" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <div class="glass-panel p-6 rounded-2xl border border-white/10 lg:col-span-1">
+            <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-on-surface">
+                <span class="material-symbols-outlined text-primary-container">add_task</span> Tambah Tugas Baru
+            </h3>
+            <form id="task-form" class="flex flex-col gap-4">
+                <div>
+                    <label class="text-xs text-on-surface-variant font-medium block mb-1">Judul Tugas</label>
+                    <input id="task-title" type="text" placeholder="Misal: Selesaikan kodingan API..." class="w-full bg-surface-container-low border border-white/10 rounded-xl p-3 text-sm outline-none focus:border-primary-container text-on-surface transition-colors" required/>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-on-surface-variant font-medium block mb-1">Kategori</label>
+                        <select id="task-category" class="w-full bg-surface-container-low border border-white/10 rounded-xl p-3 text-sm outline-none focus:border-primary-container text-on-surface cursor-pointer">
+                            <option value="Work">💼 Work</option>
+                            <option value="Personal">👤 Personal</option>
+                            <option value="Study">📚 Study</option>
+                            <option value="Urgent">🔥 Urgent</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-on-surface-variant font-medium block mb-1">Prioritas</label>
+                        <select id="task-priority" class="w-full bg-surface-container-low border border-white/10 rounded-xl p-3 text-sm outline-none focus:border-primary-container text-on-surface cursor-pointer">
+                            <option value="High">🔴 High</option>
+                            <option value="Medium" selected>🟡 Medium</option>
+                            <option value="Low">🟢 Low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-primary-container text-black font-bold rounded-xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_15px_rgba(0,229,255,0.3)] mt-2 cursor-pointer">
+                    + Simpan Tugas
+                </button>
+            </form>
+        </div>
+
+        <div class="glass-panel p-6 rounded-2xl border border-white/10 lg:col-span-2 flex flex-col justify-between">
+            <div>
+                <div class="flex justify-between items-center mb-6 pb-3 border-b border-white/5 flex-wrap gap-2">
+                    <h3 class="text-lg font-bold text-on-surface">Daftar Tugas Lu</h3>
+                    
+                    <div class="flex items-center gap-2">
+                        <button onclick="filterTasks('all')" id="filter-all" class="filter-btn text-xs font-bold px-3 py-1.5 rounded-lg bg-primary-container/20 text-primary-container border border-primary-container/30">Semua</button>
+                        <button onclick="filterTasks('active')" id="filter-active" class="filter-btn text-xs font-bold px-3 py-1.5 rounded-lg bg-white/5 text-on-surface-variant hover:text-white">Aktif</button>
+                        <button onclick="filterTasks('completed')" id="filter-completed" class="filter-btn text-xs font-bold px-3 py-1.5 rounded-lg bg-white/5 text-on-surface-variant hover:text-white">Selesai</button>
+                    </div>
+                </div>
+
+                <div id="task-list" class="flex flex-col gap-3 max-h-[420px] overflow-y-auto pr-1">
+                    <p class="text-xs text-on-surface-variant text-center py-12">Belum ada tugas. Tambahkan tugas pertama lu di samping!</p>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section id="notes-section" class="hidden grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <div class="glass-panel p-6 rounded-2xl border border-white/10 lg:col-span-1">
+            <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-on-surface">
+                <span class="material-symbols-outlined text-primary-container">note_add</span> Buat Catatan Baru
+            </h3>
+            <form id="note-form" class="flex flex-col gap-4">
+                <div>
+                    <label class="text-xs text-on-surface-variant font-medium block mb-1">Judul Catatan</label>
+                    <input id="note-title" type="text" placeholder="Misal: Ide Project AI..." class="w-full bg-surface-container-low border border-white/10 rounded-xl p-3 text-sm outline-none focus:border-primary-container text-on-surface transition-colors" required/>
+                </div>
+                <div>
+                    <label class="text-xs text-on-surface-variant font-medium block mb-1">Isi Catatan</label>
+                    <textarea id="note-content" rows="4" placeholder="Tulis detail catatan atau pikiran lu di sini..." class="w-full bg-surface-container-low border border-white/10 rounded-xl p-3 text-sm outline-none focus:border-primary-container text-on-surface transition-colors" required></textarea>
+                </div>
+                <button type="submit" class="w-full py-3 bg-primary-container text-black font-bold rounded-xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_15px_rgba(0,229,255,0.3)] mt-2 cursor-pointer">
+                    + Simpan Catatan
+                </button>
+            </form>
+        </div>
+
+        <div class="glass-panel p-6 rounded-2xl border border-white/10 lg:col-span-2">
+            <h3 class="text-lg font-bold text-on-surface mb-6 pb-3 border-b border-white/5">Daftar Catatan Tersimpan</h3>
+            
+            <div id="notes-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[420px] overflow-y-auto pr-1">
+                <p class="col-span-full text-xs text-on-surface-variant text-center py-12">Belum ada catatan tersimpan.</p>
+            </div>
+        </div>
+
+    </section>
+
+</main>
+
+<section class="fixed bottom-margin-desktop left-1/2 -translate-x-1/2 z-50 md:ml-32">
+    <div class="glass-panel rounded-full p-2 flex items-center gap-2 border border-white/10 bg-surface/80 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+        <a href="ai.html" class="flex items-center gap-2 px-6 py-3 rounded-full bg-primary-container text-black font-bold shadow-[0_0_20px_rgba(0,229,255,0.2)]">
+            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">graphic_eq</span> Ask AI
+        </a>
+        <div class="w-[1px] h-8 bg-white/10 mx-2"></div>
+        <a href="dashboard.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">dashboard</span>
+        </a>
+        <a href="finance.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">receipt_long</span>
+        </a>
+        <a href="music.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">music_note</span>
+        </a>
+        <a href="movies.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">movie</span>
+        </a>
+        <a href="notes.html" class="w-12 h-12 flex items-center justify-center rounded-full text-primary-container bg-primary-container/10 transition-all mr-2">
+            <span class="material-symbols-outlined">edit_note</span>
+        </a>
+    </div>
+</section>
+
+<script>
+    let tasks = JSON.parse(localStorage.getItem('lifehub_tasks')) || [];
+    let notes = JSON.parse(localStorage.getItem('lifehub_notes')) || [];
+    let currentFilter = 'all';
+
+    // TAB SWITCHER LOGIC
+    function switchTab(tab) {
+        const tasksSection = document.getElementById('tasks-section');
+        const notesSection = document.getElementById('notes-section');
+        const btnTasks = document.getElementById('tab-btn-tasks');
+        const btnNotes = document.getElementById('tab-btn-notes');
+
+        if (tab === 'tasks') {
+            tasksSection.classList.remove('hidden');
+            tasksSection.classList.add('grid');
+            notesSection.classList.add('hidden');
+            notesSection.classList.remove('grid');
+
+            btnTasks.className = 'px-5 py-2 rounded-lg text-xs font-bold bg-primary-container text-black transition-all';
+            btnNotes.className = 'px-5 py-2 rounded-lg text-xs font-bold text-on-surface-variant hover:text-white transition-all';
+        } else {
+            notesSection.classList.remove('hidden');
+            notesSection.classList.add('grid');
+            tasksSection.classList.add('hidden');
+            tasksSection.classList.remove('grid');
+
+            btnNotes.className = 'px-5 py-2 rounded-lg text-xs font-bold bg-primary-container text-black transition-all';
+            btnTasks.className = 'px-5 py-2 rounded-lg text-xs font-bold text-on-surface-variant hover:text-white transition-all';
+        }
+    }
+
+    // TASKS RENDER LOGIC
+    function renderTasks() {
+        const taskList = document.getElementById('task-list');
+        document.getElementById('task-count').textContent = tasks.filter(t => !t.completed).length;
+
+        let filtered = tasks;
+        if (currentFilter === 'active') filtered = tasks.filter(t => !t.completed);
+        if (currentFilter === 'completed') filtered = tasks.filter(t => t.completed);
+
+        taskList.innerHTML = '';
+
+        if (filtered.length === 0) {
+            taskList.innerHTML = `<p class="text-xs text-on-surface-variant text-center py-12">Tidak ada tugas dalam kategori ini.</p>`;
+            return;
+        }
+
+        filtered.forEach((task, index) => {
+            const realIndex = tasks.indexOf(task);
+            const priorityBg = task.priority === 'High' ? 'text-red-400 bg-red-500/10 border-red-500/20' : 
+                               task.priority === 'Medium' ? 'text-amber-400 bg-amber-500/10 border-amber-500/20' : 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+
+            const div = document.createElement('div');
+            div.className = `flex items-center justify-between p-3.5 rounded-xl border transition-all ${
+                task.completed ? 'bg-surface-container-low/50 border-white/5 opacity-60' : 'bg-surface-container-high/40 border-white/10 hover:border-primary-container/30'
+            }`;
+
+            div.innerHTML = `
+                <div class="flex items-center gap-3 overflow-hidden">
+                    <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${realIndex})" class="w-5 h-5 rounded border-white/20 bg-surface-container-low text-primary-container focus:ring-0 cursor-pointer"/>
+                    <div class="truncate">
+                        <h4 class="text-sm font-bold text-on-surface truncate ${task.completed ? 'line-through text-on-surface-variant' : ''}">${task.title}</h4>
+                        <div class="flex items-center gap-2 mt-0.5 text-[10px]">
+                            <span class="px-2 py-0.5 rounded border ${priorityBg} font-bold">${task.priority}</span>
+                            <span class="text-on-surface-variant">${task.category} • ${task.date}</span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="deleteTask(${realIndex})" class="text-on-surface-variant hover:text-red-400 transition-colors p-1 cursor-pointer">
+                    <span class="material-symbols-outlined text-sm">delete</span>
+                </button>
+            `;
+            taskList.appendChild(div);
+        });
+    }
+
+    document.getElementById('task-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('task-title').value.trim();
+        const category = document.getElementById('task-category').value;
+        const priority = document.getElementById('task-priority').value;
+
+        if (!title) return;
+
+        tasks.unshift({
+            title,
+            category,
+            priority,
+            completed: false,
+            date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+        });
+
+        localStorage.setItem('lifehub_tasks', JSON.stringify(tasks));
+        document.getElementById('task-form').reset();
+        renderTasks();
+    });
+
+    window.toggleTask = function(index) {
+        tasks[index].completed = !tasks[index].completed;
+        localStorage.setItem('lifehub_tasks', JSON.stringify(tasks));
+        renderTasks();
+    };
+
+    window.deleteTask = function(index) {
+        tasks.splice(index, 1);
+        localStorage.setItem('lifehub_tasks', JSON.stringify(tasks));
+        renderTasks();
+    };
+
+    window.filterTasks = function(filter) {
+        currentFilter = filter;
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.className = 'filter-btn text-xs font-bold px-3 py-1.5 rounded-lg bg-white/5 text-on-surface-variant hover:text-white';
+        });
+
+        const activeBtn = document.getElementById(`filter-${filter}`);
+        if (activeBtn) activeBtn.className = 'filter-btn text-xs font-bold px-3 py-1.5 rounded-lg bg-primary-container/20 text-primary-container border border-primary-container/30';
+
+        renderTasks();
+    };
+
+    // NOTES RENDER LOGIC
+    function renderNotes() {
+        const notesGrid = document.getElementById('notes-grid');
+        document.getElementById('note-count').textContent = notes.length;
+
+        notesGrid.innerHTML = '';
+
+        if (notes.length === 0) {
+            notesGrid.innerHTML = `<p class="col-span-full text-xs text-on-surface-variant text-center py-12">Belum ada catatan tersimpan.</p>`;
+            return;
+        }
+
+        notes.forEach((note, index) => {
+            const card = document.createElement('div');
+            card.className = 'p-4 rounded-xl bg-surface-container-high/40 border border-white/10 hover:border-primary-container/30 transition-all flex flex-col justify-between h-44';
+            
+            card.innerHTML = `
+                <div>
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="text-sm font-bold text-on-surface truncate pr-2">${note.title}</h4>
+                        <button onclick="deleteNote(${index})" class="text-on-surface-variant hover:text-red-400 transition-colors shrink-0">
+                            <span class="material-symbols-outlined text-sm">delete</span>
+                        </button>
+                    </div>
+                    <p class="text-xs text-on-surface-variant line-clamp-4 leading-relaxed">${note.content}</p>
+                </div>
+                <span class="text-[10px] text-primary-container font-bold mt-2">${note.date}</span>
+            `;
+
+            notesGrid.appendChild(card);
+        });
+    }
+
+    document.getElementById('note-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('note-title').value.trim();
+        const content = document.getElementById('note-content').value.trim();
+
+        if (!title || !content) return;
+
+        notes.unshift({
+            title,
+            content,
+            date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+        });
+
+        localStorage.setItem('lifehub_notes', JSON.stringify(notes));
+        document.getElementById('note-form').reset();
+        renderNotes();
+    });
+
+    window.deleteNote = function(index) {
+        notes.splice(index, 1);
+        localStorage.setItem('lifehub_notes', JSON.stringify(notes));
+        renderNotes();
+    };
+
+    // INITIAL RENDER
+    renderTasks();
+    renderNotes();
+</script>
+
+</body>
+</html>

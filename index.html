@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LifeHub AI — Your Life, Orchestrated</title>
+<meta name="description" content="LifeHub AI — a unified workspace for finance, productivity, AI assistance, and entertainment." />
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#0B0F19" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          lhbg: '#0B0F19',
+          lhsurface: '#141824',
+          lhviolet: '#7C5CFC',
+          lhcyan: '#22D3EE',
+          lhemerald: '#34D399',
+          lhamber: '#FBBF24',
+          lhrose: '#FB7185',
+          lhmuted: '#8B93A7',
+        },
+        fontFamily: {
+          display: ['Space Grotesk', 'sans-serif'],
+          body: ['Inter', 'sans-serif'],
+          mono: ['JetBrains Mono', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+<link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body data-hub="dashboard" class="font-body min-h-screen flex items-center justify-center px-4">
+
+  <!-- ============================================================
+       AUTH PORTAL — one container, three swappable sub-cards.
+       controller.js toggles [data-view] to switch between them
+       without a page reload.
+       ============================================================ -->
+  <main class="w-full max-w-md">
+
+    <div class="text-center mb-8">
+      <span class="lh-display text-2xl font-semibold tracking-tight">LifeHub <span class="text-lhviolet">AI</span></span>
+      <p class="text-lhmuted text-sm mt-2">Finance, tasks, AI, and entertainment — one workspace.</p>
+    </div>
+
+    <div id="auth-portal" class="lh-glass p-8" data-view="splash">
+
+      <!-- Splash / loading sub-card -->
+      <section data-card="splash" class="space-y-4">
+        <div class="lh-skeleton h-11 w-full"></div>
+        <div class="lh-skeleton h-11 w-full"></div>
+        <div class="lh-skeleton h-11 w-2/3"></div>
+        <p class="text-center text-xs text-lhmuted pt-2">Checking session…</p>
+      </section>
+
+      <!-- Login sub-card -->
+      <section data-card="login" class="space-y-4 hidden" aria-hidden="true">
+        <h1 class="lh-display text-xl font-semibold">Welcome back</h1>
+        <form id="login-form" class="space-y-3" novalidate>
+          <label class="block text-sm text-lhmuted" for="login-email">Email</label>
+          <input id="login-email" type="email" required autocomplete="email"
+            class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
+          <label class="block text-sm text-lhmuted" for="login-password">Password</label>
+          <input id="login-password" type="password" required autocomplete="current-password"
+            class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
+          <button type="submit" class="w-full rounded-lg bg-lhviolet text-white py-2.5 text-sm font-medium transition-all duration-300 hover:brightness-110">
+            Sign in
+          </button>
+        </form>
+        <button data-provider="google" class="w-full rounded-lg border border-white/10 py-2.5 text-sm transition-all duration-300 hover:bg-white/5">
+          Continue with Google
+        </button>
+        <button data-provider="guest" class="w-full rounded-lg border border-white/10 py-2.5 text-sm transition-all duration-300 hover:bg-white/5">
+          Continue as guest
+        </button>
+        <div class="flex justify-between text-xs text-lhmuted pt-1">
+          <button data-goto="reset" class="hover:text-lhcyan">Forgot password?</button>
+          <button data-goto="signup" class="hover:text-lhcyan">Create account</button>
+        </div>
+      </section>
+
+      <!-- Signup sub-card -->
+      <section data-card="signup" class="space-y-4 hidden" aria-hidden="true">
+        <h1 class="lh-display text-xl font-semibold">Create your account</h1>
+        <form id="signup-form" class="space-y-3" novalidate>
+          <label class="block text-sm text-lhmuted" for="signup-name">Name</label>
+          <input id="signup-name" type="text" required autocomplete="name"
+            class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
+          <label class="block text-sm text-lhmuted" for="signup-email">Email</label>
+          <input id="signup-email" type="email" required autocomplete="email"
+            class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
+          <label class="block text-sm text-lhmuted" for="signup-password">Password</label>
+          <input id="signup-password" type="password" required minlength="8" autocomplete="new-password"
+            class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
+          <button type="submit" class="w-full rounded-lg bg-lhviolet text-white py-2.5 text-sm font-medium transition-all duration-300 hover:brightness-110">
+            Create account
+          </button>
+        </form>
+        <p class="text-center text-xs text-lhmuted">
+          Already have an account? <button data-goto="login" class="text-lhcyan">Sign in</button>
+        </p>
+      </section>
+
+      <!-- Password reset sub-card -->
+      <section data-card="reset" class="space-y-4 hidden" aria-hidden="true">
+        <h1 class="lh-display text-xl font-semibold">Reset your password</h1>
+        <form id="reset-form" class="space-y-3" novalidate>
+          <label class="block text-sm text-lhmuted" for="reset-email">Email</label>
+          <input id="reset-email" type="email" required autocomplete="email"
+            class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
+          <button type="submit" class="w-full rounded-lg bg-lhviolet text-white py-2.5 text-sm font-medium transition-all duration-300 hover:brightness-110">
+            Send reset link
+          </button>
+        </form>
+        <p class="text-center text-xs text-lhmuted">
+          <button data-goto="login" class="text-lhcyan">Back to sign in</button>
+        </p>
+      </section>
+
+    </div>
+
+    <div id="auth-alert-region" class="lh-toast" aria-live="polite"></div>
+  </main>
+
+  <script type="module" src="/js/firebase-config.js"></script>
+  <script type="module" src="/js/auth/core.js"></script>
+  <script type="module" src="/js/auth/controller.js"></script>
+</body>
+</html>

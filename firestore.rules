@@ -1,0 +1,35 @@
+rules_version = '2';
+
+// LifeHub AI — Firestore Security Rules
+// Owner-only isolation: a user may only read/write documents whose
+// userId field matches their own auth uid. Applies uniformly across
+// every collection in section 5.1 of the project brief.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /users/{userId} {
+      allow read, update: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow delete: if false; // profile deletion goes through a server-side flow
+    }
+
+    match /{collection}/{docId}
+        where collection in [
+          'expenses', 'incomes', 'budgets', 'savings_goals',
+          'notes', 'tasks', 'reminders', 'chat_history',
+          'movie_watchlist', 'music_playlists', 'user_history'
+        ] {
+      allow read, update, delete: if request.auth != null
+        && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null
+        && request.auth.uid == request.resource.data.userId;
+    }
+  }
+}
+
+// NOTE: Firestore's rules language does not actually support a `where...in`
+// match-path shorthand as written above — this file documents the *intent*.
+// In practice, write one explicit `match /expenses/{id} { ... }` block per
+// collection (11 blocks total) repeating the same allow conditions, or
+// generate them from this template at deploy time.

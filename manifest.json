@@ -1,0 +1,22 @@
+{
+  "name": "LifeHub AI",
+  "short_name": "LifeHub",
+  "description": "Unified productivity, finance, AI assistance, and entertainment workspace.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0B0F19",
+  "theme_color": "#0B0F19",
+  "icons": [
+    { "src": "/assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "AI Assistant", "url": "/dashboard.html#ai" },
+    { "name": "Finance", "url": "/dashboard.html#finance" },
+    { "name": "Tasks", "url": "/dashboard.html#productivity" }
+  ]
+}

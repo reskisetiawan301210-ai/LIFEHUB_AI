@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>LifeHub AI - Media Downloader</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#00e5ff",
+                      "surface": "#131315",
+                      "inverse-primary": "#006875",
+                      "secondary-container": "#5203d5",
+                      "surface-container-low": "#1c1b1d",
+                      "surface-container-high": "#2a2a2c",
+                      "on-surface": "#e5e1e4",
+                      "on-surface-variant": "#bac9cc",
+                      "secondary": "#cdbdff",
+                      "background": "#131315"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "margin-desktop": "48px",
+                      "stack-md": "16px",
+                      "stack-sm": "8px",
+                      "gutter": "24px",
+                      "container-max": "1280px",
+                      "stack-lg": "32px"
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        .glass-panel { background: rgba(32, 31, 34, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .premium-border { position: relative; }
+        .premium-border::before { content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; background: linear-gradient(135deg, #5203d5 0%, #00e5ff 100%); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude; opacity: 0.5; pointer-events: none; }
+        .abstract-glow { position: absolute; border-radius: 50%; filter: blur(80px); z-index: 0; opacity: 0.4; pointer-events: none; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-sans overflow-x-hidden selection:bg-primary-container selection:text-surface">
+
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="abstract-glow bg-secondary-container w-[600px] h-[600px] top-[-200px] left-[-100px]"></div>
+    <div class="abstract-glow bg-primary-container w-[400px] h-[400px] top-[20%] right-[-100px] opacity-20"></div>
+</div>
+
+<nav class="hidden md:flex flex-col h-full py-stack-lg bg-surface/70 backdrop-blur-xl h-screen w-64 fixed left-0 top-0 border-r border-white/10 z-50">
+    <div class="px-gutter mb-stack-lg">
+        <h1 class="text-2xl font-bold tracking-tighter text-primary-container">LifeHub AI</h1>
+        <p class="text-xs text-on-surface-variant uppercase mt-1">System Active</p>
+    </div>
+    <div class="flex-1 flex flex-col gap-1 px-2">
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="dashboard.html">
+            <span class="material-symbols-outlined">dashboard</span> Dashboard
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="ai.html">
+            <span class="material-symbols-outlined">smart_toy</span> AI Assistant
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="finance.html">
+            <span class="material-symbols-outlined">payments</span> Finance
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="music.html">
+            <span class="material-symbols-outlined">library_music</span> Music
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="movies.html">
+            <span class="material-symbols-outlined">movie</span> Movies
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="notes.html">
+            <span class="material-symbols-outlined">edit_note</span> Notes & Tasks
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-primary-container bg-primary-container/10 border-r-2 border-primary-container font-bold transition-all" href="downloader.html">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cloud_download</span> Downloader
+        </a>
+    </div>
+    <div class="mt-auto px-2 pb-2">
+        <button class="w-full py-3 rounded-lg bg-primary-container text-black font-bold hover:scale-105 transition-all shadow-[0_0_15px_rgba(0,229,255,0.3)]">
+            Premium Upgrade
+        </button>
+    </div>
+</nav>
+
+<header class="hidden md:flex justify-between items-center px-margin-desktop bg-surface/70 backdrop-blur-md fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 border-b border-white/5">
+    <div class="relative w-64">
+        <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant">search</span>
+        <input class="w-full bg-surface-container-low border border-white/5 rounded-full py-2 pl-10 pr-4 text-sm focus:border-primary-container outline-none text-on-surface" placeholder="Cari di LifeHub..." type="text"/>
+    </div>
+    <div class="flex items-center gap-4">
+        <span class="material-symbols-outlined text-on-surface-variant cursor-pointer">notifications</span>
+        <div id="user-avatar" class="w-8 h-8 rounded-full bg-primary-container/20 text-primary-container flex items-center justify-center font-bold border border-primary-container">RS</div>
+    </div>
+</header>
+
+<main class="relative z-10 md:ml-64 pt-24 px-margin-desktop pb-32 min-h-screen flex flex-col gap-8 max-w-container-max mx-auto">
+    
+    <header class="flex flex-col gap-2">
+        <h2 class="text-4xl font-bold text-on-surface tracking-tight">Universal Video Downloader</h2>
+        <p class="text-on-surface-variant text-base">Download video TikTok, Douyin, Instagram Reels, YouTube Shorts, & Twitter tanpa watermark.</p>
+    </header>
+
+    <section class="flex flex-wrap items-center gap-3">
+        <span class="px-3 py-1.5 rounded-full bg-surface-container-high border border-white/10 text-xs font-semibold flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary-container text-sm">play_circle</span> TikTok / Douyin
+        </span>
+        <span class="px-3 py-1.5 rounded-full bg-surface-container-high border border-white/10 text-xs font-semibold flex items-center gap-2">
+            <span class="material-symbols-outlined text-pink-400 text-sm">photo_camera</span> Instagram Reels
+        </span>
+        <span class="px-3 py-1.5 rounded-full bg-surface-container-high border border-white/10 text-xs font-semibold flex items-center gap-2">
+            <span class="material-symbols-outlined text-red-500 text-sm">subscriptions</span> YouTube Shorts
+        </span>
+        <span class="px-3 py-1.5 rounded-full bg-surface-container-high border border-white/10 text-xs font-semibold flex items-center gap-2">
+            <span class="material-symbols-outlined text-sky-400 text-sm">flutter</span> Twitter / X
+        </span>
+    </section>
+
+    <section class="glass-panel p-6 sm:p-8 rounded-2xl border border-white/10 premium-border flex flex-col gap-6">
+        <form id="download-form" class="flex flex-col md:flex-row items-center gap-4">
+            <div class="relative flex-1 w-full">
+                <span class="material-symbols-outlined absolute left-4 top-4 text-on-surface-variant">link</span>
+                <input id="video-url" type="url" placeholder="Tempel tautan video (TikTok, Douyin, IG, Shorts, Twitter)..." required class="w-full bg-surface-container-low border border-white/10 rounded-xl py-3.5 pl-12 pr-12 text-sm outline-none focus:border-primary-container text-on-surface transition-all"/>
+                <button type="button" onclick="pasteFromClipboard()" class="absolute right-3 top-2.5 px-2.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-bold text-primary-container transition-all" title="Tempel dari Clipboard">
+                    Paste
+                </button>
+            </div>
+            <button type="submit" id="btn-process" class="w-full md:w-auto px-8 py-3.5 bg-primary-container text-black font-bold rounded-xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 cursor-pointer shrink-0">
+                <span class="material-symbols-outlined text-xl">download</span> Process Video
+            </button>
+        </form>
+
+        <div id="loading-spinner" class="hidden flex flex-col items-center justify-center py-10 gap-3">
+            <div class="w-10 h-10 border-4 border-primary-container border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-sm font-semibold text-primary-container animate-pulse">Memproses tautan media, mohon tunggu...</p>
+        </div>
+
+        <div id="result-card" class="hidden border-t border-white/10 pt-6 flex flex-col md:flex-row gap-6 items-center">
+            <div class="w-full md:w-64 h-64 rounded-xl overflow-hidden bg-black/50 border border-white/10 relative shrink-0 flex items-center justify-center">
+                <img id="res-cover" src="" class="w-full h-full object-cover"/>
+                <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-4xl text-primary-container drop-shadow-md">play_circle</span>
+                </div>
+            </div>
+
+            <div class="flex-1 flex flex-col justify-between h-full w-full gap-4">
+                <div>
+                    <span id="res-platform" class="text-[10px] uppercase tracking-widest font-extrabold px-2.5 py-1 rounded-md bg-primary-container/20 text-primary-container border border-primary-container/30">TikTok</span>
+                    <h3 id="res-title" class="text-lg font-bold text-on-surface mt-2 line-clamp-2">Judul Video</h3>
+                    <p id="res-author" class="text-xs text-on-surface-variant mt-1">By: Creator</p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 mt-4">
+                    <a id="btn-dl-no-wm" href="#" target="_blank" download class="flex-1 py-3 px-4 bg-primary-container text-black font-bold rounded-xl text-xs hover:scale-105 transition-all shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-lg">download</span> Video (No Watermark)
+                    </a>
+                    <a id="btn-dl-audio" href="#" target="_blank" download class="flex-1 py-3 px-4 bg-surface-container-high border border-white/10 hover:border-primary-container/50 text-on-surface font-bold rounded-xl text-xs hover:scale-105 transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-lg">music_note</span> Audio MP3
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="error-msg" class="hidden p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-semibold flex items-center gap-2">
+            <span class="material-symbols-outlined text-base">error</span>
+            <span id="error-text">Gagal memproses URL. Pastikan tautan video publik & valid.</span>
+        </div>
+    </section>
+
+</main>
+
+<section class="fixed bottom-margin-desktop left-1/2 -translate-x-1/2 z-50 md:ml-32">
+    <div class="glass-panel rounded-full p-2 flex items-center gap-2 border border-white/10 bg-surface/80 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+        <a href="ai.html" class="flex items-center gap-2 px-6 py-3 rounded-full bg-primary-container text-black font-bold hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,229,255,0.2)]">
+            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">graphic_eq</span> Ask AI
+        </a>
+        <div class="w-[1px] h-8 bg-white/10 mx-2"></div>
+        <a href="dashboard.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">dashboard</span>
+        </a>
+        <a href="finance.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">receipt_long</span>
+        </a>
+        <a href="music.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">music_note</span>
+        </a>
+        <a href="movies.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">movie</span>
+        </a>
+        <a href="notes.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">edit_note</span>
+        </a>
+        <a href="downloader.html" class="w-12 h-12 flex items-center justify-center rounded-full text-primary-container bg-primary-container/10 transition-all mr-2">
+            <span class="material-symbols-outlined">cloud_download</span>
+        </a>
+    </div>
+</section>
+
+<script>
+    const currentUserName = localStorage.getItem('lifehub_user_name') || 'Reski';
+    document.getElementById('user-avatar').textContent = currentUserName.charAt(0).toUpperCase();
+
+    async function pasteFromClipboard() {
+        try {
+            const text = await navigator.clipboard.readText();
+            if (text) document.getElementById('video-url').value = text;
+        } catch (err) {
+            alert("Silakan tempel URL secara manual.");
+        }
+    }
+
+    document.getElementById('download-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const urlInput = document.getElementById('video-url').value.trim();
+        if (!urlInput) return;
+
+        const spinner = document.getElementById('loading-spinner');
+        const resultCard = document.getElementById('result-card');
+        const errorMsg = document.getElementById('error-msg');
+
+        spinner.classList.remove('hidden');
+        resultCard.classList.add('hidden');
+        errorMsg.classList.add('hidden');
+
+        try {
+            // DETEKSI TIKTOK / DOUYIN SECARA KHUSUS via TikWM API
+            if (urlInput.includes('tiktok.com') || urlInput.includes('douyin.com') || urlInput.includes('vt.tiktok.com')) {
+                const res = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(urlInput)}`);
+                const data = await res.json();
+
+                if (data.code === 0 && data.data) {
+                    document.getElementById('res-cover').src = data.data.cover || data.data.origin_cover;
+                    document.getElementById('res-title').textContent = data.data.title || 'TikTok / Douyin Video';
+                    document.getElementById('res-author').textContent = `By: @${data.data.author?.unique_id || data.data.author?.nickname || 'creator'}`;
+                    document.getElementById('res-platform').textContent = urlInput.includes('douyin') ? 'Douyin' : 'TikTok';
+                    
+                    document.getElementById('btn-dl-no-wm').href = data.data.play;
+                    document.getElementById('btn-dl-audio').href = data.data.music;
+
+                    spinner.classList.add('hidden');
+                    resultCard.classList.remove('hidden');
+                    return;
+                }
+            }
+
+            // FALLBACK UNIVERSAL API EXTRACTOR (Cobalt Engine)
+            const cobaltRes = await fetch('https://api.cobalt.tools/', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    url: urlInput,
+                    videoQuality: 'max'
+                })
+            });
+
+            const cobaltData = await cobaltRes.json();
+
+            if (cobaltData.url || cobaltData.picker) {
+                const downloadLink = cobaltData.url || (cobaltData.picker && cobaltData.picker[0]?.url);
+                
+                document.getElementById('res-cover').src = 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop';
+                document.getElementById('res-title').textContent = 'Video Siap Di-download';
+                document.getElementById('res-author').textContent = 'Universal Media Extractor';
+                document.getElementById('res-platform').textContent = 'Multi-Platform';
+
+                document.getElementById('btn-dl-no-wm').href = downloadLink;
+                document.getElementById('btn-dl-audio').href = downloadLink;
+
+                spinner.classList.add('hidden');
+                resultCard.classList.remove('hidden');
+            } else {
+                throw new Error("Gagal mengambil media. Pastikan tautan dapat diakses publik.");
+            }
+
+        } catch (err) {
+            spinner.classList.add('hidden');
+            document.getElementById('error-text').textContent = err.message || "Gagal memproses video. Periksa koneksi atau tautan kamu.";
+            errorMsg.classList.remove('hidden');
+        }
+    });
+</script>
+
+</body>
+</html>

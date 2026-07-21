@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>LifeHub AI - Cinema Stream</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#00e5ff",
+                      "surface": "#131315",
+                      "inverse-primary": "#006875",
+                      "secondary-container": "#5203d5",
+                      "surface-container-low": "#1c1b1d",
+                      "surface-container-high": "#2a2a2c",
+                      "on-surface": "#e5e1e4",
+                      "on-surface-variant": "#bac9cc",
+                      "secondary": "#cdbdff",
+                      "background": "#131315"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "margin-desktop": "48px",
+                      "stack-md": "16px",
+                      "stack-sm": "8px",
+                      "gutter": "24px",
+                      "container-max": "1280px",
+                      "stack-lg": "32px"
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        .glass-panel { background: rgba(32, 31, 34, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .premium-border { position: relative; }
+        .premium-border::before { content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; background: linear-gradient(135deg, #5203d5 0%, #00e5ff 100%); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude; opacity: 0.5; pointer-events: none; }
+        .abstract-glow { position: absolute; border-radius: 50%; filter: blur(80px); z-index: 0; opacity: 0.4; pointer-events: none; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-sans overflow-x-hidden">
+
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="abstract-glow bg-secondary-container w-[600px] h-[600px] top-[-200px] left-[-100px]"></div>
+    <div class="abstract-glow bg-primary-container w-[400px] h-[400px] top-[20%] right-[-100px] opacity-20"></div>
+</div>
+
+<nav class="hidden md:flex flex-col h-full py-stack-lg bg-surface/70 backdrop-blur-xl h-screen w-64 fixed left-0 top-0 border-r border-white/10 z-50">
+    <div class="px-gutter mb-stack-lg">
+        <h1 class="text-2xl font-bold tracking-tighter text-primary-container">LifeHub AI</h1>
+        <p class="text-xs text-on-surface-variant uppercase mt-1">System Active</p>
+    </div>
+    <div class="flex-1 flex flex-col gap-1 px-2">
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="dashboard.html">
+            <span class="material-symbols-outlined">dashboard</span> Dashboard
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="ai.html">
+            <span class="material-symbols-outlined">smart_toy</span> AI Assistant
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="finance.html">
+            <span class="material-symbols-outlined">payments</span> Finance
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="music.html">
+            <span class="material-symbols-outlined">library_music</span> Music
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-primary-container bg-primary-container/10 border-r-2 border-primary-container font-bold transition-all" href="movies.html">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">movie</span> Movies
+        </a>
+    </div>
+</nav>
+
+<header class="hidden md:flex justify-between items-center px-margin-desktop bg-surface/70 backdrop-blur-md fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 border-b border-white/5">
+    <form id="search-form" class="relative w-96 flex items-center">
+        <span class="material-symbols-outlined absolute left-3 text-on-surface-variant">search</span>
+        <input id="search-input" class="w-full bg-surface-container-low border border-white/10 rounded-full py-2 pl-10 pr-20 text-sm focus:border-primary-container outline-none text-on-surface" placeholder="Cari Film / Series (misal: Mr Robot, Avengers)..." type="text" required/>
+        <button type="submit" class="absolute right-1.5 bg-primary-container text-black text-xs font-bold px-3 py-1.5 rounded-full hover:scale-105 transition-all cursor-pointer">
+            Cari
+        </button>
+    </form>
+    <div class="flex items-center gap-4">
+        <span class="material-symbols-outlined text-on-surface-variant cursor-pointer">notifications</span>
+        <div class="w-8 h-8 rounded-full bg-primary-container/20 text-primary-container flex items-center justify-center font-bold border border-primary-container">RS</div>
+    </div>
+</header>
+
+<main class="relative z-10 md:ml-64 pt-24 px-margin-desktop pb-32 min-h-screen flex flex-col max-w-container-max mx-auto">
+    
+    <header class="mb-6">
+        <h2 class="text-4xl font-bold text-on-surface tracking-tight">Cinema Stream</h2>
+        <p class="text-on-surface-variant mt-1">Cari film atau serial favorit. Pilih mode Trailer untuk menonton tanpa iklan.</p>
+    </header>
+
+    <section id="player-section" class="mb-8 hidden">
+        <div class="glass-panel p-6 rounded-2xl border border-white/10 relative overflow-hidden premium-border">
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                <div>
+                    <span id="player-mode-tag" class="text-xs text-primary-container font-bold uppercase tracking-wider block">Now Playing</span>
+                    <h3 id="movie-player-title" class="text-2xl font-bold text-on-surface mt-0.5">Movie Title</h3>
+                    <p id="movie-player-info" class="text-xs text-on-surface-variant">Year • Rating</p>
+                </div>
+
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button onclick="playTrailerMode()" id="btn-trailer" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition-all flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">movie</span> Trailer (No Ads)
+                    </button>
+                    <button onclick="switchServer(1)" id="srv-1" class="srv-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-primary-container text-black transition-all">Server 1</button>
+                    <button onclick="switchServer(2)" id="srv-2" class="srv-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-surface-container-high border border-white/10 text-on-surface-variant hover:text-white transition-all">Server 2</button>
+                    
+                    <button id="btn-close-player" class="p-2 rounded-full hover:bg-white/10 text-on-surface-variant hover:text-white transition-all ml-2 cursor-pointer">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="w-full h-[320px] sm:h-[450px] lg:h-[520px] rounded-xl overflow-hidden bg-black border border-white/10 relative">
+                <iframe id="cinema-iframe" src="" class="w-full h-full border-0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+            </div>
+
+            <p id="movie-player-summary" class="text-sm text-on-surface-variant mt-4 leading-relaxed"></p>
+        </div>
+    </section>
+
+    <section>
+        <div class="flex justify-between items-center mb-4">
+            <h3 id="grid-header" class="text-xl font-bold text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary-container">local_movies</span> Popular Movies & Shows
+            </h3>
+            <span id="result-status" class="text-xs text-on-surface-variant">Klik poster untuk tonton</span>
+        </div>
+
+        <div id="movie-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <p class="col-span-full text-xs text-primary-container text-center py-12 animate-pulse">Menghubungkan ke database bioskop...</p>
+        </div>
+    </section>
+
+</main>
+
+<section class="fixed bottom-margin-desktop left-1/2 -translate-x-1/2 z-50 md:ml-32">
+    <div class="glass-panel rounded-full p-2 flex items-center gap-2 border border-white/10 bg-surface/80 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+        <a href="ai.html" class="flex items-center gap-2 px-6 py-3 rounded-full bg-primary-container text-black font-bold shadow-[0_0_20px_rgba(0,229,255,0.2)]">
+            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">graphic_eq</span> Ask AI
+        </a>
+        <div class="w-[1px] h-8 bg-white/10 mx-2"></div>
+        <a href="dashboard.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">dashboard</span>
+        </a>
+        <a href="finance.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">receipt_long</span>
+        </a>
+        <a href="music.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">music_note</span>
+        </a>
+        <a href="movies.html" class="w-12 h-12 flex items-center justify-center rounded-full text-primary-container bg-primary-container/10 transition-all mr-2">
+            <span class="material-symbols-outlined">movie</span>
+        </a>
+    </div>
+</section>
+
+<script>
+    const movieGrid = document.getElementById('movie-grid');
+    const gridHeader = document.getElementById('grid-header');
+    const playerSection = document.getElementById('player-section');
+    const cinemaIframe = document.getElementById('cinema-iframe');
+    const moviePlayerTitle = document.getElementById('movie-player-title');
+    const moviePlayerInfo = document.getElementById('movie-player-info');
+    const moviePlayerSummary = document.getElementById('movie-player-summary');
+    const playerModeTag = document.getElementById('player-mode-tag');
+    const btnClosePlayer = document.getElementById('btn-close-player');
+
+    let activeMovie = null;
+
+    async function searchMovies(query) {
+        gridHeader.innerHTML = `<span class="material-symbols-outlined text-primary-container animate-spin">refresh</span> Mencari: "${query}"...`;
+        movieGrid.innerHTML = `<p class="col-span-full text-xs text-primary-container text-center py-12 animate-pulse">Menghubungkan ke database bioskop...</p>`;
+
+        try {
+            const res = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`);
+            if (!res.ok) throw new Error("Gagal mengambil data");
+
+            const data = await res.json();
+            if (data.length === 0) {
+                gridHeader.innerHTML = `<span class="material-symbols-outlined text-primary-container">local_movies</span> Hasil Cari: "${query}"`;
+                movieGrid.innerHTML = `<p class="col-span-full text-xs text-on-surface-variant text-center py-12">Film / Series "${query}" tidak ditemukan.</p>`;
+                return;
+            }
+
+            gridHeader.innerHTML = `<span class="material-symbols-outlined text-primary-container">local_movies</span> Hasil Cari: "${query}" (${data.length} Judul)`;
+            movieGrid.innerHTML = '';
+
+            data.forEach((item) => {
+                const show = item.show;
+                const title = show.name;
+                const poster = show.image?.medium || show.image?.original || 'https://via.placeholder.com/300x450/1c1b1d/e5e1e4?text=No+Poster';
+                const rating = show.rating?.average ? `⭐ ${show.rating.average}` : '⭐ 8.0';
+                const year = show.premiered ? show.premiered.substring(0, 4) : 'N/A';
+
+                const card = document.createElement('div');
+                card.className = 'glass-panel rounded-2xl overflow-hidden border border-white/10 hover:border-primary-container/50 hover:scale-105 transition-all cursor-pointer group flex flex-col justify-between';
+                
+                card.innerHTML = `
+                    <div class="relative w-full h-64 overflow-hidden bg-surface-container-high">
+                        <img src="${poster}" alt="${title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="w-12 h-12 rounded-full bg-primary-container text-black flex items-center justify-center font-bold shadow-lg">
+                                <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <h4 class="text-sm font-bold text-on-surface truncate group-hover:text-primary-container transition-colors">${title}</h4>
+                        <div class="flex justify-between items-center mt-1 text-[11px] text-on-surface-variant">
+                            <span class="text-amber-400 font-semibold">${rating}</span>
+                            <span>${year}</span>
+                        </div>
+                    </div>
+                `;
+
+                card.addEventListener('click', () => playMovie(show));
+                movieGrid.appendChild(card);
+            });
+
+        } catch (err) {
+            gridHeader.innerHTML = `<span class="material-symbols-outlined text-primary-container">local_movies</span> Popular Movies`;
+            movieGrid.innerHTML = `<p class="col-span-full text-xs text-red-400 text-center py-12">Gagal memuat film: ${err.message}</p>`;
+        }
+    }
+
+    function playMovie(show) {
+        activeMovie = show;
+
+        moviePlayerTitle.textContent = show.name;
+        moviePlayerInfo.textContent = `${show.genres?.join(', ') || 'Show'} • ${show.premiered ? show.premiered.substring(0, 4) : '2024'} • ⭐ ${show.rating?.average || '8.2'}`;
+        
+        const cleanSummary = show.summary ? show.summary.replace(/<\/?[^>]+(>|$)/g, "") : "Selamat menonton di LifeHub AI Cinema!";
+        moviePlayerSummary.textContent = cleanSummary;
+
+        switchServer(1);
+
+        playerSection.classList.remove('hidden');
+        playerSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // SWITCH SERVER LOGIC (SUPPORT MOVIE & TV SERIES)
+    window.switchServer = function(serverNum) {
+        if (!activeMovie) return;
+
+        playerModeTag.textContent = `Streaming Server ${serverNum}`;
+        document.querySelectorAll('.srv-btn').forEach(btn => {
+            btn.className = 'srv-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-surface-container-high border border-white/10 text-on-surface-variant hover:text-white transition-all';
+        });
+
+        const activeBtn = document.getElementById(`srv-${serverNum}`);
+        if (activeBtn) activeBtn.className = 'srv-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-primary-container text-black transition-all';
+
+        const imdbId = activeMovie.externals?.imdb || 'tt0848228';
+        const isTvShow = activeMovie.type === 'Scripted' || activeMovie.type === 'Reality' || activeMovie.genres?.length > 0;
+
+        if (serverNum === 1) {
+            // Autoembed Server (Auto detect movie vs TV series S1 E1)
+            cinemaIframe.src = isTvShow 
+                ? `https://autoembed.co/tv/imdb/${imdbId}-1-1` 
+                : `https://autoembed.co/movie/imdb/${imdbId}`;
+        } else if (serverNum === 2) {
+            // VidSrc Server Backup
+            cinemaIframe.src = isTvShow 
+                ? `https://vidsrc.me/embed/tv?imdb=${imdbId}&season=1&episode=1` 
+                : `https://vidsrc.me/embed/movie?imdb=${imdbId}`;
+        }
+    }
+
+    // MODE TRAILER (BEBAS IKLAN 100%)
+    window.playTrailerMode = function() {
+        if (!activeMovie) return;
+        playerModeTag.textContent = "Official Trailer (Clean Mode)";
+        
+        // Search & Embed Youtube Trailer
+        const searchQuery = encodeURIComponent(`${activeMovie.name} official trailer`);
+        cinemaIframe.src = `https://www.youtube.com/embed?listType=search&list=${searchQuery}`;
+    }
+
+    btnClosePlayer.addEventListener('click', () => {
+        cinemaIframe.src = '';
+        playerSection.classList.add('hidden');
+    });
+
+    document.getElementById('search-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const query = document.getElementById('search-input').value.trim();
+        if (query) searchMovies(query);
+    });
+
+    searchMovies('Mr Robot');
+</script>
+
+</body>
+</html>

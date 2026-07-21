@@ -1,0 +1,210 @@
+/* =========================================================================
+   LIFEHUB AI — CORE STYLESHEET
+   Design language: "Orbit Glass" — a dark control-room surface where each
+   hub (Finance / AI / Music / Movies) casts its own ambient hue behind the
+   same glass chrome, so the shell always feels like one app while each
+   room has a distinct atmosphere.
+   ========================================================================= */
+
+/* ---- Design Tokens ---------------------------------------------------- */
+:root {
+  /* Color: deep space navy base + a signature "orbit" gradient per hub */
+  --lh-bg: #0B0F19;
+  --lh-surface: #141824;
+  --lh-surface-glass: rgba(20, 24, 36, 0.62);
+  --lh-border-glow: rgba(255, 255, 255, 0.08);
+  --lh-text-primary: #F1F3F9;
+  --lh-text-muted: #8B93A7;
+
+  --lh-accent-violet: #7C5CFC;   /* AI Assistant hub */
+  --lh-accent-cyan: #22D3EE;     /* Dashboard / default */
+  --lh-accent-emerald: #34D399;  /* Finance hub */
+  --lh-accent-amber: #FBBF24;    /* Movies hub */
+  --lh-accent-rose: #FB7185;     /* Music hub */
+  --lh-danger: #EF4444;
+
+  /* Type: three roles, deliberately distinct from each other */
+  --lh-font-display: 'Space Grotesk', 'Segoe UI', sans-serif;
+  --lh-font-body: 'Inter', 'Segoe UI', sans-serif;
+  --lh-font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* Layout */
+  --lh-sidebar-w: 264px;
+  --lh-sidebar-w-collapsed: 84px;
+  --lh-topbar-h: 72px;
+  --lh-radius-lg: 20px;
+  --lh-radius-md: 14px;
+  --lh-radius-sm: 8px;
+  --lh-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Light mode overrides (toggled via [data-theme="light"] on <html>) */
+[data-theme='light'] {
+  --lh-bg: #F3F4F8;
+  --lh-surface: #FFFFFF;
+  --lh-surface-glass: rgba(255, 255, 255, 0.65);
+  --lh-border-glow: rgba(15, 23, 42, 0.08);
+  --lh-text-primary: #10131C;
+  --lh-text-muted: #5B6270;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--lh-bg);
+  color: var(--lh-text-primary);
+  font-family: var(--lh-font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  /* Ambient orbit glow behind everything — the signature element.
+     Hue shifts per-hub via the [data-hub] attribute on <body>. */
+  background-image:
+    radial-gradient(ellipse 60% 50% at 15% -10%, var(--lh-hub-glow, var(--lh-accent-cyan)) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 0%, var(--lh-accent-violet) 0%, transparent 55%);
+  background-attachment: fixed;
+  background-color: var(--lh-bg);
+}
+
+body[data-hub='finance']   { --lh-hub-glow: var(--lh-accent-emerald); }
+body[data-hub='ai']        { --lh-hub-glow: var(--lh-accent-violet); }
+body[data-hub='music']     { --lh-hub-glow: var(--lh-accent-rose); }
+body[data-hub='movies']    { --lh-hub-glow: var(--lh-accent-amber); }
+body[data-hub='dashboard'] { --lh-hub-glow: var(--lh-accent-cyan); }
+
+h1, h2, h3, h4, .lh-display {
+  font-family: var(--lh-font-display);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.lh-mono { font-family: var(--lh-font-mono); font-variant-numeric: tabular-nums; }
+
+/* ---- Glass surface primitive ------------------------------------------ */
+.lh-glass {
+  background: var(--lh-surface-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--lh-border-glow);
+  border-radius: var(--lh-radius-lg);
+  transition: var(--lh-transition);
+}
+
+.lh-glass:hover { border-color: rgba(255, 255, 255, 0.16); }
+
+/* ---- App Shell --------------------------------------------------------- */
+.lh-shell {
+  display: grid;
+  grid-template-columns: var(--lh-sidebar-w) 1fr;
+  min-height: 100vh;
+  transition: var(--lh-transition);
+}
+
+.lh-shell[data-sidebar='collapsed'] {
+  grid-template-columns: var(--lh-sidebar-w-collapsed) 1fr;
+}
+
+.lh-sidebar {
+  grid-row: 1 / -1;
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-right: 1px solid var(--lh-border-glow);
+}
+
+.lh-topbar {
+  height: var(--lh-topbar-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  border-bottom: 1px solid var(--lh-border-glow);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--lh-surface-glass);
+  backdrop-filter: blur(16px);
+}
+
+.lh-canvas {
+  padding: 28px;
+  max-width: 1400px;
+  width: 100%;
+}
+
+.lh-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: var(--lh-radius-sm);
+  color: var(--lh-text-muted);
+  text-decoration: none;
+  font-size: 0.92rem;
+  transition: var(--lh-transition);
+}
+
+.lh-nav-item:hover { background: rgba(255, 255, 255, 0.05); color: var(--lh-text-primary); }
+.lh-nav-item[aria-current='page'] {
+  background: rgba(124, 92, 252, 0.14);
+  color: var(--lh-text-primary);
+  box-shadow: inset 0 0 0 1px rgba(124, 92, 252, 0.3);
+}
+
+/* ---- Widget grid -------------------------------------------------------- */
+.lh-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 20px;
+}
+
+/* ---- Skeleton loading states -------------------------------------------- */
+.lh-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: var(--lh-radius-sm);
+}
+.lh-skeleton::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  animation: lh-shimmer 1.6s infinite;
+}
+@keyframes lh-shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+/* ---- Focus visibility (accessibility floor) ----------------------------- */
+:focus-visible {
+  outline: 2px solid var(--lh-accent-cyan);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+/* ---- Responsive: mobile-first shell collapse ---------------------------- */
+@media (max-width: 768px) {
+  .lh-shell { grid-template-columns: 1fr; }
+  .lh-sidebar {
+    position: fixed; inset: 0 auto 0 0; width: var(--lh-sidebar-w);
+    transform: translateX(-100%); z-index: 40;
+  }
+  .lh-shell[data-sidebar='open'] .lh-sidebar { transform: translateX(0); }
+  .lh-canvas { padding: 16px; }
+}
+
+/* ---- Toast / alert primitives ------------------------------------------- */
+.lh-toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 100;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.lh-toast-item {
+  min-width: 260px; max-width: 360px;
+  padding: 14px 16px; border-radius: var(--lh-radius-md);
+  font-size: 0.88rem;
+}

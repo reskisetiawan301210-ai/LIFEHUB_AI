@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>LifeHub AI - Smart QR Studio</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#00e5ff",
+                      "surface": "#131315",
+                      "inverse-primary": "#006875",
+                      "secondary-container": "#5203d5",
+                      "surface-container-low": "#1c1b1d",
+                      "surface-container-high": "#2a2a2c",
+                      "on-surface": "#e5e1e4",
+                      "on-surface-variant": "#bac9cc",
+                      "secondary": "#cdbdff",
+                      "background": "#131315"
+              }
+            }
+          }
+        }
+    </script>
+    <style>
+        .glass-panel { background: rgba(32, 31, 34, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .premium-border { position: relative; }
+        .premium-border::before { content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; background: linear-gradient(135deg, #5203d5 0%, #00e5ff 100%); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude; opacity: 0.5; pointer-events: none; }
+        .abstract-glow { position: absolute; border-radius: 50%; filter: blur(80px); z-index: 0; opacity: 0.4; pointer-events: none; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-sans overflow-x-hidden selection:bg-primary-container selection:text-surface">
+
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="abstract-glow bg-secondary-container w-[600px] h-[600px] top-[-200px] left-[-100px]"></div>
+    <div class="abstract-glow bg-primary-container w-[400px] h-[400px] top-[20%] right-[-100px] opacity-20"></div>
+</div>
+
+<nav class="hidden md:flex flex-col h-full py-8 bg-surface/70 backdrop-blur-xl h-screen w-64 fixed left-0 top-0 border-r border-white/10 z-50">
+    <div class="px-6 mb-8">
+        <h1 class="text-2xl font-bold tracking-tighter text-primary-container">LifeHub AI</h1>
+        <p class="text-xs text-on-surface-variant uppercase mt-1">System Active</p>
+    </div>
+    <div class="flex-1 flex flex-col gap-1 px-2">
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="dashboard.html">
+            <span class="material-symbols-outlined">dashboard</span> Dashboard
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="ai.html">
+            <span class="material-symbols-outlined">smart_toy</span> AI Assistant
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="finance.html">
+            <span class="material-symbols-outlined">payments</span> Finance
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="music.html">
+            <span class="material-symbols-outlined">library_music</span> Music
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="movies.html">
+            <span class="material-symbols-outlined">movie</span> Movies
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="notes.html">
+            <span class="material-symbols-outlined">edit_note</span> Notes & Tasks
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="downloader.html">
+            <span class="material-symbols-outlined">cloud_download</span> Downloader
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="focus.html">
+            <span class="material-symbols-outlined">timer</span> Focus Space
+        </a>
+        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-primary-container bg-primary-container/10 border-r-2 border-primary-container font-bold transition-all" href="tools.html">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">qr_code_scanner</span> Smart QR Tools
+        </a>
+    </div>
+</nav>
+
+<header class="hidden md:flex justify-between items-center px-12 bg-surface/70 backdrop-blur-md fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 border-b border-white/5">
+    <div class="relative w-64">
+        <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant">search</span>
+        <input class="w-full bg-surface-container-low border border-white/5 rounded-full py-2 pl-10 pr-4 text-sm focus:border-primary-container outline-none text-on-surface" placeholder="Search LifeHub..." type="text"/>
+    </div>
+    <div class="flex items-center gap-4">
+        <div id="user-avatar" class="w-8 h-8 rounded-full bg-primary-container/20 text-primary-container flex items-center justify-center font-bold border border-primary-container">RS</div>
+    </div>
+</header>
+
+<main class="relative z-10 md:ml-64 pt-24 px-12 pb-32 min-h-screen flex flex-col gap-8 max-w-7xl mx-auto">
+    
+    <header class="flex flex-col gap-2">
+        <h2 class="text-4xl font-bold text-on-surface tracking-tight">Smart Media QR Studio</h2>
+        <p class="text-on-surface-variant text-base">Upload foto/video langsung dari HP/Laptop lu untuk dijadikan QR Code yang bisa di-scan Google.</p>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <section class="lg:col-span-7 glass-panel p-8 rounded-2xl border border-white/10 premium-border flex flex-col gap-6">
+            
+            <div>
+                <label class="text-xs font-bold uppercase tracking-wider text-primary-container mb-3 block">Pilih Tipe QR</label>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    <button type="button" onclick="switchType('upload')" id="type-upload" class="p-3 rounded-xl border border-primary-container bg-primary-container/10 text-primary-container font-bold text-xs flex flex-col items-center gap-1 transition-all">
+                        <span class="material-symbols-outlined text-lg">cloud_upload</span> Upload Foto/Video
+                    </button>
+                    <button type="button" onclick="switchType('link')" id="type-link" class="p-3 rounded-xl border border-white/10 bg-surface-container-low text-on-surface-variant font-bold text-xs flex flex-col items-center gap-1 hover:text-white transition-all">
+                        <span class="material-symbols-outlined text-lg">link</span> Tempel Link URL
+                    </button>
+                    <button type="button" onclick="switchType('text')" id="type-text" class="p-3 rounded-xl border border-white/10 bg-surface-container-low text-on-surface-variant font-bold text-xs flex flex-col items-center gap-1 hover:text-white transition-all">
+                        <span class="material-symbols-outlined text-lg">short_text</span> Teks Biasa
+                    </button>
+                </div>
+            </div>
+
+            <div id="form-container" class="flex flex-col gap-4">
+                
+                <div>
+                    <label class="text-xs font-bold text-on-surface mb-1 block">Judul Tampilan</label>
+                    <input id="input-title" type="text" placeholder="Misal: Foto Kenangan Liburan / Video Tutorial" class="w-full bg-surface-container-low border border-white/10 rounded-xl p-3.5 text-sm outline-none focus:border-primary-container text-on-surface"/>
+                </div>
+
+                <div id="field-upload" class="flex flex-col gap-2">
+                    <label class="text-xs font-bold text-on-surface block">Pilih File Foto / Video dari Galeri</label>
+                    <input id="file-input" type="file" accept="image/*,video/*" class="w-full bg-surface-container-low border border-white/10 rounded-xl p-3 text-xs text-on-surface file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-primary-container file:text-black hover:file:opacity-80 cursor-pointer"/>
+                    <p class="text-[11px] text-primary-container">Otomatis di-upload ke Cloud publik gratis agar QR Code bisa di-scan Google.</p>
+                </div>
+
+                <div id="field-text" class="hidden flex-col gap-1">
+                    <label id="label-text" class="text-xs font-bold text-on-surface block">Tautan / Pesan</label>
+                    <textarea id="input-text" rows="3" placeholder="https://..." class="w-full bg-surface-container-low border border-white/10 rounded-xl p-3.5 text-sm outline-none focus:border-primary-container text-on-surface"></textarea>
+                </div>
+
+            </div>
+
+            <button onclick="processAndGenerateQR()" id="btn-submit" class="w-full py-4 bg-primary-container text-black font-extrabold rounded-xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 cursor-pointer mt-2">
+                <span class="material-symbols-outlined text-xl">qr_code_2</span> Generate QR Code Publik
+            </button>
+
+            <div id="upload-loading" class="hidden items-center justify-center gap-2 py-2 text-xs font-bold text-primary-container animate-pulse">
+                <span class="material-symbols-outlined text-base animate-spin">refresh</span>
+                Mengunggah file ke Cloud publik... Mohon tunggu sejenak!
+            </div>
+
+        </section>
+
+        <section class="lg:col-span-5 flex flex-col gap-6">
+            
+            <div class="glass-panel p-6 rounded-2xl border border-white/10 flex flex-col items-center justify-center gap-4 text-center">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-on-surface-variant">Hasil QR Code Siap Scan</h3>
+                
+                <div class="p-4 bg-white rounded-2xl shadow-2xl border-4 border-primary-container">
+                    <div id="qrcode-box"></div>
+                </div>
+
+                <button onclick="downloadQR()" id="btn-download" class="hidden px-6 py-2.5 bg-surface-container-high border border-white/10 hover:border-primary-container/50 text-on-surface font-bold text-xs rounded-xl hover:scale-105 transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="material-symbols-outlined text-base">download</span> Download Gambar QR (.PNG)
+                </button>
+            </div>
+
+            <div class="glass-panel p-6 rounded-2xl border border-white/10 flex flex-col gap-3">
+                <span class="text-[10px] uppercase tracking-widest font-extrabold px-2.5 py-1 rounded-md bg-primary-container/20 text-primary-container border border-primary-container/30 w-fit">
+                    Simulasi Tampilan HP Saat Di-Scan
+                </span>
+
+                <div id="preview-box" class="p-4 rounded-xl bg-surface-container-low border border-white/5 min-h-[120px] flex flex-col justify-center items-center text-center">
+                    <span class="material-symbols-outlined text-3xl text-on-surface-variant mb-1">qr_code_scanner</span>
+                    <p class="text-xs text-on-surface-variant">Pilih foto/video lalu klik Generate untuk membuat QR Code yang bisa di-scan Google.</p>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<section class="fixed bottom-12 left-1/2 -translate-x-1/2 z-50 md:ml-32">
+    <div class="glass-panel rounded-full p-2 flex items-center gap-2 border border-white/10 bg-surface/80 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+        <a href="ai.html" class="flex items-center gap-2 px-6 py-3 rounded-full bg-primary-container text-black font-bold hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,229,255,0.2)]">
+            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">graphic_eq</span> Ask AI
+        </a>
+        <div class="w-[1px] h-8 bg-white/10 mx-2"></div>
+        <a href="dashboard.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">dashboard</span>
+        </a>
+        <a href="finance.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">receipt_long</span>
+        </a>
+        <a href="music.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">music_note</span>
+        </a>
+        <a href="movies.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">movie</span>
+        </a>
+        <a href="notes.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">edit_note</span>
+        </a>
+        <a href="downloader.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">cloud_download</span>
+        </a>
+        <a href="focus.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined">timer</span>
+        </a>
+        <a href="tools.html" class="w-12 h-12 flex items-center justify-center rounded-full text-primary-container bg-primary-container/10 transition-all mr-2">
+            <span class="material-symbols-outlined">qr_code_scanner</span>
+        </a>
+    </div>
+</section>
+
+<script>
+    const currentUserName = localStorage.getItem('lifehub_user_name') || 'Reski';
+    document.getElementById('user-avatar').textContent = currentUserName.charAt(0).toUpperCase();
+
+    let currentType = 'upload';
+    let qrcodeObj = null;
+
+    function switchType(type) {
+        currentType = type;
+        const btnUpload = document.getElementById('type-upload');
+        const btnLink = document.getElementById('type-link');
+        const btnText = document.getElementById('type-text');
+
+        const activeClass = "p-3 rounded-xl border border-primary-container bg-primary-container/10 text-primary-container font-bold text-xs flex flex-col items-center gap-1 transition-all";
+        const inactiveClass = "p-3 rounded-xl border border-white/10 bg-surface-container-low text-on-surface-variant font-bold text-xs flex flex-col items-center gap-1 hover:text-white transition-all";
+
+        btnUpload.className = type === 'upload' ? activeClass : inactiveClass;
+        btnLink.className = type === 'link' ? activeClass : inactiveClass;
+        btnText.className = type === 'text' ? activeClass : inactiveClass;
+
+        const fieldUpload = document.getElementById('field-upload');
+        const fieldText = document.getElementById('field-text');
+        const labelText = document.getElementById('label-text');
+
+        if (type === 'upload') {
+            fieldUpload.classList.remove('hidden');
+            fieldText.classList.add('hidden');
+        } else {
+            fieldUpload.classList.add('hidden');
+            fieldText.classList.remove('hidden');
+            fieldText.classList.add('flex');
+            labelText.textContent = type === 'link' ? "Tempel Link URL Publik (https://...)" : "Pesan Teks Biasa";
+        }
+    }
+
+    async function processAndGenerateQR() {
+        const title = document.getElementById('input-title').value.trim() || 'LifeHub Media';
+        const qrBox = document.getElementById('qrcode-box');
+        const previewBox = document.getElementById('preview-box');
+        const loadingBox = document.getElementById('upload-loading');
+        const btnSubmit = document.getElementById('btn-submit');
+
+        let finalUrl = "";
+
+        if (currentType === 'upload') {
+            const fileInput = document.getElementById('file-input');
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert("Pilih file foto atau video dulu bro!");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            loadingBox.classList.remove('hidden');
+            loadingBox.classList.add('flex');
+            btnSubmit.disabled = true;
+
+            try {
+                // AUTO UPLOAD TO FREE PUBLIC CLOUD (tmpfiles.org)
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const res = await fetch('https://tmpfiles.org/api/v1/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (data.status === 'success' && data.data?.url) {
+                    // Convert link to direct download view link
+                    finalUrl = data.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+                } else {
+                    throw new Error("Gagal mengunggah file ke cloud.");
+                }
+            } catch (err) {
+                alert("❌ Gagal mengunggah file. Pastikan terhubung ke internet!");
+                loadingBox.classList.add('hidden');
+                btnSubmit.disabled = false;
+                return;
+            }
+
+            loadingBox.classList.add('hidden');
+            btnSubmit.disabled = false;
+
+        } else if (currentType === 'link') {
+            finalUrl = document.getElementById('input-text').value.trim();
+            if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+                finalUrl = 'https://' + finalUrl;
+            }
+        } else {
+            finalUrl = document.getElementById('input-text').value.trim();
+        }
+
+        if (!finalUrl) {
+            alert("Isi pesan atau link terlebih dahulu!");
+            return;
+        }
+
+        // GENERATE QR CODE
+        qrBox.innerHTML = '';
+        qrcodeObj = new QRCode(qrBox, {
+            text: finalUrl,
+            width: 180,
+            height: 180,
+            colorDark: "#131315",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        document.getElementById('btn-download').classList.remove('hidden');
+
+        // SIMULASI PREVIEW SCAN
+        if (currentType === 'upload' || currentType === 'link') {
+            const isVideo = finalUrl.match(/\.(mp4|webm|ogg|mov)$/i) || finalUrl.includes('youtube') || finalUrl.includes('tiktok');
+            
+            if (isVideo) {
+                previewBox.innerHTML = `
+                    <div class="w-full flex flex-col items-center gap-2">
+                        <h4 class="font-bold text-sm text-primary-container">${title}</h4>
+                        <div class="w-full h-32 rounded-lg bg-black/60 border border-white/10 flex items-center justify-center gap-2 text-primary-container">
+                            <span class="material-symbols-outlined text-4xl">play_circle</span>
+                            <span class="text-xs font-bold text-on-surface">Video Siap Diputar</span>
+                        </div>
+                        <a href="${finalUrl}" target="_blank" class="text-[11px] text-primary-container underline font-semibold mt-1">Buka Video Lengkap ↗</a>
+                    </div>
+                `;
+            } else {
+                previewBox.innerHTML = `
+                    <div class="w-full flex flex-col items-center gap-2">
+                        <h4 class="font-bold text-sm text-primary-container">${title}</h4>
+                        <img src="${finalUrl}" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400'" class="w-full h-36 object-cover rounded-lg border border-white/10"/>
+                        <a href="${finalUrl}" target="_blank" class="text-[11px] text-primary-container underline font-semibold mt-1">Buka Foto Kualitas Asli ↗</a>
+                    </div>
+                `;
+            }
+        } else {
+            previewBox.innerHTML = `
+                <div class="w-full flex flex-col items-start text-left gap-1">
+                    <h4 class="font-bold text-sm text-primary-container">${title}</h4>
+                    <p class="text-xs text-on-surface leading-relaxed mt-1">${finalUrl}</p>
+                </div>
+            `;
+        }
+    }
+
+    function downloadQR() {
+        const img = document.querySelector('#qrcode-box img');
+        if (img) {
+            const link = document.createElement('a');
+            link.download = 'lifehub-qr-code.png';
+            link.href = img.src;
+            link.click();
+        }
+    }
+</script>
+
+</body>
+</html>

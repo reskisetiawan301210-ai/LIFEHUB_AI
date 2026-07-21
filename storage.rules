@@ -1,0 +1,16 @@
+rules_version = '2';
+
+// LifeHub AI — Cloud Storage Security Rules
+// Restricts avatar uploads to their owner, max 5MB, image mime types only.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /avatars/{userId}/{fileName} {
+      allow read: if true; // avatars are public-readable within the app
+      allow write: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+  }
+}
