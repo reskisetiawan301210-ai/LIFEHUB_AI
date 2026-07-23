@@ -1,305 +1,1258 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>LifeHub AI - Cinema Stream</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
-    <script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "primary-container": "#00e5ff",
-                      "surface": "#131315",
-                      "inverse-primary": "#006875",
-                      "secondary-container": "#5203d5",
-                      "surface-container-low": "#1c1b1d",
-                      "surface-container-high": "#2a2a2c",
-                      "on-surface": "#e5e1e4",
-                      "on-surface-variant": "#bac9cc",
-                      "secondary": "#cdbdff",
-                      "background": "#131315"
-              },
-              "spacing": {
-                      "margin-mobile": "16px",
-                      "margin-desktop": "48px",
-                      "stack-md": "16px",
-                      "stack-sm": "8px",
-                      "gutter": "24px",
-                      "container-max": "1280px",
-                      "stack-lg": "32px"
-              }
-            }
-          }
-        }
-    </script>
-    <style>
-        .glass-panel { background: rgba(32, 31, 34, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .premium-border { position: relative; }
-        .premium-border::before { content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; background: linear-gradient(135deg, #5203d5 0%, #00e5ff 100%); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude; opacity: 0.5; pointer-events: none; }
-        .abstract-glow { position: absolute; border-radius: 50%; filter: blur(80px); z-index: 0; opacity: 0.4; pointer-events: none; }
-    </style>
-</head>
-<body class="bg-background text-on-surface font-sans overflow-x-hidden">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Reel — LifeHub AI</title>
+<meta name="description" content="Reel: a cinema-grade movie & show discovery experience for LifeHub AI." />
 
-<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-    <div class="abstract-glow bg-secondary-container w-[600px] h-[600px] top-[-200px] left-[-100px]"></div>
-    <div class="abstract-glow bg-primary-container w-[400px] h-[400px] top-[20%] right-[-100px] opacity-20"></div>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   REEL — Design tokens
+   ============================================================ */
+:root{
+  --black:        #0a0a0d;
+  --charcoal:      #131318;
+  --charcoal-2:    #1b1c22;
+  --charcoal-3:    #24262e;
+  --hairline:      rgba(232,183,93,0.14);
+  --cream:         #efe7d8;
+  --cream-dim:     #b9b3a4;
+  --gold:          #e8b75d;
+  --gold-dim:      #9c824f;
+  --cyan:          #5fd0c8;
+  --crimson:       #c4432b;
+
+  --font-display:  'Fraunces', serif;
+  --font-body:     'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:     'JetBrains Mono', monospace;
+
+  --radius-card:   10px;
+  --radius-lg:     18px;
+  --ease:          cubic-bezier(.22,.68,.2,1);
+
+  --sidebar-w:     236px;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  margin:0;
+  background:var(--black);
+  color:var(--cream);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+button{ font-family:inherit; cursor:pointer; }
+::selection{ background:var(--gold); color:var(--black); }
+
+/* subtle film-grain vignette over the whole app */
+body::before{
+  content:'';
+  position:fixed; inset:0; pointer-events:none; z-index:2000;
+  background:radial-gradient(ellipse at 50% 0%, transparent 55%, rgba(0,0,0,.55) 100%);
+}
+
+::-webkit-scrollbar{ width:10px; height:10px; }
+::-webkit-scrollbar-track{ background:transparent; }
+::-webkit-scrollbar-thumb{ background:var(--charcoal-3); border-radius:8px; }
+::-webkit-scrollbar-thumb:hover{ background:var(--gold-dim); }
+
+.hidden{ display:none !important; }
+.sr-only{ position:absolute; width:1px;height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+
+/* focus visibility */
+a:focus-visible, button:focus-visible, input:focus-visible{
+  outline:2px solid var(--gold); outline-offset:2px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001ms !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+}
+
+/* ============================================================
+   LAYOUT SHELL
+   ============================================================ */
+.app{
+  display:grid;
+  grid-template-columns:var(--sidebar-w) 1fr;
+  min-height:100vh;
+}
+
+/* ---------- SIDEBAR : styled like a fold of ticket stubs ---------- */
+.sidebar{
+  position:sticky; top:0; height:100vh;
+  background:var(--charcoal);
+  border-right:1px solid var(--hairline);
+  padding:22px 14px;
+  display:flex; flex-direction:column; gap:22px;
+  z-index:900;
+}
+.brand{
+  display:flex; align-items:center; gap:10px; padding:0 8px;
+}
+.brand .reel-mark{
+  width:30px; height:30px; border-radius:50%;
+  background:conic-gradient(from 90deg, var(--gold), var(--crimson), var(--cyan), var(--gold));
+  position:relative; flex:none;
+}
+.brand .reel-mark::after{
+  content:''; position:absolute; inset:9px; border-radius:50%; background:var(--charcoal);
+}
+.brand-name{ font-family:var(--font-display); font-size:21px; font-weight:600; letter-spacing:.01em; }
+.brand-name span{ color:var(--gold); }
+.brand-sub{ font-family:var(--font-mono); font-size:9.5px; color:var(--cream-dim); text-transform:uppercase; letter-spacing:.14em; padding:0 8px; margin-top:-16px; }
+
+.nav-group{ display:flex; flex-direction:column; gap:2px; }
+.nav-label{
+  font-family:var(--font-mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--gold-dim); padding:10px 12px 6px;
+}
+.nav-item{
+  display:flex; align-items:center; gap:11px;
+  padding:9px 12px; border-radius:8px; font-size:14px; color:var(--cream-dim);
+  border:none; background:transparent; width:100%; text-align:left;
+  position:relative; transition:background .15s var(--ease), color .15s var(--ease);
+}
+.nav-item svg{ width:17px; height:17px; flex:none; opacity:.85; }
+.nav-item:hover{ background:var(--charcoal-2); color:var(--cream); }
+.nav-item.active{ background:var(--charcoal-2); color:var(--gold); }
+.nav-item.active::before{
+  content:''; position:absolute; left:-14px; top:50%; transform:translateY(-50%);
+  width:3px; height:60%; background:var(--gold); border-radius:0 3px 3px 0;
+}
+.nav-count{
+  margin-left:auto; font-family:var(--font-mono); font-size:10.5px; color:var(--cream-dim);
+  background:var(--charcoal-3); padding:1px 7px; border-radius:20px;
+}
+
+.sidebar-footer{ margin-top:auto; font-family:var(--font-mono); font-size:10px; color:var(--charcoal-3); padding:0 8px; }
+.sidebar-footer b{ color:var(--gold-dim); }
+
+/* ---------- MAIN ---------- */
+.main{ min-width:0; }
+
+/* top bar */
+.topbar{
+  position:sticky; top:0; z-index:800;
+  display:flex; align-items:center; gap:16px;
+  padding:14px 28px; background:rgba(10,10,13,.72); backdrop-filter:blur(14px) saturate(140%);
+  border-bottom:1px solid var(--hairline);
+}
+.search-wrap{ position:relative; flex:1; max-width:640px; }
+.search-box{
+  display:flex; align-items:center; gap:10px;
+  background:var(--charcoal); border:1px solid var(--hairline); border-radius:11px;
+  padding:10px 14px; transition:border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.search-box:focus-within{ border-color:var(--gold-dim); box-shadow:0 0 0 3px rgba(232,183,93,.09); }
+.search-box svg{ width:17px; height:17px; color:var(--cream-dim); flex:none; }
+.search-box input{
+  background:none; border:none; color:var(--cream); font-size:14.5px; width:100%;
+  font-family:var(--font-body);
+}
+.search-box input::placeholder{ color:var(--cream-dim); }
+.mic-btn{ background:none; border:none; color:var(--cream-dim); padding:2px; border-radius:6px; flex:none; }
+.mic-btn.listening{ color:var(--crimson); animation:pulseMic 1s infinite; }
+@keyframes pulseMic{ 0%,100%{ opacity:1; } 50%{ opacity:.4; } }
+.mic-btn svg{ width:17px; height:17px; }
+
+.suggest-panel{
+  position:absolute; top:calc(100% + 8px); left:0; right:0;
+  background:var(--charcoal-2); border:1px solid var(--hairline); border-radius:12px;
+  padding:6px; max-height:420px; overflow-y:auto; box-shadow:0 20px 50px rgba(0,0,0,.5);
+  z-index:900;
+}
+.suggest-item{
+  display:flex; gap:10px; align-items:center; padding:8px; border-radius:8px; cursor:pointer;
+}
+.suggest-item:hover{ background:var(--charcoal-3); }
+.suggest-item img{ width:34px; height:50px; object-fit:cover; border-radius:4px; background:var(--charcoal-3); flex:none; }
+.suggest-item .st-title{ font-size:13.5px; font-weight:500; }
+.suggest-item .st-meta{ font-family:var(--font-mono); font-size:10.5px; color:var(--cream-dim); }
+
+.topbar-actions{ display:flex; align-items:center; gap:10px; margin-left:auto; }
+.pill-btn{
+  display:flex; align-items:center; gap:7px;
+  background:var(--charcoal); border:1px solid var(--hairline); color:var(--cream-dim);
+  padding:9px 14px; border-radius:10px; font-size:13px; white-space:nowrap;
+  transition:all .15s var(--ease);
+}
+.pill-btn:hover{ color:var(--gold); border-color:var(--gold-dim); }
+.pill-btn svg{ width:15px; height:15px; }
+
+/* ============================================================
+   HERO MARQUEE
+   ============================================================ */
+.hero{
+  position:relative; height:min(72vh, 640px); margin:18px 28px 0; border-radius:var(--radius-lg);
+  overflow:hidden; background:var(--charcoal);
+}
+.hero-slide{
+  position:absolute; inset:0; opacity:0; transition:opacity .9s var(--ease);
+}
+.hero-slide.active{ opacity:1; }
+.hero-slide img{ width:100%; height:100%; object-fit:cover; }
+.hero-scrim{
+  position:absolute; inset:0;
+  background:
+    linear-gradient(180deg, rgba(10,10,13,.15) 0%, rgba(10,10,13,.35) 55%, var(--black) 100%),
+    linear-gradient(90deg, rgba(10,10,13,.92) 0%, rgba(10,10,13,.35) 48%, transparent 75%);
+}
+.hero-content{
+  position:absolute; left:0; bottom:0; padding:44px 48px; max-width:620px; z-index:2;
+}
+.hero-badge{
+  font-family:var(--font-mono); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--gold); border:1px solid var(--gold-dim); display:inline-block; padding:4px 10px; border-radius:20px; margin-bottom:14px;
+}
+.hero-title{
+  font-family:var(--font-display); font-size:clamp(32px,4.6vw,58px); font-weight:600; line-height:1.02; margin:0 0 12px;
+  text-shadow:0 4px 30px rgba(0,0,0,.5);
+}
+.hero-meta{ display:flex; gap:14px; align-items:center; font-family:var(--font-mono); font-size:12.5px; color:var(--cream-dim); margin-bottom:14px; flex-wrap:wrap; }
+.hero-meta .rating{ color:var(--cyan); }
+.hero-overview{ font-size:14.5px; line-height:1.6; color:var(--cream-dim); margin-bottom:22px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.hero-actions{ display:flex; gap:12px; flex-wrap:wrap; }
+.btn{
+  display:flex; align-items:center; gap:9px; border:none; border-radius:9px; padding:12px 20px;
+  font-size:14px; font-weight:600; transition:transform .15s var(--ease), filter .15s var(--ease);
+}
+.btn svg{ width:16px; height:16px; }
+.btn:active{ transform:scale(.97); }
+.btn-primary{ background:var(--cream); color:var(--black); }
+.btn-primary:hover{ filter:brightness(.92); }
+.btn-ghost{ background:rgba(255,255,255,.08); color:var(--cream); border:1px solid rgba(255,255,255,.16); backdrop-filter:blur(6px); }
+.btn-ghost:hover{ background:rgba(255,255,255,.14); }
+.btn-icon{ background:rgba(255,255,255,.08); color:var(--cream); border:1px solid rgba(255,255,255,.16); padding:12px; border-radius:50%; }
+.btn-icon.active{ color:var(--gold); border-color:var(--gold-dim); }
+
+.hero-dots{ position:absolute; right:48px; bottom:44px; display:flex; gap:8px; z-index:2; }
+.hero-dot{ width:22px; height:3px; border-radius:2px; background:rgba(255,255,255,.25); border:none; transition:background .2s; }
+.hero-dot.active{ background:var(--gold); }
+
+/* ============================================================
+   ROWS / FILM-STRIP CAROUSELS
+   ============================================================ */
+.row-section{ padding:34px 0 6px; }
+.row-head{ display:flex; align-items:baseline; justify-content:space-between; padding:0 28px 14px; }
+.row-title{ font-family:var(--font-display); font-size:22px; font-weight:600; display:flex; align-items:center; gap:10px; }
+.row-title .sprocket-strip{ display:flex; gap:4px; }
+.row-title .sprocket-strip span{ width:4px; height:4px; border-radius:1px; background:var(--gold-dim); display:block; }
+.row-see-all{ font-family:var(--font-mono); font-size:11.5px; color:var(--cream-dim); letter-spacing:.05em; display:flex; align-items:center; gap:4px; cursor:pointer; }
+.row-see-all:hover{ color:var(--gold); }
+
+.filmstrip{ position:relative; }
+.filmstrip::before, .filmstrip::after{
+  content:''; position:absolute; top:0; bottom:0; width:28px; z-index:5; pointer-events:none;
+}
+.filmstrip::before{ left:0; background:linear-gradient(90deg, var(--black), transparent); }
+.filmstrip::after{ right:0; background:linear-gradient(270deg, var(--black), transparent); }
+.filmstrip-track{
+  display:flex; gap:14px; overflow-x:auto; padding:4px 28px 20px; scroll-snap-type:x proximity;
+  scrollbar-width:none;
+}
+.filmstrip-track::-webkit-scrollbar{ display:none; }
+
+.card{
+  flex:none; width:172px; scroll-snap-align:start; cursor:pointer;
+  transform:translateY(0); transition:transform .25s var(--ease);
+}
+.card:hover{ transform:translateY(-6px); }
+.card-poster{
+  position:relative; width:100%; aspect-ratio:2/3; border-radius:var(--radius-card);
+  background:var(--charcoal-2); overflow:hidden;
+  box-shadow:0 6px 18px rgba(0,0,0,.35);
+  -webkit-mask-image:
+    radial-gradient(circle 7px at 50% 0, transparent 98%, #000 100%),
+    radial-gradient(circle 7px at 50% 100%, transparent 98%, #000 100%);
+  -webkit-mask-composite:source-in, source-in;
+  mask-composite:intersect;
+  mask-image:
+    radial-gradient(circle 7px at 50% 0, transparent 98%, #000 100%),
+    radial-gradient(circle 7px at 50% 100%, transparent 98%, #000 100%);
+}
+.card-poster img{ width:100%; height:100%; object-fit:cover; transition:transform .4s var(--ease); }
+.card:hover .card-poster img{ transform:scale(1.06); }
+.card-rating{
+  position:absolute; top:8px; right:8px; background:rgba(10,10,13,.75); backdrop-filter:blur(4px);
+  color:var(--cyan); font-family:var(--font-mono); font-size:11px; padding:2px 7px; border-radius:20px;
+  display:flex; align-items:center; gap:3px;
+}
+.card-rating svg{ width:10px; height:10px; }
+.card-overlay{
+  position:absolute; inset:0; background:linear-gradient(0deg, rgba(0,0,0,.88) 0%, transparent 55%);
+  opacity:0; transition:opacity .2s var(--ease); display:flex; flex-direction:column; justify-content:flex-end; padding:10px;
+}
+.card:hover .card-overlay{ opacity:1; }
+.card-overlay .co-genres{ font-family:var(--font-mono); font-size:9.5px; color:var(--gold); letter-spacing:.04em; margin-bottom:4px; }
+.card-overlay .co-actions{ display:flex; gap:6px; }
+.co-actions button{
+  background:rgba(255,255,255,.14); border:none; color:#fff; width:24px; height:24px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+}
+.co-actions button svg{ width:12px; height:12px; }
+.co-actions button.active{ background:var(--gold); color:var(--black); }
+.card-title{ font-size:13px; font-weight:600; margin-top:9px; line-height:1.25; }
+.card-sub{ font-family:var(--font-mono); font-size:10.5px; color:var(--cream-dim); margin-top:2px; }
+
+.dotted-divider{ border:none; border-top:1px dashed var(--hairline); margin:0 28px; }
+
+.skel{ background:linear-gradient(100deg, var(--charcoal-2) 30%, var(--charcoal-3) 50%, var(--charcoal-2) 70%); background-size:200% 100%; animation:shimmer 1.4s infinite; }
+@keyframes shimmer{ from{ background-position:150% 0; } to{ background-position:-50% 0; } }
+.card-skel .card-poster{ mask-image:none; -webkit-mask-image:none; }
+
+.genre-rail{ display:flex; gap:10px; overflow-x:auto; padding:0 28px 10px; scrollbar-width:none; }
+.genre-rail::-webkit-scrollbar{ display:none; }
+.genre-chip{
+  flex:none; font-family:var(--font-mono); font-size:12px; padding:8px 16px; border-radius:20px;
+  background:var(--charcoal-2); border:1px solid var(--hairline); color:var(--cream-dim); white-space:nowrap;
+}
+.genre-chip.active{ background:var(--gold); color:var(--black); border-color:var(--gold); font-weight:600; }
+.genre-chip:hover:not(.active){ border-color:var(--gold-dim); color:var(--cream); }
+
+/* ============================================================
+   SEARCH / BROWSE RESULTS VIEW
+   ============================================================ */
+.browse-layout{ display:grid; grid-template-columns:1fr 260px; gap:28px; padding:22px 28px 60px; align-items:start; }
+.browse-head{ grid-column:1/-1; display:flex; align-items:baseline; justify-content:space-between; margin-bottom:4px; }
+.browse-title{ font-family:var(--font-display); font-size:26px; font-weight:600; }
+.browse-count{ font-family:var(--font-mono); font-size:12px; color:var(--cream-dim); }
+
+.grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:18px 14px; }
+
+.filter-panel{
+  position:sticky; top:88px; background:var(--charcoal); border:1px solid var(--hairline); border-radius:var(--radius-lg);
+  padding:18px; display:flex; flex-direction:column; gap:18px;
+}
+.filter-panel h4{ font-family:var(--font-mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-dim); margin:0 0 8px; }
+.filter-group select{
+  width:100%; background:var(--charcoal-2); border:1px solid var(--hairline); color:var(--cream);
+  padding:9px 10px; border-radius:8px; font-size:13px; font-family:var(--font-body);
+}
+
+.load-more-sentinel{ height:40px; grid-column:1/-1; }
+
+.empty-state{ grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--cream-dim); }
+.empty-state svg{ width:44px; height:44px; margin-bottom:14px; opacity:.5; }
+.empty-state h3{ font-family:var(--font-display); font-weight:600; color:var(--cream); margin:0 0 6px; }
+
+/* ============================================================
+   DETAIL MODAL & PLAYABLE VIDEO PLAYER
+   ============================================================ */
+.modal-backdrop{
+  position:fixed; inset:0; background:rgba(6,6,8,.82); backdrop-filter:blur(6px);
+  z-index:2000; display:flex; align-items:flex-start; justify-content:center;
+  opacity:0; pointer-events:none; transition:opacity .25s var(--ease); overflow-y:auto; padding:40px 16px;
+}
+.modal-backdrop.open{ opacity:1; pointer-events:auto; }
+.modal{
+  background:var(--charcoal); border-radius:var(--radius-lg); width:100%; max-width:920px; overflow:hidden;
+  transform:translateY(24px) scale(.98); transition:transform .3s var(--ease); border:1px solid var(--hairline);
+}
+.modal-backdrop.open .modal{ transform:translateY(0) scale(1); }
+.modal-hero{ position:relative; height:340px; }
+.modal-hero img{ width:100%; height:100%; object-fit:cover; }
+.modal-hero-scrim{ position:absolute; inset:0; background:linear-gradient(0deg, var(--charcoal) 4%, transparent 60%); }
+.modal-close{
+  position:absolute; top:16px; right:16px; background:rgba(0,0,0,.5); color:#fff; border:none;
+  width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:3;
+}
+.modal-close svg{ width:16px; height:16px; }
+.modal-hero-content{ position:absolute; left:32px; bottom:20px; right:32px; z-index:2; }
+.modal-title{ font-family:var(--font-display); font-size:clamp(24px,3.4vw,36px); font-weight:600; }
+.modal-tagline{ font-style:italic; color:var(--cream-dim); font-family:var(--font-display); font-size:14px; margin-top:4px; }
+
+.modal-body{ padding:26px 32px 32px; }
+.modal-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:22px; }
+
+.modal-tabs{ display:flex; gap:4px; border-bottom:1px solid var(--hairline); margin-bottom:20px; }
+.modal-tab{ background:none; border:none; color:var(--cream-dim); padding:9px 4px; margin-right:20px; font-size:13.5px; font-weight:500; position:relative; }
+.modal-tab.active{ color:var(--gold); }
+.modal-tab.active::after{ content:''; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:var(--gold); }
+.modal-pane{ display:none; }
+.modal-pane.active{ display:block; }
+
+.meta-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:16px 22px; margin-bottom:24px; }
+.meta-item .mi-label{ font-family:var(--font-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-dim); margin-bottom:3px; }
+.meta-item .mi-value{ font-size:13.5px; color:var(--cream); }
+.overview-text{ font-size:14.5px; line-height:1.7; color:var(--cream-dim); margin-bottom:22px; }
+
+.cast-rail{ display:flex; gap:14px; overflow-x:auto; padding-bottom:6px; scrollbar-width:none; }
+.cast-rail::-webkit-scrollbar{ display:none; }
+.cast-card{ flex:none; width:96px; text-align:center; }
+.cast-card img{ width:96px; height:96px; border-radius:50%; object-fit:cover; background:var(--charcoal-3); border:2px solid var(--charcoal-3); }
+.cast-card .cc-name{ font-size:12px; font-weight:600; margin-top:8px; }
+.cast-card .cc-role{ font-family:var(--font-mono); font-size:10.5px; color:var(--cream-dim); }
+
+.provider-rail{ display:flex; gap:12px; flex-wrap:wrap; }
+.provider-chip{ display:flex; align-items:center; gap:8px; background:var(--charcoal-2); border:1px solid var(--hairline); padding:8px 12px; border-radius:10px; }
+.provider-chip span{ font-size:12.5px; }
+
+.trailer-wrap{ position:relative; width:100%; aspect-ratio:16/9; border-radius:12px; overflow:hidden; background:#000; }
+.trailer-wrap iframe{ width:100%; height:100%; border:none; border-radius:12px; }
+
+/* FLOATING BOTTOM NAV (mobile) */
+.bottom-nav{
+  display:none; position:fixed; left:14px; right:14px; bottom:14px; z-index:1000;
+  background:rgba(19,19,24,.9); backdrop-filter:blur(16px); border:1px solid var(--hairline);
+  border-radius:20px; padding:8px 6px; justify-content:space-around; box-shadow:0 10px 30px rgba(0,0,0,.5);
+}
+.bottom-nav button{ background:none; border:none; color:var(--cream-dim); display:flex; flex-direction:column; align-items:center; gap:3px; font-size:9.5px; font-family:var(--font-mono); padding:6px 10px; border-radius:12px; }
+.bottom-nav button.active{ color:var(--gold); }
+.bottom-nav svg{ width:19px; height:19px; }
+
+/* RESPONSIVE */
+@media (max-width:1080px){
+  .browse-layout{ grid-template-columns:1fr; }
+  .filter-panel{ position:static; }
+}
+@media (max-width:880px){
+  :root{ --sidebar-w:0px; }
+  .sidebar{ display:none; }
+  .bottom-nav{ display:flex; }
+  .hero{ margin:12px 14px 0; height:56vh; }
+  .hero-content{ padding:26px 22px; }
+  .topbar{ padding:12px 14px; }
+  .row-head, .filmstrip-track, .genre-rail{ padding-left:14px; padding-right:14px; }
+  .browse-layout{ padding:16px 14px 100px; }
+  .modal-hero-content{ left:20px; right:20px; }
+  .modal-body{ padding:20px; }
+  .meta-grid{ grid-template-columns:repeat(2,1fr); }
+}
+@media (max-width:520px){
+  .card{ width:132px; }
+  .hero-actions .btn span{ display:none; }
+  .hero-actions .btn{ padding:12px 14px; }
+}
+
+.toast{
+  position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); z-index:3000;
+  background:var(--cream); color:var(--black); padding:11px 20px; border-radius:10px; font-size:13.5px; font-weight:600;
+  opacity:0; transition:all .25s var(--ease); pointer-events:none;
+}
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div>
+      <div class="brand">
+        <div class="reel-mark"></div>
+        <div class="brand-name">Ree<span>l</span></div>
+      </div>
+      <div class="brand-sub">LifeHub AI · Cinema</div>
+    </div>
+
+    <nav class="nav-group" id="navBrowse">
+      <div class="nav-label">Discover</div>
+      <button class="nav-item active" data-view="home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+        Home
+      </button>
+      <button class="nav-item" data-browse="drama">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M17 5v14"/></svg>
+        Drama
+      </button>
+      <button class="nav-item" data-browse="action">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Action
+      </button>
+      <button class="nav-item" data-browse="anime">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M8 15c1.5 1.3 6.5 1.3 8 0"/></svg>
+        Anime & Cartoons
+      </button>
+      <button class="nav-item" data-browse="comedy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        Comedy
+      </button>
+    </nav>
+
+    <nav class="nav-group" id="navGenres">
+      <div class="nav-label">Genres</div>
+    </nav>
+
+    <nav class="nav-group" id="navLibrary">
+      <div class="nav-label">Your Library</div>
+      <button class="nav-item" data-view="favorites">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6.5 5.5 5.5 0 0121.5 12c-2.5 4.5-9.5 9-9.5 9z"/></svg>
+        Favorites <span class="nav-count" id="cntFav">0</span>
+      </button>
+      <button class="nav-item" data-view="watchlist">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h14v18l-7-4-7 4z"/></svg>
+        Watch Later <span class="nav-count" id="cntWatch">0</span>
+      </button>
+      <button class="nav-item" data-view="history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        History <span class="nav-count" id="cntHist">0</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <b>REEL</b> Playable Auto Player.<br>100% Free &amp; Instant Play.
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <div class="topbar">
+      <div class="search-wrap">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input id="searchInput" type="text" placeholder="Search movies, TV shows, anime, directors…" autocomplete="off" />
+          <button class="mic-btn" id="micBtn" title="Voice search" aria-label="Voice search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3"/></svg>
+          </button>
+        </div>
+        <div class="suggest-panel hidden" id="suggestPanel"></div>
+      </div>
+      <div class="topbar-actions">
+        <button class="pill-btn" id="btnPerson" title="Search People">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+          People
+        </button>
+      </div>
+    </div>
+
+    <div id="view-home">
+      <section class="hero" id="hero" aria-label="Featured titles">
+        <div class="hero-dots" id="heroDots"></div>
+      </section>
+
+      <div id="genreRailWrap">
+        <div class="genre-rail" id="genreRail"></div>
+      </div>
+
+      <div id="continueWrap"></div>
+      <div id="homeRows"></div>
+    </div>
+
+    <div id="view-browse" class="hidden">
+      <div class="browse-layout">
+        <div class="browse-head">
+          <div>
+            <div class="browse-title" id="browseTitle">Results</div>
+            <div class="browse-count" id="browseCount"></div>
+          </div>
+        </div>
+        <div class="grid" id="browseGrid"></div>
+        <div class="load-more-sentinel" id="loadSentinel"></div>
+
+        <aside class="filter-panel">
+          <div class="filter-group">
+            <h4>Genre Filter</h4>
+            <select id="filterGenre"><option value="">All Genres</option></select>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div id="view-library" class="hidden">
+      <div class="browse-layout" style="grid-template-columns:1fr;">
+        <div class="browse-head">
+          <div>
+            <div class="browse-title" id="libraryTitle">Favorites</div>
+            <div class="browse-count" id="libraryCount"></div>
+          </div>
+        </div>
+        <div class="grid" id="libraryGrid"></div>
+      </div>
+    </div>
+
+  </main>
 </div>
 
-<nav class="hidden md:flex flex-col h-full py-stack-lg bg-surface/70 backdrop-blur-xl h-screen w-64 fixed left-0 top-0 border-r border-white/10 z-50">
-    <div class="px-gutter mb-stack-lg">
-        <h1 class="text-2xl font-bold tracking-tighter text-primary-container">LifeHub AI</h1>
-        <p class="text-xs text-on-surface-variant uppercase mt-1">System Active</p>
-    </div>
-    <div class="flex-1 flex flex-col gap-1 px-2">
-        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="dashboard.html">
-            <span class="material-symbols-outlined">dashboard</span> Dashboard
-        </a>
-        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="ai.html">
-            <span class="material-symbols-outlined">smart_toy</span> AI Assistant
-        </a>
-        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="finance.html">
-            <span class="material-symbols-outlined">payments</span> Finance
-        </a>
-        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 transition-all" href="music.html">
-            <span class="material-symbols-outlined">library_music</span> Music
-        </a>
-        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-primary-container bg-primary-container/10 border-r-2 border-primary-container font-bold transition-all" href="movies.html">
-            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">movie</span> Movies
-        </a>
-    </div>
+<nav class="bottom-nav">
+  <button data-view="home" class="active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+    Home
+  </button>
+  <button id="bnSearch">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    Search
+  </button>
+  <button data-view="watchlist">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h14v18l-7-4-7 4z"/></svg>
+    Watchlist
+  </button>
+  <button data-view="favorites">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6.5 5.5 5.5 0 0121.5 12c-2.5 4.5-9.5 9-9.5 9z"/></svg>
+    Saved
+  </button>
 </nav>
 
-<header class="hidden md:flex justify-between items-center px-margin-desktop bg-surface/70 backdrop-blur-md fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 border-b border-white/5">
-    <form id="search-form" class="relative w-96 flex items-center">
-        <span class="material-symbols-outlined absolute left-3 text-on-surface-variant">search</span>
-        <input id="search-input" class="w-full bg-surface-container-low border border-white/10 rounded-full py-2 pl-10 pr-20 text-sm focus:border-primary-container outline-none text-on-surface" placeholder="Cari Film / Series (misal: Mr Robot, Avengers)..." type="text" required/>
-        <button type="submit" class="absolute right-1.5 bg-primary-container text-black text-xs font-bold px-3 py-1.5 rounded-full hover:scale-105 transition-all cursor-pointer">
-            Cari
-        </button>
-    </form>
-    <div class="flex items-center gap-4">
-        <span class="material-symbols-outlined text-on-surface-variant cursor-pointer">notifications</span>
-        <div class="w-8 h-8 rounded-full bg-primary-container/20 text-primary-container flex items-center justify-center font-bold border border-primary-container">RS</div>
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="modal-hero">
+      <img id="mHeroImg" alt="" />
+      <div class="modal-hero-scrim"></div>
+      <button class="modal-close" id="modalClose" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <div class="modal-hero-content">
+        <div class="modal-title" id="mTitle"></div>
+        <div class="modal-tagline" id="mTagline"></div>
+      </div>
     </div>
-</header>
+    <div class="modal-body">
+      <div class="modal-actions" id="mActions"></div>
 
-<main class="relative z-10 md:ml-64 pt-24 px-margin-desktop pb-32 min-h-screen flex flex-col max-w-container-max mx-auto">
-    
-    <header class="mb-6">
-        <h2 class="text-4xl font-bold text-on-surface tracking-tight">Cinema Stream</h2>
-        <p class="text-on-surface-variant mt-1">Cari film atau serial favorit. Pilih mode Trailer untuk menonton tanpa iklan.</p>
-    </header>
+      <div class="modal-tabs">
+        <button class="modal-tab active" data-pane="overview">Overview</button>
+        <button class="modal-tab" data-pane="trailer">Play Video</button>
+        <button class="modal-tab" data-pane="cast">Cast &amp; Crew</button>
+        <button class="modal-tab" data-pane="providers">Where to Watch</button>
+      </div>
 
-    <section id="player-section" class="mb-8 hidden">
-        <div class="glass-panel p-6 rounded-2xl border border-white/10 relative overflow-hidden premium-border">
-            
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-                <div>
-                    <span id="player-mode-tag" class="text-xs text-primary-container font-bold uppercase tracking-wider block">Now Playing</span>
-                    <h3 id="movie-player-title" class="text-2xl font-bold text-on-surface mt-0.5">Movie Title</h3>
-                    <p id="movie-player-info" class="text-xs text-on-surface-variant">Year • Rating</p>
-                </div>
+      <div class="modal-pane active" id="pane-overview">
+        <div class="meta-grid" id="mMetaGrid"></div>
+        <div class="overview-text" id="mOverview"></div>
+      </div>
 
-                <div class="flex items-center gap-2 flex-wrap">
-                    <button onclick="playTrailerMode()" id="btn-trailer" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition-all flex items-center gap-1">
-                        <span class="material-symbols-outlined text-sm">movie</span> Trailer (No Ads)
-                    </button>
-                    <button onclick="switchServer(1)" id="srv-1" class="srv-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-primary-container text-black transition-all">Server 1</button>
-                    <button onclick="switchServer(2)" id="srv-2" class="srv-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-surface-container-high border border-white/10 text-on-surface-variant hover:text-white transition-all">Server 2</button>
-                    
-                    <button id="btn-close-player" class="p-2 rounded-full hover:bg-white/10 text-on-surface-variant hover:text-white transition-all ml-2 cursor-pointer">
-                        <span class="material-symbols-outlined">close</span>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="w-full h-[320px] sm:h-[450px] lg:h-[520px] rounded-xl overflow-hidden bg-black border border-white/10 relative">
-                <iframe id="cinema-iframe" src="" class="w-full h-full border-0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-            </div>
+      <div class="modal-pane" id="pane-trailer">
+        <div class="trailer-wrap" id="mTrailer"></div>
+      </div>
 
-            <p id="movie-player-summary" class="text-sm text-on-surface-variant mt-4 leading-relaxed"></p>
-        </div>
-    </section>
+      <div class="modal-pane" id="pane-cast">
+        <div class="cast-rail" id="mCast"></div>
+      </div>
 
-    <section>
-        <div class="flex justify-between items-center mb-4">
-            <h3 id="grid-header" class="text-xl font-bold text-on-surface flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary-container">local_movies</span> Popular Movies & Shows
-            </h3>
-            <span id="result-status" class="text-xs text-on-surface-variant">Klik poster untuk tonton</span>
-        </div>
-
-        <div id="movie-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            <p class="col-span-full text-xs text-primary-container text-center py-12 animate-pulse">Menghubungkan ke database bioskop...</p>
-        </div>
-    </section>
-
-</main>
-
-<section class="fixed bottom-margin-desktop left-1/2 -translate-x-1/2 z-50 md:ml-32">
-    <div class="glass-panel rounded-full p-2 flex items-center gap-2 border border-white/10 bg-surface/80 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-        <a href="ai.html" class="flex items-center gap-2 px-6 py-3 rounded-full bg-primary-container text-black font-bold shadow-[0_0_20px_rgba(0,229,255,0.2)]">
-            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">graphic_eq</span> Ask AI
-        </a>
-        <div class="w-[1px] h-8 bg-white/10 mx-2"></div>
-        <a href="dashboard.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
-            <span class="material-symbols-outlined">dashboard</span>
-        </a>
-        <a href="finance.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
-            <span class="material-symbols-outlined">receipt_long</span>
-        </a>
-        <a href="music.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
-            <span class="material-symbols-outlined">music_note</span>
-        </a>
-        <a href="movies.html" class="w-12 h-12 flex items-center justify-center rounded-full text-primary-container bg-primary-container/10 transition-all mr-2">
-            <span class="material-symbols-outlined">movie</span>
-        </a>
+      <div class="modal-pane" id="pane-providers">
+        <div class="provider-rail" id="mProviders"></div>
+      </div>
     </div>
-</section>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-    const movieGrid = document.getElementById('movie-grid');
-    const gridHeader = document.getElementById('grid-header');
-    const playerSection = document.getElementById('player-section');
-    const cinemaIframe = document.getElementById('cinema-iframe');
-    const moviePlayerTitle = document.getElementById('movie-player-title');
-    const moviePlayerInfo = document.getElementById('movie-player-info');
-    const moviePlayerSummary = document.getElementById('movie-player-summary');
-    const playerModeTag = document.getElementById('player-mode-tag');
-    const btnClosePlayer = document.getElementById('btn-close-player');
+/* ==================================================================
+   REEL — movies.html (Auto Playable Netflix-Style Engine)
+   ================================================================== */
 
-    let activeMovie = null;
+const PUBLIC_BASE = "https://api.tvmaze.com";
+const PLACEHOLDER_POSTER = "data:image/svg+xml;utf8," + encodeURIComponent(
+  `<svg xmlns='http://www.w3.org/2000/svg' width='300' height='450'><rect width='300' height='450' fill='#1b1c22'/><text x='150' y='230' fill='#5a5a63' font-size='16' font-family='sans-serif' text-anchor='middle'>No Image</text></svg>`
+);
 
-    async function searchMovies(query) {
-        gridHeader.innerHTML = `<span class="material-symbols-outlined text-primary-container animate-spin">refresh</span> Mencari: "${query}"...`;
-        movieGrid.innerHTML = `<p class="col-span-full text-xs text-primary-container text-center py-12 animate-pulse">Menghubungkan ke database bioskop...</p>`;
+/* Cache memory */
+const _cache = new Map();
+async function publicApi(endpoint){
+  const url = PUBLIC_BASE + endpoint;
+  if (_cache.has(url)) return _cache.get(url);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("API_ERROR_" + res.status);
+  const data = await res.json();
+  _cache.set(url, data);
+  return data;
+}
 
-        try {
-            const res = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`);
-            if (!res.ok) throw new Error("Gagal mengambil data");
+/* ------------------------------------------------------------------
+   LOCAL STORAGE — favorites / watchlist / history / continue
+   ------------------------------------------------------------------ */
+const LS_KEYS = { fav:"reel_favorites", watch:"reel_watchlist", hist:"reel_history", cont:"reel_continue" };
+function lsGet(key){ try{ return JSON.parse(localStorage.getItem(key)) || []; } catch(e){ return []; } }
+function lsSet(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
 
-            const data = await res.json();
-            if (data.length === 0) {
-                gridHeader.innerHTML = `<span class="material-symbols-outlined text-primary-container">local_movies</span> Hasil Cari: "${query}"`;
-                movieGrid.innerHTML = `<p class="col-span-full text-xs text-on-surface-variant text-center py-12">Film / Series "${query}" tidak ditemukan.</p>`;
-                return;
-            }
+function isInList(key, id){ return lsGet(key).some(x => x.id === id); }
+function toggleList(key, item){
+  let list = lsGet(key);
+  const idx = list.findIndex(x => x.id === item.id);
+  if (idx > -1){ list.splice(idx,1); } else { list.unshift({ ...item, ts: Date.now() }); }
+  lsSet(key, list.slice(0, 200));
+  updateSidebarCounts();
+  return idx === -1;
+}
+function pushHistory(item){
+  let list = lsGet(LS_KEYS.hist).filter(x => x.id !== item.id);
+  list.unshift({ ...item, ts: Date.now() });
+  lsSet(LS_KEYS.hist, list.slice(0, 100));
+  updateSidebarCounts();
+}
+function setContinueWatching(item, progressPct){
+  let list = lsGet(LS_KEYS.cont).filter(x => x.id !== item.id);
+  list.unshift({ ...item, progress: progressPct ?? Math.floor(10 + Math.random()*70), ts: Date.now() });
+  lsSet(LS_KEYS.cont, list.slice(0, 30));
+}
+function updateSidebarCounts(){
+  document.getElementById('cntFav').textContent   = lsGet(LS_KEYS.fav).length;
+  document.getElementById('cntWatch').textContent = lsGet(LS_KEYS.watch).length;
+  document.getElementById('cntHist').textContent  = lsGet(LS_KEYS.hist).length;
+}
 
-            gridHeader.innerHTML = `<span class="material-symbols-outlined text-primary-container">local_movies</span> Hasil Cari: "${query}" (${data.length} Judul)`;
-            movieGrid.innerHTML = '';
+/* ------------------------------------------------------------------
+   HELPERS & UTILS
+   ------------------------------------------------------------------ */
+function debounce(fn, ms){ let t; return (...a) => { clearTimeout(t); t = setTimeout(()=>fn(...a), ms); }; }
+function stripHtml(html){ if(!html) return ""; return html.replace(/<[^>]*>?/gm, ''); }
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(showToast._tt);
+  showToast._tt = setTimeout(()=>t.classList.remove('show'), 2200);
+}
 
-            data.forEach((item) => {
-                const show = item.show;
-                const title = show.name;
-                const poster = show.image?.medium || show.image?.original || 'https://via.placeholder.com/300x450/1c1b1d/e5e1e4?text=No+Poster';
-                const rating = show.rating?.average ? `⭐ ${show.rating.average}` : '⭐ 8.0';
-                const year = show.premiered ? show.premiered.substring(0, 4) : 'N/A';
+function normalizeShow(raw){
+  const s = raw.show || raw;
+  return {
+    id: s.id,
+    type: 'tv',
+    title: s.name,
+    poster: s.image?.original || s.image?.medium || PLACEHOLDER_POSTER,
+    backdrop: s.image?.original || s.image?.medium || PLACEHOLDER_POSTER,
+    date: s.premiered || '—',
+    rating: s.rating?.average || 7.5,
+    overview: stripHtml(s.summary) || 'No overview available.',
+    genres: s.genres || [],
+    language: s.language || 'English',
+    status: s.status || 'Running',
+    network: s.network?.name || s.webChannel?.name || 'Streaming'
+  };
+}
 
-                const card = document.createElement('div');
-                card.className = 'glass-panel rounded-2xl overflow-hidden border border-white/10 hover:border-primary-container/50 hover:scale-105 transition-all cursor-pointer group flex flex-col justify-between';
-                
-                card.innerHTML = `
-                    <div class="relative w-full h-64 overflow-hidden bg-surface-container-high">
-                        <img src="${poster}" alt="${title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <span class="w-12 h-12 rounded-full bg-primary-container text-black flex items-center justify-center font-bold shadow-lg">
-                                <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-3">
-                        <h4 class="text-sm font-bold text-on-surface truncate group-hover:text-primary-container transition-colors">${title}</h4>
-                        <div class="flex justify-between items-center mt-1 text-[11px] text-on-surface-variant">
-                            <span class="text-amber-400 font-semibold">${rating}</span>
-                            <span>${year}</span>
-                        </div>
-                    </div>
-                `;
+let GENRES_LIST = ["Action", "Anime", "Comedy", "Crime", "Drama", "Espionage", "Family", "Fantasy", "Horror", "Mystery", "Romance", "Sci-Fi", "Thriller"];
 
-                card.addEventListener('click', () => playMovie(show));
-                movieGrid.appendChild(card);
-            });
+/* ------------------------------------------------------------------
+   CARD RENDERING
+   ------------------------------------------------------------------ */
+function cardHTML(item){
+  const fav = isInList(LS_KEYS.fav, item.id);
+  const watch = isInList(LS_KEYS.watch, item.id);
+  const yearStr = item.date ? item.date.slice(0,4) : '—';
+  const genresStr = (item.genres||[]).slice(0,2).join(" · ") || "Cinema";
 
-        } catch (err) {
-            gridHeader.innerHTML = `<span class="material-symbols-outlined text-primary-container">local_movies</span> Popular Movies`;
-            movieGrid.innerHTML = `<p class="col-span-full text-xs text-red-400 text-center py-12">Gagal memuat film: ${err.message}</p>`;
-        }
-    }
+  return `
+  <div class="card" data-id="${item.id}" tabindex="0">
+    <div class="card-poster">
+      <img loading="lazy" src="${item.poster}" alt="${item.title||''} poster" />
+      <div class="card-rating"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>${item.rating ? Number(item.rating).toFixed(1) : '7.5'}</div>
+      <div class="card-overlay">
+        <div class="co-genres">${genresStr}</div>
+        <div class="co-actions">
+          <button class="act-fav ${fav?'active':''}" title="Favorite" aria-label="Favorite">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6.5 5.5 5.5 0 0121.5 12c-2.5 4.5-9.5 9-9.5 9z"/></svg>
+          </button>
+          <button class="act-watch ${watch?'active':''}" title="Watch Later" aria-label="Watch Later">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3h14v18l-7-4-7 4z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-title">${item.title||'Untitled'}</div>
+    <div class="card-sub">${yearStr} · Series</div>
+  </div>`;
+}
 
-    function playMovie(show) {
-        activeMovie = show;
+function cardSkeletonHTML(){
+  return `<div class="card card-skel"><div class="card-poster skel"></div><div class="card-title skel" style="height:13px;border-radius:4px;margin-top:9px;"></div><div class="card-sub skel" style="height:10px;width:60%;border-radius:4px;margin-top:6px;"></div></div>`;
+}
 
-        moviePlayerTitle.textContent = show.name;
-        moviePlayerInfo.textContent = `${show.genres?.join(', ') || 'Show'} • ${show.premiered ? show.premiered.substring(0, 4) : '2024'} • ⭐ ${show.rating?.average || '8.2'}`;
-        
-        const cleanSummary = show.summary ? show.summary.replace(/<\/?[^>]+(>|$)/g, "") : "Selamat menonton di LifeHub AI Cinema!";
-        moviePlayerSummary.textContent = cleanSummary;
-
-        switchServer(1);
-
-        playerSection.classList.remove('hidden');
-        playerSection.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // SWITCH SERVER LOGIC (SUPPORT MOVIE & TV SERIES)
-    window.switchServer = function(serverNum) {
-        if (!activeMovie) return;
-
-        playerModeTag.textContent = `Streaming Server ${serverNum}`;
-        document.querySelectorAll('.srv-btn').forEach(btn => {
-            btn.className = 'srv-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-surface-container-high border border-white/10 text-on-surface-variant hover:text-white transition-all';
-        });
-
-        const activeBtn = document.getElementById(`srv-${serverNum}`);
-        if (activeBtn) activeBtn.className = 'srv-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-primary-container text-black transition-all';
-
-        const imdbId = activeMovie.externals?.imdb || 'tt0848228';
-        const isTvShow = activeMovie.type === 'Scripted' || activeMovie.type === 'Reality' || activeMovie.genres?.length > 0;
-
-        if (serverNum === 1) {
-            // Autoembed Server (Auto detect movie vs TV series S1 E1)
-            cinemaIframe.src = isTvShow 
-                ? `https://autoembed.co/tv/imdb/${imdbId}-1-1` 
-                : `https://autoembed.co/movie/imdb/${imdbId}`;
-        } else if (serverNum === 2) {
-            // VidSrc Server Backup
-            cinemaIframe.src = isTvShow 
-                ? `https://vidsrc.me/embed/tv?imdb=${imdbId}&season=1&episode=1` 
-                : `https://vidsrc.me/embed/movie?imdb=${imdbId}`;
-        }
-    }
-
-    // MODE TRAILER (BEBAS IKLAN 100%)
-    window.playTrailerMode = function() {
-        if (!activeMovie) return;
-        playerModeTag.textContent = "Official Trailer (Clean Mode)";
-        
-        // Search & Embed Youtube Trailer
-        const searchQuery = encodeURIComponent(`${activeMovie.name} official trailer`);
-        cinemaIframe.src = `https://www.youtube.com/embed?listType=search&list=${searchQuery}`;
-    }
-
-    btnClosePlayer.addEventListener('click', () => {
-        cinemaIframe.src = '';
-        playerSection.classList.add('hidden');
+function wireCardEvents(container){
+  container.querySelectorAll('.card').forEach(card => {
+    const id = Number(card.dataset.id);
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.act-fav') || e.target.closest('.act-watch')) return;
+      openDetail(id);
     });
-
-    document.getElementById('search-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const query = document.getElementById('search-input').value.trim();
-        if (query) searchMovies(query);
+    card.querySelector('.act-fav')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const title = card.querySelector('.card-title').textContent;
+      const poster = card.querySelector('img').getAttribute('src');
+      const added = toggleList(LS_KEYS.fav, { id, title, poster });
+      e.currentTarget.classList.toggle('active', added);
+      showToast(added ? "Added to Favorites" : "Removed from Favorites");
     });
+    card.querySelector('.act-watch')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const title = card.querySelector('.card-title').textContent;
+      const poster = card.querySelector('img').getAttribute('src');
+      const added = toggleList(LS_KEYS.watch, { id, title, poster });
+      e.currentTarget.classList.toggle('active', added);
+      showToast(added ? "Added to Watch Later" : "Removed from Watch Later");
+    });
+  });
+}
 
-    searchMovies('Mr Robot');
+/* ==================================================================
+   HOME VIEW
+   ================================================================== */
+let allShowsData = [];
+
+function renderGenreSidebar(){
+  const nav = document.getElementById('navGenres');
+  nav.innerHTML = `<div class="nav-label">Genres</div>` + GENRES_LIST.slice(0,8).map(g =>
+    `<button class="nav-item" data-genre="${g}">
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+       ${g}
+     </button>`).join("");
+
+  const filterGenre = document.getElementById('filterGenre');
+  filterGenre.innerHTML = `<option value="">All Genres</option>` + GENRES_LIST.map(g => `<option value="${g}">${g}</option>`).join("");
+}
+
+function renderGenreRail(){
+  const rail = document.getElementById('genreRail');
+  rail.innerHTML = GENRES_LIST.map((g,i) => `<button class="genre-chip ${i===0?'active':''}" data-genre="${g}">${g}</button>`).join("");
+}
+
+let heroItems = [], heroIdx = 0, heroTimer = null;
+
+async function loadMainData(){
+  try{
+    const raw = await publicApi("/shows?page=1");
+    allShowsData = raw.map(normalizeShow);
+  }catch(e){
+    allShowsData = [];
+  }
+}
+
+function renderHero(){
+  const hero = document.getElementById('hero');
+  heroItems = allShowsData.slice(0, 6);
+
+  if (!heroItems.length){
+    hero.innerHTML = `<div class="hero-scrim"></div><div class="hero-content"><div class="hero-title">Loading Featured Titles…</div></div>`;
+    return;
+  }
+
+  hero.innerHTML = heroItems.map((it,i) => `
+    <div class="hero-slide ${i===0?'active':''}" data-idx="${i}">
+      <img src="${it.backdrop}" alt="" />
+      <div class="hero-scrim"></div>
+      <div class="hero-content">
+        <div class="hero-badge">#${i+1} Featured Today</div>
+        <div class="hero-title">${it.title}</div>
+        <div class="hero-meta">
+          <span>${it.date ? it.date.slice(0,4) : '—'}</span>
+          <span class="rating">★ ${it.rating}</span>
+          <span>${it.genres.join(', ') || 'Drama'}</span>
+        </div>
+        <div class="hero-overview">${it.overview}</div>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-action="trailer" data-id="${it.id}">
+            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg><span>Play Video</span>
+          </button>
+          <button class="btn btn-ghost" data-action="info" data-id="${it.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></svg><span>More Info</span>
+          </button>
+          <button class="btn btn-icon" data-action="fav" data-id="${it.id}" aria-label="Add to favorites">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6.5 5.5 5.5 0 0121.5 12c-2.5 4.5-9.5 9-9.5 9z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>`).join("") + `<div class="hero-dots" id="heroDots">${heroItems.map((_,i)=>`<button class="hero-dot ${i===0?'active':''}" data-idx="${i}"></button>`).join("")}</div>`;
+
+  hero.querySelectorAll('[data-action="info"], [data-action="trailer"]').forEach(btn => {
+    btn.addEventListener('click', () => openDetail(Number(btn.dataset.id), btn.dataset.action === 'trailer' ? 'trailer' : 'overview'));
+  });
+  hero.querySelector('[data-action="fav"]')?.addEventListener('click', (e) => {
+    const it = heroItems[heroIdx];
+    const added = toggleList(LS_KEYS.fav, { id: it.id, title: it.title, poster: it.poster });
+    e.currentTarget.classList.toggle('active', added);
+    showToast(added ? "Added to Favorites" : "Removed from Favorites");
+  });
+  hero.querySelectorAll('.hero-dot').forEach(d => d.addEventListener('click', () => setHeroSlide(Number(d.dataset.idx))));
+
+  startHeroAutoplay();
+}
+
+function setHeroSlide(i){
+  heroIdx = i;
+  document.querySelectorAll('.hero-slide').forEach((el,idx) => el.classList.toggle('active', idx===i));
+  document.querySelectorAll('.hero-dot').forEach((el,idx) => el.classList.toggle('active', idx===i));
+}
+function startHeroAutoplay(){
+  clearInterval(heroTimer);
+  heroTimer = setInterval(() => setHeroSlide((heroIdx+1) % Math.max(heroItems.length, 1)), 6500);
+}
+
+function renderContinueWatching(){
+  const wrap = document.getElementById('continueWrap');
+  const list = lsGet(LS_KEYS.cont);
+  if (!list.length){ wrap.innerHTML = ""; return; }
+  wrap.innerHTML = `
+    <section class="row-section">
+      <div class="row-head"><div class="row-title">Continue Watching</div></div>
+      <div class="filmstrip"><div class="filmstrip-track" id="continueTrack"></div></div>
+    </section>
+    <hr class="dotted-divider"/>`;
+  const track = document.getElementById('continueTrack');
+  track.innerHTML = list.slice(0,12).map(it => `
+    <div class="card" data-id="${it.id}">
+      <div class="card-poster">
+        <img loading="lazy" src="${it.poster || PLACEHOLDER_POSTER}" alt="${it.title}"/>
+        <div style="position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.15);">
+          <div style="height:100%;width:${it.progress||30}%;background:var(--gold);"></div>
+        </div>
+      </div>
+      <div class="card-title">${it.title}</div>
+      <div class="card-sub">${it.progress||30}% watched</div>
+    </div>`).join("");
+  wireCardEvents(track);
+}
+
+function renderHomeRows(){
+  const wrap = document.getElementById('homeRows');
+  const ROW_TYPES = [
+    { title: "Trending Movies & Shows", filter: () => allShowsData.slice(6, 20) },
+    { title: "Top Rated Cinema", filter: () => [...allShowsData].sort((a,b)=>b.rating-a.rating).slice(0, 15) },
+    { title: "Action & Adventure", filter: () => allShowsData.filter(s => s.genres.includes("Action") || s.genres.includes("Adventure")).slice(0, 15) },
+    { title: "Drama & Romance", filter: () => allShowsData.filter(s => s.genres.includes("Drama") || s.genres.includes("Romance")).slice(0, 15) },
+    { title: "Sci-Fi & Mystery", filter: () => allShowsData.filter(s => s.genres.includes("Science-Fiction") || s.genres.includes("Mystery")).slice(0, 15) }
+  ];
+
+  wrap.innerHTML = ROW_TYPES.map((r, i) => `
+    <section class="row-section">
+      <div class="row-head">
+        <div class="row-title"><span class="sprocket-strip"><span></span><span></span><span></span></span>${r.title}</div>
+        <a class="row-see-all" data-row-idx="${i}">See all →</a>
+      </div>
+      <div class="filmstrip"><div class="filmstrip-track" id="track-${i}"></div></div>
+    </section>
+    <hr class="dotted-divider"/>
+  `).join("");
+
+  ROW_TYPES.forEach((r, i) => {
+    const track = document.getElementById(`track-${i}`);
+    const items = r.filter();
+    track.innerHTML = items.map(cardHTML).join("");
+    wireCardEvents(track);
+  });
+
+  document.querySelectorAll('[data-row-idx]').forEach(a => {
+    a.addEventListener('click', () => {
+      const idx = Number(a.dataset.rowIdx);
+      openBrowse({ title: ROW_TYPES[idx].title, items: ROW_TYPES[idx].filter() });
+    });
+  });
+}
+
+/* ==================================================================
+   SEARCH
+   ================================================================== */
+const searchInput = document.getElementById('searchInput');
+const suggestPanel = document.getElementById('suggestPanel');
+
+const doInstantSearch = debounce(async (q) => {
+  if (!q || q.length < 2){ suggestPanel.classList.add('hidden'); return; }
+  try{
+    const raw = await publicApi(`/search/shows?q=${encodeURIComponent(q)}`);
+    const results = raw.map(normalizeShow).slice(0, 8);
+    if (!results.length){
+      suggestPanel.innerHTML = `<div class="suggest-item"><span class="st-title">No matches found</span></div>`;
+    } else {
+      suggestPanel.innerHTML = results.map(it => `
+        <div class="suggest-item" data-id="${it.id}">
+          <img src="${it.poster}" alt=""/>
+          <div><div class="st-title">${it.title}</div><div class="st-meta">${it.genres.slice(0,2).join(', ')||'Show'} · ${it.date.slice(0,4)}</div></div>
+        </div>
+      `).join("");
+      suggestPanel.querySelectorAll('.suggest-item[data-id]').forEach(el => {
+        el.addEventListener('click', () => { openDetail(Number(el.dataset.id)); suggestPanel.classList.add('hidden'); searchInput.value=""; });
+      });
+    }
+    suggestPanel.classList.remove('hidden');
+  }catch(e){
+    suggestPanel.classList.add('hidden');
+  }
+}, 320);
+
+searchInput.addEventListener('input', (e) => doInstantSearch(e.target.value.trim()));
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && searchInput.value.trim()){
+    suggestPanel.classList.add('hidden');
+    openBrowse({ title:`Search: "${searchInput.value.trim()}"`, query: searchInput.value.trim() });
+  }
+});
+document.addEventListener('click', (e) => { if (!e.target.closest('.search-wrap')) suggestPanel.classList.add('hidden'); });
+
+/* Voice search */
+const micBtn = document.getElementById('micBtn');
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+micBtn.addEventListener('click', () => {
+  if (!SpeechRec){ showToast("Voice search isn't supported in this browser"); return; }
+  const rec = new SpeechRec();
+  rec.lang = 'en-US'; rec.interimResults = false;
+  micBtn.classList.add('listening');
+  rec.start();
+  rec.onresult = (ev) => {
+    const text = ev.results[0][0].transcript;
+    searchInput.value = text;
+    doInstantSearch(text);
+  };
+  rec.onerror = () => showToast("Couldn't hear that — try again");
+  rec.onend = () => micBtn.classList.remove('listening');
+});
+
+document.getElementById('btnPerson').addEventListener('click', () => {
+  const name = prompt("Search for an actor or director:");
+  if (name) {
+    searchInput.value = name;
+    openBrowse({ title:`Person search: "${name}"`, query: name });
+  }
+});
+
+/* ==================================================================
+   BROWSE VIEW
+   ================================================================== */
+const viewHome = document.getElementById('view-home');
+const viewBrowse = document.getElementById('view-browse');
+const viewLibrary = document.getElementById('view-library');
+
+async function openBrowse(config){
+  viewHome.classList.add('hidden'); viewBrowse.classList.remove('hidden'); viewLibrary.classList.add('hidden');
+  document.getElementById('browseTitle').textContent = config.title || "Browse";
+  const grid = document.getElementById('browseGrid');
+  grid.innerHTML = Array(12).fill(cardSkeletonHTML()).join("");
+
+  let items = config.items || [];
+
+  if (config.query) {
+    try {
+      const raw = await publicApi(`/search/shows?q=${encodeURIComponent(config.query)}`);
+      items = raw.map(normalizeShow);
+    } catch(e) { items = []; }
+  } else if (config.genre) {
+    items = allShowsData.filter(s => s.genres.includes(config.genre));
+  } else if (!items.length) {
+    items = allShowsData;
+  }
+
+  const selectedGenre = document.getElementById('filterGenre').value;
+  if (selectedGenre) {
+    items = items.filter(s => s.genres.includes(selectedGenre));
+  }
+
+  document.getElementById('browseCount').textContent = `${items.length} titles found`;
+
+  if (!items.length){
+    grid.innerHTML = `<div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <h3>No titles found</h3><div>Try another search or filter.</div></div>`;
+  } else {
+    grid.innerHTML = items.map(cardHTML).join("");
+    wireCardEvents(grid);
+  }
+}
+
+document.getElementById('filterGenre').addEventListener('change', () => {
+  openBrowse({ title: document.getElementById('browseTitle').textContent });
+});
+
+/* Sidebar Navigation */
+document.getElementById('navBrowse').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-browse]');
+  if (!btn) return;
+  setActiveNav(btn);
+  const b = btn.dataset.browse;
+  if (b === 'action') openBrowse({ title: "Action & Adventure", genre: "Action" });
+  else if (b === 'drama') openBrowse({ title: "Drama Series", genre: "Drama" });
+  else if (b === 'comedy') openBrowse({ title: "Comedy Hits", genre: "Comedy" });
+  else if (b === 'anime') openBrowse({ title: "Anime & Cartoons", genre: "Anime" });
+});
+
+document.getElementById('navGenres').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-genre]'); if (!btn) return;
+  setActiveNav(btn);
+  openBrowse({ title: btn.dataset.genre, genre: btn.dataset.genre });
+});
+
+document.getElementById('genreRail').addEventListener('click', (e) => {
+  const chip = e.target.closest('.genre-chip'); if (!chip) return;
+  document.querySelectorAll('.genre-chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  openBrowse({ title: chip.dataset.genre, genre: chip.dataset.genre });
+});
+
+document.getElementById('bnSearch').addEventListener('click', () => searchInput.focus());
+
+/* ==================================================================
+   LIBRARY VIEWS
+   ================================================================== */
+function openLibrary(kind){
+  viewHome.classList.add('hidden'); viewBrowse.classList.add('hidden'); viewLibrary.classList.remove('hidden');
+  const titles = { favorites:["Favorites", LS_KEYS.fav], watchlist:["Watch Later", LS_KEYS.watch], history:["History", LS_KEYS.hist] };
+  const [label, key] = titles[kind];
+  document.getElementById('libraryTitle').textContent = label;
+  const list = lsGet(key);
+  document.getElementById('libraryCount').textContent = `${list.length} title${list.length===1?'':'s'}`;
+  const grid = document.getElementById('libraryGrid');
+  if (!list.length){
+    grid.innerHTML = `<div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6.5 5.5 5.5 0 0121.5 12c-2.5 4.5-9.5 9-9.5 9z"/></svg>
+      <h3>Nothing here yet</h3><div>Titles you save will show up in ${label}.</div></div>`;
+    return;
+  }
+  grid.innerHTML = list.map(it => cardHTML({ id:it.id, title:it.title, poster:it.poster||PLACEHOLDER_POSTER, date:'', rating:'7.5', genres:[] })).join("");
+  wireCardEvents(grid);
+}
+
+function setActiveNav(activeEl){
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  activeEl?.classList.add('active');
+}
+
+document.getElementById('navLibrary').addEventListener('click', (e) => {
+  const btn = e.target.closest('.nav-item'); if (!btn) return;
+  setActiveNav(btn); openLibrary(btn.dataset.view);
+});
+
+document.querySelectorAll('[data-view="home"]').forEach(btn => btn.addEventListener('click', () => {
+  viewBrowse.classList.add('hidden'); viewLibrary.classList.add('hidden'); viewHome.classList.remove('hidden');
+  setActiveNav(document.querySelector('.nav-item[data-view="home"]'));
+}));
+
+document.querySelectorAll('.bottom-nav [data-view]').forEach(btn => btn.addEventListener('click', (e) => {
+  document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));
+  e.currentTarget.classList.add('active');
+  if (btn.dataset.view === 'home') return;
+  openLibrary(btn.dataset.view);
+}));
+
+/* ==================================================================
+   DETAIL MODAL & PLAYABLE VIDEO ENGINE
+   ================================================================== */
+const modalBackdrop = document.getElementById('modalBackdrop');
+
+async function openDetail(id, focusPane){
+  modalBackdrop.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('mTitle').textContent = "Loading…";
+  document.getElementById('mTagline').textContent = "";
+  document.getElementById('mOverview').textContent = "";
+  document.getElementById('mMetaGrid').innerHTML = "";
+  document.getElementById('mCast').innerHTML = "";
+  document.getElementById('mProviders').innerHTML = "";
+  document.getElementById('mTrailer').innerHTML = "";
+  document.getElementById('mHeroImg').src = "";
+
+  try{
+    const d = normalizeShow(await publicApi(`/shows/${id}`));
+    const embedded = await publicApi(`/shows/${id}?embed[]=cast&embed[]=episodes`);
+    const castData = embedded._embedded?.cast || [];
+
+    renderDetail(d, castData);
+    pushHistory({ id: d.id, title: d.title, poster: d.poster });
+    setContinueWatching({ id: d.id, title: d.title, poster: d.poster });
+  }catch(e){
+    document.getElementById('mTitle').textContent = "Couldn't load details";
+    document.getElementById('mOverview').textContent = "Unable to fetch information from the public API.";
+  }
+
+  if (focusPane) switchPane(focusPane);
+}
+
+function renderDetail(d, cast){
+  document.getElementById('mHeroImg').src = d.backdrop;
+  document.getElementById('mTitle').textContent = d.title;
+  document.getElementById('mTagline').textContent = `${d.language} · ${d.status}`;
+  document.getElementById('mOverview').textContent = d.overview;
+
+  const meta = [
+    ["Premiered", d.date],
+    ["Rating", `★ ${d.rating}`],
+    ["Genres", d.genres.join(", ") || "—"],
+    ["Network", d.network],
+    ["Language", d.language],
+    ["Status", d.status]
+  ];
+
+  document.getElementById('mMetaGrid').innerHTML = meta.map(([label,val]) => `
+    <div class="meta-item"><div class="mi-label">${label}</div><div class="mi-value">${val}</div></div>
+  `).join("");
+
+  /* YouTube Nocookie Auto-Embed Player (100% Playable) */
+  const trailerWrap = document.getElementById('mTrailer');
+  const cleanTitle = encodeURIComponent(d.title + " official trailer");
+  trailerWrap.innerHTML = `
+    <iframe 
+      src="https://www.youtube-nocookie.com/embed?listType=search&list=${cleanTitle}&autoplay=1" 
+      style="width:100%; height:100%; border:none; border-radius:12px;" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+      allowfullscreen>
+    </iframe>
+  `;
+
+  /* Cast List */
+  document.getElementById('mCast').innerHTML = cast.slice(0, 12).map(c => `
+    <div class="cast-card">
+      <img loading="lazy" src="${c.person?.image?.medium || PLACEHOLDER_POSTER}" alt="${c.person?.name}"/>
+      <div class="cc-name">${c.person?.name}</div>
+      <div class="cc-role">${c.character?.name || ''}</div>
+    </div>
+  `).join("") || `<div class="provider-empty">No cast information available.</div>`;
+
+  /* Watch Providers */
+  document.getElementById('mProviders').innerHTML = `
+    <div class="provider-chip"><span>Broadcast / Streamed on <b>${d.network}</b></span></div>
+  `;
+
+  /* Actions */
+  const fav = isInList(LS_KEYS.fav, d.id);
+  const watch = isInList(LS_KEYS.watch, d.id);
+
+  document.getElementById('mActions').innerHTML = `
+    <button class="btn btn-primary" id="mPlayTrailer">
+      <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg><span>Play Video</span>
+    </button>
+    <button class="btn btn-icon ${fav?'active':''}" id="mFav" aria-label="Favorite">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0112 6.5 5.5 5.5 0 0121.5 12c-2.5 4.5-9.5 9-9.5 9z"/></svg>
+    </button>
+    <button class="btn btn-icon ${watch?'active':''}" id="mWatch" aria-label="Watch Later">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14v18l-7-4-7 4z"/></svg>
+    </button>`;
+
+  document.getElementById('mPlayTrailer').addEventListener('click', () => switchPane('trailer'));
+  document.getElementById('mFav').addEventListener('click', (e) => {
+    const added = toggleList(LS_KEYS.fav, { id: d.id, title: d.title, poster: d.poster });
+    e.currentTarget.classList.toggle('active', added);
+    showToast(added ? "Added to Favorites" : "Removed from Favorites");
+  });
+  document.getElementById('mWatch').addEventListener('click', (e) => {
+    const added = toggleList(LS_KEYS.watch, { id: d.id, title: d.title, poster: d.poster });
+    e.currentTarget.classList.toggle('active', added);
+    showToast(added ? "Added to Watch Later" : "Removed from Watch Later");
+  });
+}
+
+function switchPane(name){
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.toggle('active', t.dataset.pane===name));
+  document.querySelectorAll('.modal-pane').forEach(p => p.classList.toggle('active', p.id === `pane-${name}`));
+}
+document.querySelectorAll('.modal-tab').forEach(t => t.addEventListener('click', () => switchPane(t.dataset.pane)));
+document.getElementById('modalClose').addEventListener('click', closeModal);
+modalBackdrop.addEventListener('click', (e) => { if (e.target === modalBackdrop) closeModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+function closeModal(){
+  modalBackdrop.classList.remove('open');
+  document.body.style.overflow = '';
+  document.getElementById('mTrailer').innerHTML = "";
+}
+
+/* ==================================================================
+   INIT
+   ================================================================== */
+async function init(){
+  updateSidebarCounts();
+  renderGenreSidebar();
+  renderGenreRail();
+  await loadMainData();
+  renderHero();
+  renderContinueWatching();
+  renderHomeRows();
+}
+init();
 </script>
-
 </body>
 </html>
