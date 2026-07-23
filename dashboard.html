@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>LifeHub AI — Dashboard</title>
 
 <style>
@@ -10,34 +10,34 @@
      1. DESIGN TOKENS
      ========================================================= */
   :root{
-    --bg:            #09090B;
-    --bg-elevated:   #0E0E11;
-    --card:          #18181B;
-    --card-hover:    #1E1E22;
-    --border:        rgba(255,255,255,0.07);
-    --border-strong: rgba(255,255,255,0.14);
+    --bg:             #09090B;
+    --bg-elevated:    #0E0E11;
+    --card:           #18181B;
+    --card-hover:     #1E1E22;
+    --border:         rgba(255,255,255,0.07);
+    --border-strong:  rgba(255,255,255,0.14);
 
-    --accent:        #00E5FF;
-    --accent-dim:    rgba(0,229,255,0.14);
-    --purple:        #7C3AED;
-    --purple-dim:    rgba(124,58,237,0.16);
-    --green:         #22C55E;
-    --green-dim:     rgba(34,197,94,0.14);
-    --amber:         #F59E0B;
-    --red:           #EF4444;
+    --accent:         #00E5FF;
+    --accent-dim:     rgba(0,229,255,0.14);
+    --purple:         #7C3AED;
+    --purple-dim:     rgba(124,58,237,0.16);
+    --green:          #22C55E;
+    --green-dim:      rgba(34,197,94,0.14);
+    --amber:          #F59E0B;
+    --red:            #EF4444;
 
-    --text:          #FFFFFF;
-    --text-dim:      rgba(255,255,255,0.62);
-    --text-faint:    rgba(255,255,255,0.38);
+    --text:           #FFFFFF;
+    --text-dim:       rgba(255,255,255,0.62);
+    --text-faint:     rgba(255,255,255,0.38);
 
-    --radius-lg:     24px;
-    --radius-md:     18px;
-    --radius-sm:     12px;
+    --radius-lg:      24px;
+    --radius-md:      18px;
+    --radius-sm:      12px;
 
     --font-display:  'Poppins', 'SF Pro Display', -apple-system, sans-serif;
     --font-body:     'Inter', 'SF Pro Display', -apple-system, sans-serif;
 
-    --shadow-soft:   0 8px 30px rgba(0,0,0,0.35);
+    --shadow-soft:    0 8px 30px rgba(0,0,0,0.35);
     --shadow-glow-cyan:   0 0 0 1px rgba(0,229,255,0.15), 0 0 24px rgba(0,229,255,0.15);
     --shadow-glow-purple: 0 0 0 1px rgba(124,58,237,0.18), 0 0 24px rgba(124,58,237,0.18);
 
@@ -45,16 +45,16 @@
   }
 
   [data-theme="light"]{
-    --bg:            #F4F4F6;
-    --bg-elevated:   #FFFFFF;
-    --card:          #FFFFFF;
-    --card-hover:    #F0F0F3;
-    --border:        rgba(0,0,0,0.08);
-    --border-strong: rgba(0,0,0,0.14);
-    --text:          #0B0B0D;
-    --text-dim:      rgba(0,0,0,0.62);
-    --text-faint:    rgba(0,0,0,0.4);
-    --shadow-soft:   0 8px 30px rgba(0,0,0,0.08);
+    --bg:             #F4F4F6;
+    --bg-elevated:    #FFFFFF;
+    --card:           #FFFFFF;
+    --card-hover:     #F0F0F3;
+    --border:         rgba(0,0,0,0.08);
+    --border-strong:  rgba(0,0,0,0.14);
+    --text:           #0B0B0D;
+    --text-dim:       rgba(0,0,0,0.62);
+    --text-faint:     rgba(0,0,0,0.4);
+    --shadow-soft:    0 8px 30px rgba(0,0,0,0.08);
   }
 
   *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
@@ -71,7 +71,7 @@
 
   ::selection{ background:var(--accent); color:#00131a; }
 
-  ::-webkit-scrollbar{ width:8px; height:8px; }
+  ::-webkit-scrollbar{ width:6px; height:6px; }
   ::-webkit-scrollbar-thumb{ background:var(--border-strong); border-radius:10px; }
   ::-webkit-scrollbar-track{ background:transparent; }
 
@@ -81,7 +81,7 @@
   :focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:6px; }
 
   /* =========================================================
-     2. ANIMATED BACKGROUND — Aurora + Particles
+     2. BACKGROUND ANIMATIONS
      ========================================================= */
   .aurora{
     position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;
@@ -111,12 +111,10 @@
   .app{
     position:relative; z-index:1;
     display:grid;
-    grid-template-columns: 76px 1fr 340px;
+    grid-template-columns: 80px 1fr 340px;
     min-height:100vh;
     max-width:1800px; margin:0 auto;
   }
-  @media (max-width:1200px){ .app{ grid-template-columns: 76px 1fr; } .right-sidebar{ display:none; } }
-  @media (max-width:820px){ .app{ grid-template-columns: 1fr; } .rail{ display:none; } }
 
   /* ---- Left icon rail ---- */
   .rail{
@@ -124,12 +122,15 @@
     display:flex; flex-direction:column; align-items:center;
     gap:22px; padding:24px 0;
     border-right:1px solid var(--border);
+    background:var(--bg); z-index:40;
+    transition:transform .3s var(--ease);
   }
   .rail-logo{
-    width:40px; height:40px; border-radius:12px;
+    padding:6px 10px; height:38px; border-radius:12px;
     background:linear-gradient(135deg, var(--accent), var(--purple));
     display:flex; align-items:center; justify-content:center;
-    font-family:var(--font-display); font-weight:700; font-size:15px; color:#00131a;
+    font-family:var(--font-display); font-weight:800; font-size:11px; color:#00131a;
+    letter-spacing:-0.02em;
     box-shadow:var(--shadow-glow-cyan);
     margin-bottom:12px;
   }
@@ -146,40 +147,45 @@
 
   /* ---- Main column ---- */
   .main{ padding:28px 32px 140px; min-width:0; }
-  @media (max-width:600px){ .main{ padding:18px 16px 140px; } }
+
+  .sidebar-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
+    z-index:35; display:none; opacity:0; transition:opacity .3s;
+  }
+  .sidebar-overlay.active{ display:block; opacity:1; }
 
   /* =========================================================
-     4. TOP BAR — greeting + search + avatar
+     4. TOP BAR
      ========================================================= */
   .topbar{
-    display:flex; justify-content:space-between; align-items:flex-start;
-    gap:24px; margin-bottom:28px; flex-wrap:wrap;
+    display:flex; justify-content:space-between; align-items:center;
+    gap:20px; margin-bottom:28px; flex-wrap:wrap;
   }
-  .greeting-block{ animation:fadeSlideUp .6s var(--ease) both; }
+  .greeting-block{ animation:fadeSlideUp .6s var(--ease) both; display:flex; align-items:center; gap:12px; }
   .greeting{
     font-family:var(--font-display); font-weight:600;
-    font-size:clamp(24px,3.4vw,34px); letter-spacing:-0.02em;
-    display:flex; align-items:center; gap:10px;
+    font-size:clamp(22px,3vw,32px); letter-spacing:-0.02em;
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
   }
   .greeting .wave{ display:inline-block; animation:wave 2.4s ease-in-out infinite; transform-origin:70% 70%; }
   @keyframes wave{ 0%,60%,100%{transform:rotate(0);} 10%,30%{transform:rotate(14deg);} 20%{transform:rotate(-8deg);} 40%{transform:rotate(10deg);} }
-  .quote{ margin-top:6px; color:var(--text-dim); font-size:14.5px; }
+  .quote{ margin-top:4px; color:var(--text-dim); font-size:14px; }
   .quote::before{ content:'✦ '; color:var(--accent); }
 
-  .topbar-right{ display:flex; align-items:center; gap:14px; }
+  .topbar-right{ display:flex; align-items:center; gap:12px; }
 
   .clock-chip{
     display:flex; flex-direction:column; align-items:flex-end;
     padding:8px 14px; border-radius:var(--radius-sm);
     background:var(--card); border:1px solid var(--border);
   }
-  .clock-chip .time{ font-variant-numeric:tabular-nums; font-weight:600; font-size:15px; }
-  .clock-chip .date{ font-size:11.5px; color:var(--text-faint); }
+  .clock-chip .time{ font-variant-numeric:tabular-nums; font-weight:600; font-size:14.5px; }
+  .clock-chip .date{ font-size:11px; color:var(--text-faint); }
 
   .icon-btn{
     width:42px; height:42px; border-radius:14px; background:var(--card);
     border:1px solid var(--border); display:flex; align-items:center; justify-content:center;
-    position:relative; transition:.2s var(--ease); color:var(--text-dim);
+    position:relative; transition:.2s var(--ease); color:var(--text-dim); flex-shrink:0;
   }
   .icon-btn svg{ width:19px; height:19px; }
   .icon-btn:hover{ background:var(--card-hover); color:var(--text); transform:translateY(-2px); }
@@ -188,7 +194,7 @@
     background:var(--accent); box-shadow:0 0 8px var(--accent);
   }
 
-  .avatar-wrap{ display:flex; align-items:center; gap:10px; cursor:pointer; padding:4px 10px 4px 4px; border-radius:100px; background:var(--card); border:1px solid var(--border); transition:.2s var(--ease); }
+  .avatar-wrap{ display:flex; align-items:center; gap:10px; cursor:pointer; padding:4px 12px 4px 4px; border-radius:100px; background:var(--card); border:1px solid var(--border); transition:.2s var(--ease); }
   .avatar-wrap:hover{ background:var(--card-hover); }
   .avatar{
     width:36px; height:36px; border-radius:50%; object-fit:cover;
@@ -203,13 +209,15 @@
   .avatar-name{ font-size:13px; font-weight:600; line-height:1.1; }
   .avatar-email{ font-size:11px; color:var(--text-faint); line-height:1.1; }
 
+  .mobile-menu-btn{ display:none; }
+
   /* =========================================================
      5. SEARCH BAR
      ========================================================= */
   .search-shell{ margin-bottom:32px; animation:fadeSlideUp .6s var(--ease) .05s both; }
   .search-bar{
     position:relative; display:flex; align-items:center; gap:12px;
-    padding:16px 20px; border-radius:100px;
+    padding:14px 20px; border-radius:100px;
     background:rgba(255,255,255,0.045);
     backdrop-filter:blur(20px) saturate(160%);
     -webkit-backdrop-filter:blur(20px) saturate(160%);
@@ -220,14 +228,14 @@
   .search-bar:focus-within{ border-color:var(--accent); box-shadow:var(--shadow-glow-cyan); }
   .search-bar svg{ width:19px; height:19px; color:var(--text-faint); flex-shrink:0; }
   .search-bar input{
-    flex:1; background:none; border:none; color:var(--text); font-size:15px; outline:none;
+    flex:1; background:none; border:none; color:var(--text); font-size:14.5px; outline:none;
     font-family:var(--font-body);
   }
   .search-kbd{
     font-size:11px; color:var(--text-faint); border:1px solid var(--border-strong);
     padding:3px 7px; border-radius:6px; flex-shrink:0;
   }
-  .search-placeholder-cycle{ position:absolute; left:52px; pointer-events:none; color:var(--text-faint); font-size:15px; }
+  .search-placeholder-cycle{ position:absolute; left:52px; pointer-events:none; color:var(--text-faint); font-size:14.5px; }
 
   /* =========================================================
      6. SECTION HEADERS
@@ -242,14 +250,13 @@
      7. STAT CARDS
      ========================================================= */
   .stats-grid{
-    display:grid; grid-template-columns:repeat(auto-fill, minmax(190px,1fr));
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr));
     gap:16px;
   }
   .stat-card{
     position:relative; overflow:hidden;
     background:var(--card); border:1px solid var(--border); border-radius:var(--radius-md);
     padding:18px; transition:.35s var(--ease);
-    opacity:0; transform:translateY(16px);
     animation:fadeSlideUp .6s var(--ease) forwards;
   }
   .stat-card:hover{ transform:translateY(-4px); border-color:var(--border-strong); box-shadow:var(--shadow-soft); }
@@ -267,8 +274,8 @@
   .stat-trend{ font-size:11.5px; font-weight:600; padding:3px 8px; border-radius:100px; }
   .stat-trend.up{ color:var(--green); background:var(--green-dim); }
   .stat-trend.down{ color:var(--red); background:rgba(239,68,68,0.14); }
-  .stat-value{ font-family:var(--font-display); font-weight:700; font-size:26px; letter-spacing:-0.01em; }
-  .stat-label{ font-size:12.5px; color:var(--text-faint); margin-top:2px; }
+  .stat-value{ font-family:var(--font-display); font-weight:700; font-size:24px; letter-spacing:-0.01em; }
+  .stat-label{ font-size:12px; color:var(--text-faint); margin-top:2px; }
   .stat-spark{ width:100%; height:28px; margin-top:10px; }
   .stat-spark path{ fill:none; stroke:var(--tint, var(--accent)); stroke-width:2; }
   .stat-spark .fill{ stroke:none; opacity:.15; fill:var(--tint, var(--accent)); }
@@ -277,15 +284,14 @@
      8. QUICK ACCESS CARDS
      ========================================================= */
   .quick-grid{
-    display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr));
-    gap:16px;
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(135px,1fr));
+    gap:14px;
   }
   .quick-card{
     position:relative; overflow:hidden;
     background:var(--card); border:1px solid var(--border); border-radius:var(--radius-md);
-    padding:20px 16px; display:flex; flex-direction:column; gap:34px;
+    padding:18px 14px; display:flex; flex-direction:column; gap:28px;
     cursor:pointer; transition:.35s var(--ease);
-    opacity:0; transform:translateY(16px);
     animation:fadeSlideUp .6s var(--ease) forwards;
   }
   .quick-card:hover{ transform:translateY(-6px) scale(1.015); box-shadow:var(--shadow-soft), var(--shadow-glow-cyan); border-color:transparent; }
@@ -301,13 +307,13 @@
   }
   @keyframes rippleAnim{ to{ transform:scale(1); opacity:0; } }
   .quick-icon{
-    width:42px; height:42px; border-radius:13px; display:flex; align-items:center; justify-content:center;
+    width:40px; height:40px; border-radius:13px; display:flex; align-items:center; justify-content:center;
     background:var(--qc-dim, var(--accent-dim)); color:var(--qc1, var(--accent));
     position:relative; z-index:1;
   }
-  .quick-icon svg{ width:21px; height:21px; }
-  .quick-name{ font-weight:600; font-size:14px; position:relative; z-index:1; }
-  .quick-sub{ font-size:11.5px; color:var(--text-faint); position:relative; z-index:1; margin-top:-28px; }
+  .quick-icon svg{ width:20px; height:20px; }
+  .quick-name{ font-weight:600; font-size:13.5px; position:relative; z-index:1; }
+  .quick-sub{ font-size:11px; color:var(--text-faint); position:relative; z-index:1; margin-top:-22px; }
 
   /* =========================================================
      9. GENERIC PANEL
@@ -315,7 +321,6 @@
   .panel{
     background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg);
     padding:20px; margin-bottom:20px;
-    opacity:0; transform:translateY(16px);
     animation:fadeSlideUp .6s var(--ease) forwards;
   }
   .panel-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
@@ -323,9 +328,7 @@
   .panel-title svg{ width:16px; height:16px; color:var(--accent); }
 
   .content-grid{ display:grid; grid-template-columns:1.4fr 1fr; gap:20px; align-items:start; }
-  @media (max-width:1000px){ .content-grid{ grid-template-columns:1fr; } }
   .grid-two{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-  @media (max-width:700px){ .grid-two{ grid-template-columns:1fr; } }
 
   /* Activity list */
   .activity-row{
@@ -353,15 +356,15 @@
 
   /* Weather */
   .weather-hero{ display:flex; align-items:center; justify-content:space-between; }
-  .weather-temp{ font-family:var(--font-display); font-size:46px; font-weight:700; letter-spacing:-0.02em; }
+  .weather-temp{ font-family:var(--font-display); font-size:42px; font-weight:700; letter-spacing:-0.02em; }
   .weather-city{ color:var(--text-dim); font-size:13px; margin-top:2px; }
-  .weather-icon{ width:64px; height:64px; }
-  .weather-meta{ display:flex; gap:18px; margin-top:14px; font-size:12.5px; color:var(--text-faint); }
+  .weather-icon{ width:58px; height:58px; }
+  .weather-meta{ display:flex; gap:16px; margin-top:14px; font-size:12px; color:var(--text-faint); flex-wrap:wrap; }
   .weather-meta b{ color:var(--text); }
 
   /* Calendar */
   .cal-date{ display:flex; align-items:baseline; gap:8px; }
-  .cal-day{ font-family:var(--font-display); font-size:38px; font-weight:700; }
+  .cal-day{ font-family:var(--font-display); font-size:36px; font-weight:700; }
   .cal-month{ color:var(--text-dim); font-size:13px; }
   .cal-event{ display:flex; align-items:center; gap:10px; padding:8px 0; font-size:13px; border-top:1px solid var(--border); margin-top:10px; }
   .cal-event:first-of-type{ border-top:1px solid var(--border); margin-top:14px; }
@@ -387,7 +390,7 @@
   /* Music */
   .now-playing{ display:flex; align-items:center; gap:12px; }
   .album-art{
-    width:52px; height:52px; border-radius:12px; flex-shrink:0;
+    width:50px; height:50px; border-radius:12px; flex-shrink:0;
     background:linear-gradient(135deg, var(--purple), var(--accent));
     display:flex; align-items:center; justify-content:center;
     animation:spin 8s linear infinite; animation-play-state:paused;
@@ -416,7 +419,7 @@
   }
 
   /* =========================================================
-     10. RIGHT SIDEBAR — profile
+     10. RIGHT SIDEBAR
      ========================================================= */
   .right-sidebar{
     padding:28px 24px; border-left:1px solid var(--border);
@@ -455,36 +458,39 @@
      ========================================================= */
   .dock-wrap{
     position:fixed; bottom:18px; left:50%; transform:translateX(-50%); z-index:50;
+    max-width:calc(100vw - 24px);
   }
   .dock{
-    display:flex; align-items:flex-end; gap:8px; padding:10px 14px; border-radius:24px;
-    background:rgba(24,24,27,0.65);
+    display:flex; align-items:flex-end; gap:8px; padding:8px 14px; border-radius:24px;
+    background:rgba(24,24,27,0.75);
     backdrop-filter:blur(24px) saturate(180%); -webkit-backdrop-filter:blur(24px) saturate(180%);
     border:1px solid var(--border-strong);
     box-shadow:0 12px 40px rgba(0,0,0,0.5);
+    overflow-x:auto; max-width:100%; -webkit-overflow-scrolling:touch;
   }
-  [data-theme="light"] .dock{ background:rgba(255,255,255,0.75); }
+  .dock::-webkit-scrollbar{ display:none; }
+  [data-theme="light"] .dock{ background:rgba(255,255,255,0.85); }
   .dock-item{
-    width:46px; height:46px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+    width:44px; height:44px; border-radius:14px; display:flex; align-items:center; justify-content:center;
     color:var(--text-dim); transition:transform .22s var(--ease), background .22s, color .22s;
-    position:relative;
+    position:relative; flex-shrink:0;
   }
-  .dock-item svg{ width:21px; height:21px; }
-  .dock-item:hover{ transform:translateY(-10px) scale(1.12); background:var(--accent-dim); color:var(--accent); }
+  .dock-item svg{ width:20px; height:20px; }
+  .dock-item:hover{ transform:translateY(-8px) scale(1.1); background:var(--accent-dim); color:var(--accent); }
   .dock-item.active{ color:var(--accent); }
   .dock-item.active::after{
-    content:''; position:absolute; bottom:-8px; left:50%; transform:translateX(-50%);
+    content:''; position:absolute; bottom:-6px; left:50%; transform:translateX(-50%);
     width:4px; height:4px; border-radius:50%; background:var(--accent); box-shadow:0 0 6px var(--accent);
   }
   .dock-tooltip{
-    position:absolute; bottom:58px; left:50%; transform:translateX(-50%);
+    position:absolute; bottom:56px; left:50%; transform:translateX(-50%);
     background:#000; color:#fff; font-size:11px; padding:4px 9px; border-radius:8px;
     opacity:0; pointer-events:none; transition:.2s; white-space:nowrap;
   }
   .dock-item:hover .dock-tooltip{ opacity:1; }
 
   /* =========================================================
-     12. TOASTS + NOTIFICATIONS
+     12. TOASTS + FAB
      ========================================================= */
   .toast-stack{ position:fixed; top:20px; right:20px; z-index:200; display:flex; flex-direction:column; gap:10px; }
   .toast{
@@ -498,8 +504,8 @@
   .toast-dot{ width:8px; height:8px; border-radius:50%; background:var(--accent); flex-shrink:0; }
 
   .fab{
-    position:fixed; bottom:96px; right:24px; z-index:40;
-    width:52px; height:52px; border-radius:50%;
+    position:fixed; bottom:86px; right:24px; z-index:40;
+    width:50px; height:50px; border-radius:50%;
     background:linear-gradient(135deg, var(--accent), var(--purple));
     display:flex; align-items:center; justify-content:center; color:#00131a;
     box-shadow:var(--shadow-glow-cyan); transition:.25s var(--ease);
@@ -515,37 +521,62 @@
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
     transition:opacity .6s var(--ease), visibility .6s;
   }
-  #loader.hide{ opacity:0; visibility:hidden; }
+  #loader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
   .loader-logo{
-    width:64px; height:64px; border-radius:20px;
+    padding:0 24px; height:56px; border-radius:18px;
     background:linear-gradient(135deg, var(--accent), var(--purple));
     display:flex; align-items:center; justify-content:center;
-    font-family:var(--font-display); font-weight:700; font-size:24px; color:#00131a;
+    font-family:var(--font-display); font-weight:800; font-size:22px; color:#00131a;
+    letter-spacing:-0.03em;
     animation:loaderPulse 1.4s ease-in-out infinite;
   }
-  @keyframes loaderPulse{ 0%,100%{ transform:scale(1); box-shadow:0 0 0 rgba(0,229,255,0);} 50%{ transform:scale(1.06); box-shadow:0 0 40px rgba(0,229,255,0.5);} }
-  .loader-text{ font-size:13px; color:var(--text-faint); letter-spacing:.05em; }
+  @keyframes loaderPulse{ 0%,100%{ transform:scale(1); box-shadow:0 0 0 rgba(0,229,255,0);} 50%{ transform:scale(1.05); box-shadow:0 0 40px rgba(0,229,255,0.5);} }
+  .loader-text{ font-size:12.5px; color:var(--text-faint); letter-spacing:.05em; }
   .loader-bar{ width:160px; height:3px; border-radius:10px; background:var(--card); overflow:hidden; }
   .loader-bar-fill{ height:100%; width:0%; background:linear-gradient(90deg, var(--accent), var(--purple)); transition:width .3s var(--ease); }
 
   /* =========================================================
-     14. SKELETON LOADING
-     ========================================================= */
-  .skeleton{ position:relative; overflow:hidden; background:var(--card-hover); }
-  .skeleton::after{
-    content:''; position:absolute; inset:0;
-    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-    animation:shimmer 1.5s infinite;
-  }
-  @keyframes shimmer{ from{ transform:translateX(-100%); } to{ transform:translateX(100%); } }
-
-  /* =========================================================
-     15. SHARED ANIMATIONS
+     14. SHARED ANIMATIONS & RESPONSIVE
      ========================================================= */
   @keyframes fadeSlideUp{ from{ opacity:0; transform:translateY(16px);} to{ opacity:1; transform:translateY(0);} }
 
-  @media (prefers-reduced-motion: reduce){
-    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  @media (max-width:1200px){
+    .app{ grid-template-columns: 80px 1fr; }
+    .right-sidebar{ display:none; }
+  }
+
+  @media (max-width:820px){
+    .app{ grid-template-columns: 1fr; }
+    .rail{
+      position:fixed; left:0; top:0; bottom:0; width:240px; height:100vh;
+      transform:translateX(-100%); box-shadow:10px 0 30px rgba(0,0,0,0.6);
+    }
+    .rail.open{ transform:translateX(0); }
+    .mobile-menu-btn{ display:flex; margin-right:8px; }
+    .main{ padding:20px 16px 160px; }
+    .topbar{ gap:12px; margin-bottom:20px; }
+    .greeting{ font-size:20px; }
+    .quote{ font-size:12.5px; }
+    .clock-chip{ display:none; }
+    
+    .stats-grid{ grid-template-columns:repeat(2, 1fr); gap:12px; }
+    .quick-grid{ grid-template-columns:repeat(2, 1fr); gap:10px; }
+    .grid-two{ grid-template-columns:1fr; gap:14px; }
+    .panel{ padding:16px; margin-bottom:14px; }
+    .search-shell{ margin-bottom:22px; }
+    .search-bar{ padding:12px 16px; }
+    .search-kbd{ display:none; }
+    
+    .focus-ring-wrap{ flex-direction:column; align-items:center; text-align:center; }
+    .toast-stack{ top:auto; bottom:150px; right:16px; left:16px; }
+    .toast{ min-width:auto; width:100%; text-align:center; }
+    .fab{ bottom:150px; right:16px; width:44px; height:44px; }
+  }
+
+  @media (max-width:480px){
+    .stats-grid{ grid-template-columns:1fr; }
+    .quick-grid{ grid-template-columns:repeat(2, 1fr); }
+    .avatar-email{ display:none; }
   }
 
   .empty-state{ text-align:center; padding:24px 10px; color:var(--text-faint); font-size:13px; }
@@ -554,20 +585,21 @@
 <body>
 
 <div id="loader">
-  <div class="loader-logo">LH</div>
+  <div class="loader-logo">LifeHub</div>
   <div class="loader-bar"><div class="loader-bar-fill" id="loaderFill"></div></div>
   <div class="loader-text">PREPARING YOUR WORKSPACE…</div>
 </div>
 
 <div class="aurora"></div>
 <canvas id="particles"></canvas>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <div class="toast-stack" id="toastStack"></div>
 
 <div class="app">
 
-  <nav class="rail" aria-label="Primary">
-    <div class="rail-logo">LH</div>
+  <nav class="rail" id="railNav" aria-label="Primary">
+    <div class="rail-logo">LifeHub</div>
     <a href="dashboard.html" class="rail-btn active" title="Dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg></a>
     <a href="ai.html" class="rail-btn" title="AI Assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/><circle cx="12" cy="12" r="3"/></svg></a>
     <a href="music.html" class="rail-btn" title="Music"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></a>
@@ -583,8 +615,13 @@
 
     <header class="topbar">
       <div class="greeting-block">
-        <h1 class="greeting"><span class="wave">👋</span><span id="greetingText">Good Morning</span>,&nbsp;<span id="greetingName">Reski</span></h1>
-        <p class="quote" id="quoteText">System synchronized.</p>
+        <button class="icon-btn mobile-menu-btn" id="mobileMenuBtn" title="Toggle menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div>
+          <h1 class="greeting"><span class="wave">👋</span><span id="greetingText">Good Morning</span>,&nbsp;<span id="greetingName">User</span></h1>
+          <p class="quote" id="quoteText">System synchronized.</p>
+        </div>
       </div>
       <div class="topbar-right">
         <div class="clock-chip">
@@ -597,9 +634,9 @@
         </button>
         <div class="avatar-wrap" id="avatarWrap">
           <img class="avatar" id="avatarImg" src="" alt="" style="display:none;">
-          <div class="avatar-fallback" id="avatarFallback">R</div>
+          <div class="avatar-fallback" id="avatarFallback">U</div>
           <div>
-            <div class="avatar-name" id="avatarName">Reski</div>
+            <div class="avatar-name" id="avatarName">User</div>
             <div class="avatar-email" id="avatarEmail">Active Session</div>
           </div>
         </div>
@@ -753,8 +790,8 @@
   <aside class="right-sidebar">
     <div class="profile-card">
       <img class="profile-avatar" id="profileAvatarImg" src="" alt="" style="display:none;">
-      <div class="profile-avatar-fallback" id="profileAvatarFallback">R</div>
-      <div class="profile-name" id="profileName">Reski</div>
+      <div class="profile-avatar-fallback" id="profileAvatarFallback">U</div>
+      <div class="profile-name" id="profileName">User</div>
       <div class="profile-email" id="profileEmail">Active Session</div>
       <div class="profile-badge" id="profileBadge">✦ Premium Plan</div>
 
@@ -792,114 +829,86 @@
 </div>
 
 <script>
-(function(){
+document.addEventListener('DOMContentLoaded', function(){
   "use strict";
 
-  /* ============================================================
-     A. GOOGLE LOGIN INTEGRATION (LOCALSTORAGE AUTO-BRIDGE)
-     ============================================================ */
+  /* A. USER PROFILE DATA */
   const storedName = localStorage.getItem('lifehub_user_name');
-
   const GOOGLE_USER = {
-    isLoggedIn: storedName ? true : false,
-    name: storedName || "Reski",
+    isLoggedIn: !!storedName,
+    name: storedName || "User",
     email: storedName ? "Google Connected" : "Not signed in",
     photo: ""
   };
 
   function initUserProfile(){
-    const loggedIn = GOOGLE_USER.isLoggedIn && GOOGLE_USER.name;
-    const name  = loggedIn ? GOOGLE_USER.name  : "Reski";
-    const email = loggedIn ? GOOGLE_USER.email : "Not signed in";
-    const photo = loggedIn ? GOOGLE_USER.photo : "";
-    const initial = (name || "R").trim().charAt(0).toUpperCase();
+    const name = GOOGLE_USER.name;
+    const email = GOOGLE_USER.email;
+    const initial = name.charAt(0).toUpperCase();
 
-    // Topbar avatar
-    document.getElementById('greetingName').textContent = name.split(' ')[0];
-    document.getElementById('avatarName').textContent = name;
-    document.getElementById('avatarEmail').textContent = email;
+    const gName = document.getElementById('greetingName');
+    const aName = document.getElementById('avatarName');
+    const aEmail = document.getElementById('avatarEmail');
+    const pName = document.getElementById('profileName');
+    const pEmail = document.getElementById('profileEmail');
+    const pBadge = document.getElementById('profileBadge');
 
-    // Right sidebar profile
-    document.getElementById('profileName').textContent = name;
-    document.getElementById('profileEmail').textContent = loggedIn ? email : "Sign in to sync your data";
-    document.getElementById('profileBadge').textContent = loggedIn ? "✦ Premium Plan" : "✦ Free Plan";
+    if(gName) gName.textContent = name.split(' ')[0];
+    if(aName) aName.textContent = name;
+    if(aEmail) aEmail.textContent = email;
+    if(pName) pName.textContent = name;
+    if(pEmail) pEmail.textContent = GOOGLE_USER.isLoggedIn ? email : "Sign in to sync your data";
+    if(pBadge) pBadge.textContent = GOOGLE_USER.isLoggedIn ? "✦ Premium Plan" : "✦ Free Plan";
 
-    const imgs = [
-      { img: document.getElementById('avatarImg'), fallback: document.getElementById('avatarFallback') },
-      { img: document.getElementById('profileAvatarImg'), fallback: document.getElementById('profileAvatarFallback') }
-    ];
-    imgs.forEach(({img, fallback}) => {
-      if (photo){
-        img.src = photo;
-        img.style.display = 'block';
-        fallback.style.display = 'none';
-      } else {
-        img.style.display = 'none';
-        fallback.style.display = 'flex';
-        fallback.textContent = initial;
-      }
-    });
+    const fallbacks = [document.getElementById('avatarFallback'), document.getElementById('profileAvatarFallback')];
+    fallbacks.forEach(f => { if(f) f.textContent = initial; });
   }
 
-  /* ============================================================
-     B. GREETING SYSTEM (DYNAMIC TIME-BASED)
-     ============================================================ */
+  /* B. GREETING & CLOCK */
   function getGreeting(hour){
-    if (hour >= 5  && hour < 11) return "Good Morning";
+    if (hour >= 5 && hour < 11) return "Good Morning";
     if (hour >= 11 && hour < 15) return "Good Afternoon";
     if (hour >= 15 && hour < 18) return "Good Evening";
     return "Good Night";
   }
 
   function updateGreeting(){
-    const now = new Date();
-    document.getElementById('greetingText').textContent = getGreeting(now.getHours());
+    const el = document.getElementById('greetingText');
+    if(el) el.textContent = getGreeting(new Date().getHours());
   }
 
-  /* ============================================================
-     C. LIVE CLOCK / DATE
-     ============================================================ */
   function updateClock(){
     const now = new Date();
-    document.getElementById('liveClock').textContent = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-    document.getElementById('liveDate').textContent = now.toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'});
+    const lc = document.getElementById('liveClock');
+    const ld = document.getElementById('liveDate');
+    if(lc) lc.textContent = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+    if(ld) ld.textContent = now.toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'});
   }
 
-  /* ============================================================
-     D. QUOTE OF THE MOMENT
-     ============================================================ */
-  const QUOTES = [
-    "System synchronized.",
-    "Everything is ready.",
-    "Stay productive today.",
-    "AI is ready to help you.",
-    "Small steps, big momentum.",
-    "Your workspace is optimized.",
-    "Focus is your superpower today.",
-    "All systems green — let's build."
-  ];
+  /* C. QUOTES & TOASTS */
+  const QUOTES = ["System synchronized.", "Everything is ready.", "Stay productive today.", "AI is ready to help you.", "Workspace optimized."];
   function setRandomQuote(){
-    document.getElementById('quoteText').textContent = QUOTES[Math.floor(Math.random()*QUOTES.length)];
+    const el = document.getElementById('quoteText');
+    if(el) el.textContent = QUOTES[Math.floor(Math.random()*QUOTES.length)];
   }
 
-  /* ============================================================
-     E. TOASTS + NOTIFICATIONS
-     ============================================================ */
   function showToast(message){
     const stack = document.getElementById('toastStack');
+    if(!stack) return;
     const el = document.createElement('div');
     el.className = 'toast';
     el.innerHTML = `<span class="toast-dot"></span><span>${message}</span>`;
     stack.appendChild(el);
     setTimeout(()=>{ el.classList.add('out'); setTimeout(()=> el.remove(), 300); }, 3800);
   }
-  document.getElementById('notifBtn').addEventListener('click', ()=> showToast('You are all caught up 🎉'));
 
-  /* ============================================================
-     F. PARTICLES BACKGROUND
-     ============================================================ */
+  const notifBtn = document.getElementById('notifBtn');
+  if(notifBtn) notifBtn.addEventListener('click', ()=> showToast('You are all caught up 🎉'));
+
+  /* D. PARTICLES */
   function initParticles(){
     const canvas = document.getElementById('particles');
+    if(!canvas) return;
     const ctx = canvas.getContext('2d');
     let w, h, particles;
 
@@ -910,11 +919,8 @@
     function makeParticles(){
       const count = Math.min(60, Math.floor(w/28));
       particles = Array.from({length:count}, () => ({
-        x: Math.random()*w, y: Math.random()*h,
-        r: Math.random()*1.6+0.4,
-        vx: (Math.random()-0.5)*0.15,
-        vy: (Math.random()-0.5)*0.15,
-        o: Math.random()*0.5+0.1
+        x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.6+0.4,
+        vx: (Math.random()-0.5)*0.15, vy: (Math.random()-0.5)*0.15, o: Math.random()*0.5+0.1
       }));
     }
     function tick(){
@@ -932,12 +938,10 @@
     }
     resize(); makeParticles();
     window.addEventListener('resize', ()=>{ resize(); makeParticles(); });
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) requestAnimationFrame(tick);
+    requestAnimationFrame(tick);
   }
 
-  /* ============================================================
-     G. STAT CARDS
-     ============================================================ */
+  /* E. STATS & QUICK ACCESS */
   const ICONS = {
     chat: '<path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-4-1L3 20l1.1-3.3A8.5 8.5 0 1 1 21 11.5z"/>',
     token: '<circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/>',
@@ -952,386 +956,214 @@
   };
 
   const STAT_DATA = [
-    { label:'AI Chats',        value:1284, suffix:'', icon:'chat',     tint:'var(--accent)', glow:'var(--accent-dim)', trend:'+12%', up:true },
-    { label:'Tokens Used',     value:842000, suffix:'', compact:true, icon:'token', tint:'var(--purple)', glow:'var(--purple-dim)', trend:'+8%', up:true },
-    { label:"Today's Requests", value:96,     suffix:'', icon:'bolt',  tint:'var(--green)', glow:'var(--green-dim)', trend:'+4%', up:true },
-    { label:'Files Processed', value:312,    suffix:'', icon:'file',   tint:'var(--accent)', glow:'var(--accent-dim)', trend:'+2%', up:true },
-    { label:'Productivity Score', value:87,  suffix:'%', icon:'trend', tint:'var(--green)', glow:'var(--green-dim)', trend:'+5%', up:true },
-    { label:'Music Played',    value:54,     suffix:' tracks', icon:'music', tint:'var(--purple)', glow:'var(--purple-dim)', trend:'+9%', up:true },
-    { label:'Movies Watched',  value:8,      suffix:'', icon:'movie',  tint:'var(--amber)', glow:'rgba(245,158,11,0.14)', trend:'-1', up:false },
-    { label:'Focus Time',      value:4.2,    suffix:'h', icon:'focus', tint:'var(--accent)', glow:'var(--accent-dim)', trend:'+18%', up:true },
-    { label:'Downloads',       value:29,     suffix:'', icon:'download', tint:'var(--purple)', glow:'var(--purple-dim)', trend:'+3%', up:true },
-    { label:'Storage Used',    value:2.4,    suffix:' GB', icon:'storage', tint:'var(--green)', glow:'var(--green-dim)', trend:'16%', up:true }
+    { label:'AI Chats', value:1284, suffix:'', icon:'chat', tint:'var(--accent)', glow:'var(--accent-dim)', trend:'+12%', up:true },
+    { label:'Tokens Used', value:842000, suffix:'', compact:true, icon:'token', tint:'var(--purple)', glow:'var(--purple-dim)', trend:'+8%', up:true },
+    { label:"Today's Requests", value:96, suffix:'', icon:'bolt', tint:'var(--green)', glow:'var(--green-dim)', trend:'+4%', up:true },
+    { label:'Files Processed', value:312, suffix:'', icon:'file', tint:'var(--accent)', glow:'var(--accent-dim)', trend:'+2%', up:true },
+    { label:'Productivity Score', value:87, suffix:'%', icon:'trend', tint:'var(--green)', glow:'var(--green-dim)', trend:'+5%', up:true },
+    { label:'Music Played', value:54, suffix:' tracks', icon:'music', tint:'var(--purple)', glow:'var(--purple-dim)', trend:'+9%', up:true },
+    { label:'Movies Watched', value:8, suffix:'', icon:'movie', tint:'var(--amber)', glow:'rgba(245,158,11,0.14)', trend:'-1', up:false },
+    { label:'Focus Time', value:4.2, suffix:'h', icon:'focus', tint:'var(--accent)', glow:'var(--accent-dim)', trend:'+18%', up:true },
+    { label:'Downloads', value:29, suffix:'', icon:'download', tint:'var(--purple)', glow:'var(--purple-dim)', trend:'+3%', up:true },
+    { label:'Storage Used', value:2.4, suffix:' GB', icon:'storage', tint:'var(--green)', glow:'var(--green-dim)', trend:'16%', up:true }
   ];
-
-  function sparkPath(){
-    const pts = Array.from({length:8}, ()=> Math.random()*20+4);
-    const step = 100/(pts.length-1);
-    let d = `M0,${28-pts[0]}`;
-    pts.forEach((p,i)=>{ if(i>0) d += ` L${i*step},${28-p}`; });
-    const fillD = d + ` L100,28 L0,28 Z`;
-    return { line:d, fill:fillD };
-  }
 
   function renderStats(){
     const grid = document.getElementById('statsGrid');
-    grid.innerHTML = STAT_DATA.map((s,i)=>{
-      const spark = sparkPath();
-      return `
-      <div class="stat-card" style="--tint:${s.tint}; --glow:${s.glow}; animation-delay:${i*0.05}s">
+    if(!grid) return;
+    grid.innerHTML = STAT_DATA.map((s,i)=>`
+      <div class="stat-card" style="--tint:${s.tint}; --glow:${s.glow}; animation-delay:${i*0.04}s">
         <div class="stat-top">
           <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">${ICONS[s.icon]}</svg></div>
           <span class="stat-trend ${s.up?'up':'down'}">${s.trend}</span>
         </div>
-        <div class="stat-value" data-target="${s.value}" data-suffix="${s.suffix}" data-compact="${!!s.compact}">0</div>
+        <div class="stat-value">${s.compact ? (s.value/1000).toFixed(0)+'K' : s.value}${s.suffix}</div>
         <div class="stat-label">${s.label}</div>
-        <svg class="stat-spark" viewBox="0 0 100 28" preserveAspectRatio="none">
-          <path class="fill" d="${spark.fill}"></path>
-          <path d="${spark.line}"></path>
-        </svg>
-      </div>`;
-    }).join('');
-    animateCounters();
+      </div>
+    `).join('');
   }
 
-  function formatCompact(n){
-    if (n>=1000000) return (n/1000000).toFixed(1)+'M';
-    if (n>=1000) return (n/1000).toFixed(1)+'K';
-    return n;
-  }
-
-  function animateCounters(){
-    document.querySelectorAll('.stat-value').forEach(el=>{
-      const target = parseFloat(el.dataset.target);
-      const suffix = el.dataset.suffix || '';
-      const compact = el.dataset.compact === 'true';
-      const duration = 1100;
-      const start = performance.now();
-      function frame(now){
-        const p = Math.min((now-start)/duration, 1);
-        const eased = 1 - Math.pow(1-p, 3);
-        const current = target*eased;
-        const display = target % 1 !== 0 ? current.toFixed(1) : Math.round(current);
-        el.textContent = (compact ? formatCompact(display) : display) + suffix;
-        if (p<1) requestAnimationFrame(frame);
-      }
-      requestAnimationFrame(frame);
-    });
-  }
-
-  /* ============================================================
-     H. QUICK ACCESS CARDS (DIRECT PAGE LINKS)
-     ============================================================ */
   const QUICK_ITEMS = [
-    { name:'AI Assistant', sub:'Chat now',        icon:'chat',     c1:'#00E5FF', url:'ai.html' },
-    { name:'Music',        sub:'Your mix',        icon:'music',    c1:'#7C3AED', url:'music.html' },
-    { name:'Movies',       sub:'Watch',           icon:'movie',    c1:'#F59E0B', url:'movies.html' },
-    { name:'Finance',      sub:'Track',           icon:'trend',    c1:'#22C55E', url:'#' },
-    { name:'Downloader',   sub:'Save media',      icon:'download', c1:'#00E5FF', url:'downloader.html' },
-    { name:'Notes',        sub:'Jot ideas',       icon:'file',     c1:'#7C3AED', url:'notes.html' },
-    { name:'Tasks',        sub:'Get things done', icon:'bolt',     c1:'#22C55E', url:'#' },
-    { name:'Calendar',     sub:'Plan ahead',      icon:'storage',  c1:'#00E5FF', url:'focus.html' },
-    { name:'QR Tools',     sub:'Generate & scan', icon:'focus',    c1:'#F59E0B', url:'#' },
-    { name:'Focus Space',  sub:'Deep work',       icon:'focus',    c1:'#7C3AED', url:'focus.html' },
-    { name:'Weather',      sub:'Stay ahead',      icon:'trend',    c1:'#00E5FF', url:'#' },
-    { name:'Gallery',      sub:'Your media',      icon:'file',     c1:'#22C55E', url:'#' }
+    { name:'AI Assistant', sub:'Chat now', icon:'chat', c1:'#00E5FF', url:'ai.html' },
+    { name:'Music', sub:'Your mix', icon:'music', c1:'#7C3AED', url:'music.html' },
+    { name:'Movies', sub:'Watch', icon:'movie', c1:'#F59E0B', url:'movies.html' },
+    { name:'Finance', sub:'Track', icon:'trend', c1:'#22C55E', url:'#' },
+    { name:'Downloader', sub:'Save media', icon:'download', c1:'#00E5FF', url:'downloader.html' },
+    { name:'Notes', sub:'Jot ideas', icon:'file', c1:'#7C3AED', url:'notes.html' },
+    { name:'Tasks', sub:'Get things done', icon:'bolt', c1:'#22C55E', url:'#' },
+    { name:'Calendar', sub:'Plan ahead', icon:'storage', c1:'#00E5FF', url:'focus.html' },
+    { name:'QR Tools', sub:'Generate & scan', icon:'focus', c1:'#F59E0B', url:'#' },
+    { name:'Focus Space', sub:'Deep work', icon:'focus', c1:'#7C3AED', url:'focus.html' },
+    { name:'Weather', sub:'Stay ahead', icon:'trend', c1:'#00E5FF', url:'#' },
+    { name:'Gallery', sub:'Your media', icon:'file', c1:'#22C55E', url:'#' }
   ];
 
   function renderQuick(){
     const grid = document.getElementById('quickGrid');
+    if(!grid) return;
     grid.innerHTML = QUICK_ITEMS.map((q,i)=>`
-      <a href="${q.url || '#'}" class="quick-card" style="--qc1:${q.c1}; --qc-dim:${q.c1}22; animation-delay:${i*0.04}s" aria-label="Open ${q.name}">
+      <a href="${q.url || '#'}" class="quick-card" style="--qc1:${q.c1}; --qc-dim:${q.c1}22; animation-delay:${i*0.03}s">
         <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">${ICONS[q.icon]}</svg></div>
         <div><div class="quick-name">${q.name}</div><div class="quick-sub">${q.sub}</div></div>
       </a>
     `).join('');
-
-    grid.querySelectorAll('.quick-card').forEach((card, idx)=>{
-      card.addEventListener('click', (e)=>{
-        const q = QUICK_ITEMS[idx];
-        const rect = card.getBoundingClientRect();
-        const ripple = document.createElement('span');
-        ripple.className = 'ripple';
-        const size = Math.max(rect.width, rect.height)*1.6;
-        ripple.style.width = ripple.style.height = size+'px';
-        ripple.style.left = (e.clientX-rect.left-size/2)+'px';
-        ripple.style.top  = (e.clientY-rect.top-size/2)+'px';
-        card.appendChild(ripple);
-        setTimeout(()=> ripple.remove(), 650);
-
-        if (!q.url || q.url === '#') {
-          e.preventDefault();
-          showToast(`Fitur ${q.name} sedang disiapkan ✨`);
-        }
-      });
-    });
   }
 
-  /* ============================================================
-     I. RECENT ACTIVITY / AI STATUS / WEATHER / CALENDAR
-     ============================================================ */
-  const ACTIVITY = [
-    { icon:'chat',   title:'Asked AI about quarterly planning', meta:'AI Assistant', time:'2m ago' },
-    { icon:'music',  title:'Played "33x - Perunggu"', meta:'Music', time:'18m ago' },
-    { icon:'movie',  title:'Continued watching Nebula Drift', meta:'Movies', time:'1h ago' },
-    { icon:'download', title:'Downloaded project-assets.zip', meta:'Downloader', time:'3h ago' },
-    { icon:'file',   title:'Edited "Q3 roadmap" note', meta:'Notes', time:'5h ago' },
-    { icon:'bolt',   title:'Completed task "Ship dashboard"', meta:'Tasks', time:'Yesterday' }
-  ];
+  /* F. OTHER PANELS */
   function renderActivity(){
-    document.getElementById('activityList').innerHTML = ACTIVITY.map(a=>`
+    const el = document.getElementById('activityList');
+    if(!el) return;
+    const list = [
+      { icon:'chat', title:'Asked AI about quarterly planning', meta:'AI Assistant', time:'2m ago' },
+      { icon:'music', title:'Played "33x - Perunggu"', meta:'Music', time:'18m ago' },
+      { icon:'movie', title:'Continued watching Nebula Drift', meta:'Movies', time:'1h ago' },
+      { icon:'file', title:'Edited "Q3 roadmap" note', meta:'Notes', time:'5h ago' }
+    ];
+    el.innerHTML = list.map(a=>`
       <div class="activity-row">
         <div class="activity-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">${ICONS[a.icon]}</svg></div>
-        <div class="activity-text">
-          <div class="activity-title">${a.title}</div>
-          <div class="activity-meta">${a.meta}</div>
-        </div>
+        <div class="activity-text"><div class="activity-title">${a.title}</div><div class="activity-meta">${a.meta}</div></div>
         <div class="activity-time">${a.time}</div>
       </div>
     `).join('');
   }
 
-  function simulateAiStatus(){
-    document.getElementById('aiLatency').textContent = Math.floor(Math.random()*40+30)+' ms';
-    document.getElementById('aiResponse').textContent = (Math.random()*0.6+0.4).toFixed(2)+' s';
-  }
-
-  const WEATHER_ICONS = {
-    clear: '<circle cx="12" cy="12" r="5"/><path d="M12 1v3M12 20v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M1 12h3M20 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
-    cloud: '<path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.4 2A4 4 0 0 0 6.5 19h11z"/>',
-    rain:  '<path d="M17.5 15a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.4 2A4 4 0 0 0 6.5 15h11z"/><path d="M8 19l-1 2M12 19l-1 2M16 19l-1 2"/>'
-  };
-  function renderWeatherFallback(){
-    const conditions = [
-      { temp:28, city:'Indonesia', label:'Clear sky', icon:'clear', humidity:'55%', wind:'11 km/h', feels:'29°' },
-      { temp:26, city:'Indonesia', label:'Partly cloudy', icon:'cloud', humidity:'65%', wind:'8 km/h', feels:'27°' }
-    ];
-    const c = conditions[Math.floor(Math.random()*conditions.length)];
-    document.getElementById('weatherTemp').textContent = c.temp+'°';
-    document.getElementById('weatherCity').textContent = c.label;
-    document.getElementById('weatherHumidity').textContent = c.humidity;
-    document.getElementById('weatherWind').textContent = c.wind;
-    document.getElementById('weatherFeels').textContent = c.feels;
-    document.getElementById('weatherIcon').innerHTML = WEATHER_ICONS[c.icon];
-    document.getElementById('weatherLocLabel').textContent = c.city;
-  }
-  function detectLocationAndWeather(){
-    if (!navigator.geolocation){ renderWeatherFallback(); return; }
-    navigator.geolocation.getCurrentPosition(
-      () => { renderWeatherFallback(); },
-      () => { renderWeatherFallback(); },
-      { timeout: 4000 }
-    );
-  }
-
   function renderCalendar(){
     const now = new Date();
-    document.getElementById('calDay').textContent = now.getDate();
-    document.getElementById('calWeekday').textContent = now.toLocaleDateString([], { weekday:'long' });
-    document.getElementById('calMonthLabel').textContent = now.toLocaleDateString([], { month:'long', year:'numeric' });
-    const EVENTS = [
-      { color:'var(--accent)', text:'Design review — 2:00 PM' },
-      { color:'var(--purple)', text:'1:1 with mentor — 4:30 PM' },
-      { color:'var(--green)',  text:'Ship dashboard v1 — Today' }
-    ];
-    document.getElementById('calEvents').innerHTML = EVENTS.map(e=>`
-      <div class="cal-event"><span class="cal-dot" style="background:${e.color}"></span>${e.text}</div>
-    `).join('');
+    const cd = document.getElementById('calDay');
+    const cw = document.getElementById('calWeekday');
+    const cm = document.getElementById('calMonthLabel');
+    const ce = document.getElementById('calEvents');
+
+    if(cd) cd.textContent = now.getDate();
+    if(cw) cw.textContent = now.toLocaleDateString([], { weekday:'long' });
+    if(cm) cm.textContent = now.toLocaleDateString([], { month:'long', year:'numeric' });
+    if(ce) ce.innerHTML = `
+      <div class="cal-event"><span class="cal-dot" style="background:var(--accent)"></span>Design review — 2:00 PM</div>
+      <div class="cal-event"><span class="cal-dot" style="background:var(--purple)"></span>Ship dashboard v1 — Today</div>
+    `;
   }
 
-  /* ============================================================
-     J. FOCUS TIMER (Pomodoro)
-     ============================================================ */
-  (function focusTimer(){
+  function renderMusicMoviesNotes(){
+    const rt = document.getElementById('recentTracks');
+    const ml = document.getElementById('movieList');
+    const nl = document.getElementById('notesList');
+
+    if(rt) rt.innerHTML = `
+      <div class="mini-row"><div class="mini-cover" style="background:linear-gradient(135deg,var(--purple),var(--accent))"></div><div><div style="font-weight:600">33x</div><div style="color:var(--text-faint);font-size:11px">Perunggu</div></div></div>
+      <div class="mini-row"><div class="mini-cover" style="background:linear-gradient(135deg,var(--accent),var(--green))"></div><div><div style="font-weight:600">Secukupnya</div><div style="color:var(--text-faint);font-size:11px">Hindia</div></div></div>
+    `;
+
+    if(ml) ml.innerHTML = `
+      <div style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="font-weight:600">Nebula Drift</span><span style="color:var(--text-faint)">64%</span></div>
+        <div class="storage-bar"><div class="storage-fill" style="width:64%"></div></div>
+      </div>
+    `;
+
+    if(nl) nl.innerHTML = `
+      <div class="note-item"><div class="note-check"></div><div class="note-text">📌 Finalize LifeHub UI theme</div></div>
+      <div class="note-item"><div class="note-check done"></div><div class="note-text" style="text-decoration:line-through;color:var(--text-faint)">Send weekly report</div></div>
+    `;
+  }
+
+  /* G. FOCUS TIMER */
+  function initFocusTimer(){
+    const fg = document.getElementById('focusRingFg');
+    const startBtn = document.getElementById('focusStart');
+    const resetBtn = document.getElementById('focusReset');
+    const timeLabel = document.getElementById('focusTimeLabel');
+
+    if(!fg || !startBtn || !resetBtn || !timeLabel) return;
+
     const TOTAL = 25*60;
     let remaining = TOTAL;
     let running = false;
     let intervalId = null;
     const circumference = 2*Math.PI*42;
-    const fg = document.getElementById('focusRingFg');
     fg.style.strokeDasharray = circumference;
 
     function render(){
       const m = String(Math.floor(remaining/60)).padStart(2,'0');
       const s = String(remaining%60).padStart(2,'0');
-      document.getElementById('focusTimeLabel').textContent = `${m}:${s}`;
-      const pct = remaining/TOTAL;
-      fg.style.strokeDashoffset = circumference*(1-pct);
+      timeLabel.textContent = `${m}:${s}`;
+      fg.style.strokeDashoffset = circumference*(1 - remaining/TOTAL);
     }
-    document.getElementById('focusStart').addEventListener('click', function(){
+
+    startBtn.addEventListener('click', function(){
       running = !running;
       this.textContent = running ? 'Pause' : 'Start';
-      if (running){
+      if(running){
         intervalId = setInterval(()=>{
           remaining--;
-          if (remaining<=0){ clearInterval(intervalId); running=false; document.getElementById('focusStart').textContent='Start'; showToast('Focus session complete 🎯'); remaining=0; }
+          if(remaining<=0){ clearInterval(intervalId); running=false; startBtn.textContent='Start'; showToast('Focus complete 🎯'); remaining=TOTAL; }
           render();
         }, 1000);
       } else { clearInterval(intervalId); }
     });
-    document.getElementById('focusReset').addEventListener('click', ()=>{
+
+    resetBtn.addEventListener('click', ()=>{
       clearInterval(intervalId); running=false; remaining=TOTAL;
-      document.getElementById('focusStart').textContent='Start';
+      startBtn.textContent='Start';
       render();
     });
     render();
-  })();
-
-  /* ============================================================
-     K. MUSIC / MOVIES / NOTES PANELS
-     ============================================================ */
-  function renderMusicMoviesNotes(){
-    const tracks = [
-      { title:'33x', artist:'Perunggu' },
-      { title:'Dan...', artist:'Sheila On 7' },
-      { title:'Secukupnya', artist:'Hindia' }
-    ];
-    document.getElementById('recentTracks').innerHTML = tracks.map(t=>`
-      <div class="mini-row"><div class="mini-cover" style="background:linear-gradient(135deg,var(--purple),var(--accent))"></div>
-      <div><div style="font-weight:600">${t.title}</div><div style="color:var(--text-faint);font-size:11px">${t.artist}</div></div></div>
-    `).join('');
-
-    const movies = [
-      { title:'Nebula Drift', progress:64 },
-      { title:'Glass Horizon', progress:30 },
-      { title:'The Long Signal', progress:88 }
-    ];
-    document.getElementById('movieList').innerHTML = movies.map(m=>`
-      <div style="margin-bottom:14px">
-        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
-          <span style="font-weight:600">${m.title}</span><span style="color:var(--text-faint)">${m.progress}%</span>
-        </div>
-        <div class="storage-bar"><div class="storage-fill" style="width:${m.progress}%"></div></div>
-      </div>
-    `).join('');
-
-    const notes = [
-      { pinned:true, text:'Finalize LifeHub color tokens', done:false },
-      { pinned:false, text:'Send weekly report to team', done:true },
-      { pinned:false, text:'Review AI provider costs', done:false }
-    ];
-    document.getElementById('notesList').innerHTML = notes.map(n=>`
-      <div class="note-item">
-        <div class="note-check ${n.done?'done':''}"></div>
-        <div class="note-text" style="${n.done?'text-decoration:line-through;color:var(--text-faint)':''}">${n.pinned?'📌 ':''}${n.text}</div>
-      </div>
-    `).join('');
-
-    document.getElementById('quickNoteInput').addEventListener('keydown', function(e){
-      if (e.key==='Enter' && !e.shiftKey && this.value.trim()){
-        e.preventDefault();
-        showToast('Note pinned 📌');
-        this.value='';
-      }
-    });
   }
 
-  /* ============================================================
-     L. AI TIP OF THE DAY
-     ============================================================ */
-  const AI_TIPS = [
-    "Ask your AI assistant to summarize long documents in one click.",
-    "Use ⌘K to jump anywhere in LifeHub instantly.",
-    "Pin your most-used notes so they never get buried.",
-    "Batch your downloads overnight to save bandwidth during the day.",
-    "Try the Pomodoro focus timer for your next deep-work block."
-  ];
-  function setTip(){
-    document.getElementById('tipText').textContent = AI_TIPS[Math.floor(Math.random()*AI_TIPS.length)];
+  /* H. THEME & MOBILE DRAWER */
+  function initThemeAndDrawer(){
+    const themeBtn = document.getElementById('themeToggleRail');
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    const rail = document.getElementById('railNav');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    if(themeBtn){
+      if(localStorage.getItem('lifehub-theme')==='light') document.documentElement.setAttribute('data-theme','light');
+      themeBtn.addEventListener('click', ()=>{
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        if(isLight){ document.documentElement.removeAttribute('data-theme'); localStorage.setItem('lifehub-theme','dark'); }
+        else{ document.documentElement.setAttribute('data-theme','light'); localStorage.setItem('lifehub-theme','light'); }
+      });
+    }
+
+    if(menuBtn && rail && overlay){
+      menuBtn.addEventListener('click', ()=>{ rail.classList.toggle('open'); overlay.classList.toggle('active'); });
+      overlay.addEventListener('click', ()=>{ rail.classList.remove('open'); overlay.classList.remove('active'); });
+    }
   }
 
-  /* ============================================================
-     M. THEME TOGGLE (dark / light) + persistence
-     ============================================================ */
-  function initTheme(){
-    const saved = localStorage.getItem('lifehub-theme');
-    if (saved === 'light') document.documentElement.setAttribute('data-theme','light');
-    document.getElementById('themeToggleRail').addEventListener('click', ()=>{
-      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      if (isLight){
-        document.documentElement.removeAttribute('data-theme');
-        localStorage.setItem('lifehub-theme','dark');
-      } else {
-        document.documentElement.setAttribute('data-theme','light');
-        localStorage.setItem('lifehub-theme','light');
-      }
-    });
-  }
-
-  /* ============================================================
-     N. SEARCH — animated placeholder + keyboard shortcuts
-     ============================================================ */
-  const PLACEHOLDERS = [
-    'Ask AI anything…',
-    'Search your notes…',
-    'Find a movie to watch…',
-    'Search downloads…',
-    'Jump to a task…'
-  ];
-  function cyclePlaceholders(){
-    const input = document.getElementById('searchInput');
-    let i = 0;
-    input.setAttribute('placeholder', PLACEHOLDERS[0]);
-    setInterval(()=>{
-      if (document.activeElement === input || input.value) return;
-      i = (i+1) % PLACEHOLDERS.length;
-      input.setAttribute('placeholder', PLACEHOLDERS[i]);
-    }, 2600);
-  }
-
-  function initKeyboardShortcuts(){
-    document.addEventListener('keydown', (e)=>{
-      const cmd = e.metaKey || e.ctrlKey;
-      if (cmd && e.key.toLowerCase()==='k'){ e.preventDefault(); document.getElementById('searchInput').focus(); }
-      if (cmd && e.key.toLowerCase()==='n'){ e.preventDefault(); document.getElementById('quickNoteInput').focus(); showToast('New note ready'); }
-    });
-    document.getElementById('fab').addEventListener('click', ()=> showToast('Quick create menu ready'));
-  }
-
-  /* ============================================================
-     O. LOADING SCREEN SEQUENCE
-     ============================================================ */
+  /* I. LOADER */
   function runLoader(){
     const fill = document.getElementById('loaderFill');
+    const loader = document.getElementById('loader');
+    if(!fill || !loader) return;
     let p = 0;
     const id = setInterval(()=>{
-      p += Math.random()*22;
+      p += 35;
       fill.style.width = Math.min(p,100)+'%';
-      if (p>=100){
+      if(p>=100){
         clearInterval(id);
-        setTimeout(()=> document.getElementById('loader').classList.add('hide'), 200);
+        setTimeout(()=> loader.classList.add('hide'), 200);
       }
-    }, 140);
+    }, 100);
   }
 
-  /* ============================================================
-     INIT — run everything
-     ============================================================ */
-  function init(){
-    initUserProfile();
-    updateGreeting();
-    setRandomQuote();
-    updateClock();
-    setInterval(updateClock, 1000);
-    setInterval(updateGreeting, 60000);
-    initParticles();
-    renderStats();
-    renderQuick();
-    renderActivity();
-    simulateAiStatus();
-    setInterval(simulateAiStatus, 8000);
-    detectLocationAndWeather();
-    renderCalendar();
-    renderMusicMoviesNotes();
-    setTip();
-    initTheme();
-    cyclePlaceholders();
-    initKeyboardShortcuts();
-    runLoader();
-  }
-
-  document.addEventListener('DOMContentLoaded', init);
-})();
+  /* START EVERYTHING SAFELY */
+  initUserProfile();
+  updateGreeting();
+  setRandomQuote();
+  updateClock();
+  setInterval(updateClock, 1000);
+  initParticles();
+  renderStats();
+  renderQuick();
+  renderActivity();
+  renderCalendar();
+  renderMusicMoviesNotes();
+  initFocusTimer();
+  initThemeAndDrawer();
+  runLoader();
+});
 </script>
 
 </body>

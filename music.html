@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Nocturne — Music, Everywhere</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -36,7 +36,7 @@
   --ink-0:#181611; --ink-1:#4b473d; --ink-2:#84806f;
   --shadow-glow: 0 0 60px -10px rgba(138,90,20,.18);
 }
-*{box-sizing:border-box; margin:0; padding:0;}
+*{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
 html,body{height:100%;}
 body{
   background:var(--bg-0); color:var(--ink-0); font-family:var(--ff-body);
@@ -44,7 +44,7 @@ body{
   transition:background .4s ease, color .4s ease;
 }
 ::selection{background:var(--gold); color:#181207;}
-::-webkit-scrollbar{width:8px; height:8px;}
+::-webkit-scrollbar{width:6px; height:6px;}
 ::-webkit-scrollbar-thumb{background:var(--glass-brd); border-radius:8px;}
 a{color:inherit; text-decoration:none;}
 button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
@@ -53,7 +53,7 @@ input{font-family:inherit;}
 @media (prefers-reduced-motion: reduce){ *{animation-duration:.001ms !important; transition-duration:.001ms !important;} }
 
 /* ============================================================
-   1. AMBIENT BACKGROUND (signature element: aurora grain + particles)
+   1. AMBIENT BACKGROUND (aurora grain + particles)
    ============================================================ */
 #bg-canvas{position:fixed; inset:0; z-index:0; opacity:.55; pointer-events:none;}
 .aurora{
@@ -67,7 +67,7 @@ input{font-family:inherit;}
 @keyframes auroraShift{ 0%{transform:translate(0,0) scale(1);} 100%{transform:translate(-4%,3%) scale(1.08);} }
 
 /* ============================================================
-   2. APP SHELL LAYOUT
+   2. APP SHELL LAYOUT (DESKTOP & LAPTOP)
    ============================================================ */
 .app{position:relative; z-index:1; display:grid; grid-template-columns:240px 1fr; grid-template-rows:1fr auto; height:100vh;}
 .sidebar{
@@ -79,7 +79,7 @@ input{font-family:inherit;}
 .brand .mark::after{content:""; position:absolute; inset:9px; border-radius:50%; background:var(--bg-0);}
 .nav-group{display:flex; flex-direction:column; gap:2px;}
 .nav-label{font-size:11px; text-transform:uppercase; letter-spacing:.12em; color:var(--ink-2); padding:10px 10px 6px;}
-.nav-item{display:flex; align-items:center; gap:11px; padding:9px 10px; border-radius:var(--radius-s); font-size:14px; color:var(--ink-1); transition:.18s;}
+.nav-item{display:flex; align-items:center; gap:11px; padding:9px 10px; border-radius:var(--radius-s); font-size:14px; color:var(--ink-1); transition:.18s; cursor:pointer;}
 .nav-item svg{width:17px; height:17px; opacity:.85; flex-shrink:0;}
 .nav-item:hover{background:var(--glass); color:var(--ink-0);}
 .nav-item.active{background:var(--glass); color:var(--gold); box-shadow:inset 0 0 0 1px var(--glass-brd);}
@@ -114,10 +114,10 @@ input{font-family:inherit;}
 .section-title{display:flex; align-items:baseline; gap:10px; margin:28px 0 14px;}
 .section-title h2{font-family:var(--ff-display); font-size:22px; font-weight:600;}
 .section-title span{font-size:12px; color:var(--ink-2);}
-.hscroll{display:flex; gap:16px; overflow-x:auto; padding-bottom:8px; scroll-snap-type:x proximity;}
+.hscroll{display:flex; gap:16px; overflow-x:auto; padding-bottom:8px; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch;}
 .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(168px,1fr)); gap:16px;}
 
-/* track / card */
+/* CARDS & LIST ROWS */
 .card{
   scroll-snap-align:start; width:168px; flex-shrink:0; background:var(--glass); border:1px solid var(--glass-brd);
   border-radius:var(--radius-m); padding:12px; cursor:pointer; transition:.25s; position:relative;
@@ -133,7 +133,7 @@ input{font-family:inherit;}
 .card .sub{font-size:12px; color:var(--ink-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px;}
 .card .badge{position:absolute; top:8px; left:8px; font-size:9px; letter-spacing:.06em; text-transform:uppercase; background:rgba(0,0,0,.55); color:var(--gold); padding:3px 6px; border-radius:5px;}
 
-.list-row{display:grid; grid-template-columns:26px 42px 1fr auto auto; align-items:center; gap:12px; padding:8px 10px; border-radius:var(--radius-s); transition:.15s;}
+.list-row{display:grid; grid-template-columns:26px 42px 1fr auto auto; align-items:center; gap:12px; padding:8px 10px; border-radius:var(--radius-s); transition:.15s; cursor:pointer;}
 .list-row:hover{background:var(--glass);}
 .list-row.playing{background:var(--glass); box-shadow:inset 0 0 0 1px var(--gold-dim);}
 .list-row .idx{color:var(--ink-2); font-size:12.5px; text-align:center;}
@@ -197,7 +197,7 @@ input{font-family:inherit;}
 .right-tools button.active{color:var(--gold);}
 
 /* ============================================================
-   4. MISC: modals, toasts, queue drawer, lyrics
+   4. MODALS, TOASTS, DRAWER
    ============================================================ */
 .toast-stack{position:fixed; bottom:96px; right:24px; display:flex; flex-direction:column; gap:8px; z-index:100;}
 .toast{background:var(--bg-2); border:1px solid var(--glass-brd); padding:11px 16px; border-radius:var(--radius-s); font-size:13px; box-shadow:0 12px 30px rgba(0,0,0,.4); animation:toastIn .25s ease;}
@@ -223,13 +223,60 @@ input{font-family:inherit;}
 .status-pill{display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--ink-2); background:var(--glass); border:1px solid var(--glass-brd); padding:4px 9px; border-radius:999px;}
 .status-pill .dot{width:6px; height:6px; border-radius:50%; background:var(--teal);}
 
+.sidebar-overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
+  z-index:75; display:none; opacity:0; transition:opacity .3s;
+}
+.sidebar-overlay.active{display:block; opacity:1;}
+
+/* ============================================================
+   5. MOBILE RESPONSIVE OVERRIDES (< 880px)
+   ============================================================ */
 @media(max-width:880px){
-  .app{grid-template-columns:1fr;}
-  .sidebar{position:fixed; left:0; top:0; bottom:0; width:220px; transform:translateX(-100%); transition:.3s; z-index:80;}
+  .app{grid-template-columns:1fr; grid-template-rows:1fr auto;}
+  .sidebar{
+    position:fixed; left:0; top:0; bottom:0; width:260px; transform:translateX(-100%);
+    transition:.3s cubic-bezier(.2,.9,.25,1); z-index:80; box-shadow:10px 0 30px rgba(0,0,0,0.6);
+  }
   .sidebar.open{transform:translateX(0);}
-  .playerbar{grid-template-columns:1fr; grid-template-rows:auto auto auto; gap:8px;}
-  .right-tools{justify-content:center;}
-  .main{padding:16px 16px 220px;}
+  
+  .main{padding:14px 16px 180px;}
+  .topbar{padding:6px 0 12px; gap:10px;}
+  .status-pill{display:none;}
+  
+  /* Grid & Cards di HP */
+  .grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px;}
+  .card{width:100%; padding:10px;}
+  .card .playhit{opacity:0.85; background:rgba(0,0,0,0.25);}
+  
+  /* Rows di HP */
+  .list-row{grid-template-columns:20px 36px 1fr auto; gap:8px; padding:8px 8px;}
+  .list-row .dur{display:none;}
+  .list-row .row-actions{opacity:1;}
+  .list-row .meta .t{max-width:180px; font-size:13px;}
+  
+  /* Floating Player Bar di HP */
+  .playerbar{
+    position:fixed; bottom:0; left:0; right:0; grid-column:auto;
+    grid-template-columns:1fr; grid-template-rows:auto auto auto; gap:10px;
+    padding:10px 14px 14px; border-radius:18px 18px 0 0; z-index:90;
+    box-shadow:0 -10px 30px rgba(0,0,0,0.7);
+  }
+  .np{justify-content:space-between; width:100%;}
+  .np .meta .t, .np .meta .a{max-width:180px;}
+  .controls{width:100%;}
+  .seek-row{max-width:100%; gap:6px;}
+  .right-tools{justify-content:space-between; width:100%; border-top:1px solid var(--glass-brd); padding-top:8px;}
+  .vol-wrap{width:100px;}
+  
+  .drawer{width:100vw;}
+  .toast-stack{bottom:180px; right:12px; left:12px;}
+  .toast{width:100%; text-align:center;}
+}
+
+@media(max-width:480px){
+  .card{width:130px;}
+  .vis-canvas{display:none;}
 }
 </style>
 </head>
@@ -238,11 +285,10 @@ input{font-family:inherit;}
 <div class="aurora"></div>
 <canvas id="bg-canvas"></canvas>
 
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <div class="app">
 
-  <!-- ============================================================
-       SIDEBAR — NAVIGATION + FILTERS
-       ============================================================ -->
   <aside class="sidebar" id="sidebar">
     <div class="brand"><span class="mark"></span> Nocturne</div>
 
@@ -270,9 +316,6 @@ input{font-family:inherit;}
     </div>
   </aside>
 
-  <!-- ============================================================
-       MAIN — TOPBAR (SEARCH) + CONTENT VIEWS
-       ============================================================ -->
   <main class="main" id="main">
     <div class="topbar">
       <button class="icon-btn" id="sidebarToggle" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
@@ -288,12 +331,9 @@ input{font-family:inherit;}
       <button class="icon-btn" id="queueBtn" title="Queue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h13M3 12h9M3 18h13M18 15l3 3-3 3"/></svg></button>
     </div>
 
-    <div id="viewRoot"><!-- rendered by JS --></div>
+    <div id="viewRoot"></div>
   </main>
 
-  <!-- ============================================================
-       PLAYER BAR
-       ============================================================ -->
   <footer class="playerbar">
     <div class="np" id="npBlock">
       <div class="art-wrap"><img id="npArt" src="" alt=""></div>
@@ -329,13 +369,11 @@ input{font-family:inherit;}
   </footer>
 </div>
 
-<!-- Queue / Lyrics drawer -->
 <div class="drawer" id="drawer">
   <div class="drawer-head"><h3 id="drawerTitle">Queue</h3><button class="icon-btn" id="drawerClose">✕</button></div>
   <div class="drawer-body" id="drawerBody"></div>
 </div>
 
-<!-- New playlist modal -->
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal">
     <h3 id="modalTitle">Create Playlist</h3>
@@ -352,20 +390,17 @@ input{font-family:inherit;}
 <script>
 /* ================================================================
    NOCTURNE — MODULAR MUSIC ENGINE
-   Sections: CONFIG → UTILS → PROVIDERS → SEARCH ENGINE →
-             LIBRARY (localStorage) → PLAYER → VISUALIZER →
-             LYRICS → UI RENDER → EVENTS → INIT
    ================================================================ */
 
 /* ---------------------------------------------------------------
-   1. CONFIG — add new providers / API keys here
+   1. CONFIG
    --------------------------------------------------------------- */
 const CONFIG = {
   PROVIDERS: ["youtube", "audius", "itunes", "deezer", "jamendo", "lastfm"],
   API_KEYS: {
-    youtube: "AIzaSyAm-HParGhsd5NG41POA6nxWwRwtlQdV1c",   // https://console.cloud.google.com → enable "YouTube Data API v3" → free API key. REQUIRED for full-length songs.
-    jamendo: "",   // https://devportal.jamendo.com — free client_id
-    lastfm: ""     // https://www.last.fm/api — free api_key (metadata/trending only)
+    youtube: "AIzaSyAm-HParGhsd5NG41POA6nxWwRwtlQdV1c",
+    jamendo: "",
+    lastfm: ""
   },
   CORS_PROXIES: [
     "https://corsproxy.io/?url=",
@@ -405,7 +440,7 @@ async function fetchWithProxyFallback(url){
   catch(e){
     for(const proxy of CONFIG.CORS_PROXIES){
       try{ return await fetchJSON(proxy + encodeURIComponent(url)); }
-      catch(e2){ /* try next */ }
+      catch(e2){}
     }
     throw e;
   }
@@ -413,22 +448,9 @@ async function fetchWithProxyFallback(url){
 
 /* ---------------------------------------------------------------
    3. PROVIDER ADAPTERS
-   Each adapter exposes: search(query, opts) -> Promise<Track[]>
-                          trending(opts)      -> Promise<Track[]>
-   Track shape (normalized):
-   { id, provider, title, artist, album, cover, duration, streamUrl,
-     previewOnly, sourceUrl }
-   Full-length streaming is only legally available from free/independent
-   catalogs (Audius, Jamendo). Deezer/iTunes expose 30s previews only —
-   that is a licensing limit of their public APIs, not a bug here.
    --------------------------------------------------------------- */
 const Providers = {};
 
-// --- YouTube: PRIMARY full-length source (covers Indonesian + every other
-// catalog, since almost every song exists here). Free, but needs a free
-// YouTube Data API v3 key in CONFIG.API_KEYS.youtube. Playback runs through
-// YouTube's own official embedded player (legal, ad-supported, no ripping/
-// downloading involved) — that's the only free way to get full songs legally. ---
 Providers.youtube = {
   async search(q){
     if(!CONFIG.API_KEYS.youtube) return [];
@@ -450,10 +472,9 @@ Providers.youtube = {
       duration:0, streamUrl:null, previewOnly:false, sourceUrl:"https://www.youtube.com/watch?v="+it.id
     }));
   },
-  async streamUrl(){ return null; } // playback handled by the YT IFrame player, not <audio>
+  async streamUrl(){ return null; }
 };
 
-// --- Audius: decentralized, full-length streams, free, CORS-open ---
 Providers.audius = (() => {
   let host = null;
   async function getHost(){
@@ -489,7 +510,6 @@ Providers.audius = (() => {
   };
 })();
 
-// --- iTunes Search API: huge catalog, free, no key, CORS-open, 30s previews ---
 Providers.itunes = {
   async search(q){
     const d = await fetchJSON(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&entity=song&limit=25`);
@@ -512,13 +532,11 @@ Providers.itunes = {
   },
   async streamUrl(track){
     if(track.streamUrl) return track.streamUrl;
-    // top-songs entries lack a preview URL directly — resolve via lookup
     const d = await fetchJSON(`https://itunes.apple.com/lookup?id=${track.trackId}`);
     return d.results?.[0]?.previewUrl || null;
   }
 };
 
-// --- Deezer: huge catalog + metadata, CORS-blocked from browsers → proxy fallback, 30s previews ---
 Providers.deezer = {
   async search(q){
     const d = await fetchWithProxyFallback(`https://api.deezer.com/search?q=${encodeURIComponent(q)}`);
@@ -539,7 +557,6 @@ Providers.deezer = {
   async streamUrl(track){ return track.streamUrl; }
 };
 
-// --- Jamendo: independent/CC-licensed catalog, full-length streams, needs free client_id ---
 Providers.jamendo = {
   async search(q){
     if(!CONFIG.API_KEYS.jamendo) return [];
@@ -560,11 +577,8 @@ Providers.jamendo = {
   async streamUrl(track){ return track.streamUrl; }
 };
 
-// --- Last.fm: metadata / trending / similar-artist signal only (no direct audio) ---
 Providers.lastfm = {
-  async search(){ return []; }, // used only for recommendation signal, not primary search
-  async trending(){ return []; },
-  async streamUrl(){ return null; },
+  async search(){ return []; }, async trending(){ return []; }, async streamUrl(){ return null; },
   async similar(artist){
     if(!CONFIG.API_KEYS.lastfm) return [];
     try{
@@ -575,8 +589,7 @@ Providers.lastfm = {
 };
 
 /* ---------------------------------------------------------------
-   4. SEARCH ENGINE — tries providers in CONFIG order, merges results,
-      auto-falls-through if a provider errors or returns nothing.
+   4. SEARCH ENGINE
    --------------------------------------------------------------- */
 const SearchEngine = {
   async search(query, {merge=true} = {}){
@@ -594,7 +607,6 @@ const SearchEngine = {
         }
       }catch(err){
         setProviderStatus(key, false);
-        console.warn(`[Nocturne] provider "${key}" failed, trying next…`, err);
       }
     }
     return all;
@@ -607,24 +619,26 @@ const SearchEngine = {
       try{
         const res = await provider.trending();
         all = all.concat(res);
-      }catch(e){ /* fall through to next provider */ }
+      }catch(e){}
     }
     return all;
   }
 };
+
 function setProviderStatus(name, ok){
   const pill = $("#providerStatus");
+  if(!pill) return;
   pill.querySelector(".dot").style.background = ok ? "var(--teal)" : "var(--danger)";
   pill.lastChild.textContent = " " + name + (ok ? " ok" : " skipped");
 }
 
 /* ---------------------------------------------------------------
-   5. LIBRARY — playlists / favorites / history / queue (localStorage)
+   5. LIBRARY
    --------------------------------------------------------------- */
 const Library = {
   liked: store.get("liked", []),
   history: store.get("history", []),
-  playlists: store.get("playlists", []), // [{id,name,tracks:[]}]
+  playlists: store.get("playlists", []),
   searchHistory: store.get("searchHistory", []),
   save(){
     store.set("liked", this.liked);
@@ -659,11 +673,10 @@ const Library = {
 };
 
 /* ---------------------------------------------------------------
-   6. PLAYER — queue, transport, shuffle/repeat, keyboard shortcuts
+   6. PLAYER ENGINE (100% UNLOCKED FOR MOBILE & LAPTOP)
    --------------------------------------------------------------- */
 const audio = $("#audio");
 
-// --- YouTube IFrame Player engine (drives full-length playback) ---
 const YT_ENGINE = {
   player: null, ready: false, pendingVideoId: null, tickTimer: null,
   init(){
@@ -709,8 +722,8 @@ const YT_ENGINE = {
 YT_ENGINE.init();
 
 const Player = {
-  queue: [], index: -1, shuffle: false, repeat: "off", // off | one | all
-  activeEngine: "audio", // "audio" | "youtube"
+  queue: [], index: -1, shuffle: false, repeat: "off",
+  activeEngine: "audio",
   current(){ return this.queue[this.index] || null; },
   async playTrack(track, queueContext){
     if(queueContext){ this.queue = queueContext; this.index = queueContext.findIndex(t=>t.id===track.id); }
@@ -718,26 +731,35 @@ const Player = {
     await this._loadAndPlay(track);
   },
   async _loadAndPlay(track){
+    renderNP(); 
+    renderQueueDrawer();
+
     if(track.provider === "youtube"){
       this.activeEngine = "youtube";
       audio.pause();
       YT_ENGINE.loadVideo(track.videoId);
       YT_ENGINE.play();
       Library.addHistory(track);
-      renderNP(); renderQueueDrawer();
       return;
     }
+
     this.activeEngine = "audio";
     YT_ENGINE.pause();
+
     const provider = Providers[track.provider];
     let url = track.streamUrl;
-    try{ if(!url && provider?.streamUrl) url = await provider.streamUrl(track); }catch(e){ /* fall through */ }
-    if(!url){ toast(`No playable stream for "${track.title}"`, "err"); return this.next(); }
+    try{ if(!url && provider?.streamUrl) url = await provider.streamUrl(track); }catch(e){}
+
+    if(!url){ toast(`No stream available for "${track.title}"`, "err"); return this.next(); }
+
     audio.src = url;
-    try{ await audio.play(); }
-    catch(e){ toast("Playback blocked — tap play again", "err"); }
+    try{ 
+      await audio.play(); 
+    }catch(e){ 
+      console.warn("Autoplay gesture required", e); 
+    }
+
     Library.addHistory(track);
-    renderNP(); renderQueueDrawer();
     initVisualizer();
   },
   toggle(){
@@ -768,6 +790,7 @@ const Player = {
     this._loadAndPlay(this.queue[this.index]);
   }
 };
+
 audio.addEventListener("ended", ()=>Player.next());
 audio.addEventListener("play", ()=>{ $("#playIcon").innerHTML='<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'; $("#npBlock").classList.add("playing"); });
 audio.addEventListener("pause", ()=>{ $("#playIcon").innerHTML='<path d="M8 5v14l11-7z"/>'; $("#npBlock").classList.remove("playing"); });
@@ -780,7 +803,7 @@ audio.addEventListener("timeupdate", ()=>{
 audio.addEventListener("loadedmetadata", ()=>{ if(Player.activeEngine==="audio") $("#durTime").textContent = fmtTime(audio.duration); });
 
 /* ---------------------------------------------------------------
-   7. VISUALIZER — Web Audio API, canvas bars
+   7. VISUALIZER
    --------------------------------------------------------------- */
 let audioCtx, analyser, sourceNode;
 function initVisualizer(){
@@ -795,7 +818,9 @@ function initVisualizer(){
   if(audioCtx.state==="suspended") audioCtx.resume();
 }
 function drawVis(){
-  const canvas = $("#visCanvas"), ctx = canvas.getContext("2d");
+  const canvas = $("#visCanvas");
+  if(!canvas) return;
+  const ctx = canvas.getContext("2d");
   canvas.width = 64; canvas.height = 28;
   const data = new Uint8Array(analyser.frequencyBinCount);
   (function loop(){
@@ -813,12 +838,13 @@ function drawVis(){
     }
   })();
 }
-// ambient background particles (independent of audio)
 (function bgParticles(){
-  const canvas = $("#bg-canvas"), ctx = canvas.getContext("2d");
+  const canvas = $("#bg-canvas");
+  if(!canvas) return;
+  const ctx = canvas.getContext("2d");
   let w,h,parts;
   function resize(){ w=canvas.width=innerWidth; h=canvas.height=innerHeight;
-    parts = Array.from({length:60},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.6+.3,vy:Math.random()*.25+.05,o:Math.random()*.5+.1})); }
+    parts = Array.from({length:50},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.6+.3,vy:Math.random()*.25+.05,o:Math.random()*.5+.1})); }
   resize(); addEventListener("resize", resize);
   (function loop(){
     requestAnimationFrame(loop);
@@ -834,7 +860,7 @@ function drawVis(){
 })();
 
 /* ---------------------------------------------------------------
-   8. LYRICS — lyrics.ovh (free, no key). Falls back gracefully.
+   8. LYRICS
    --------------------------------------------------------------- */
 async function loadLyrics(track){
   $("#drawerTitle").textContent = "Lyrics";
@@ -873,10 +899,10 @@ function trackRowHTML(t, i){
     </div>
   </div>`;
 }
-let trackCache = {}; // id -> track, for click delegation
+let trackCache = {};
 function cacheTracks(list){ list.forEach(t=>trackCache[t.id]=t); }
 
-function skeletonGrid(n=8){ return `<div class="grid">${Array.from({length:n}).map(()=>`<div class="skeleton" style="height:220px;"></div>`).join('')}</div>`; }
+function skeletonGrid(n=8){ return `<div class="grid">${Array.from({length:n}).map(()=>`<div class="skeleton" style="height:200px;"></div>`).join('')}</div>`; }
 
 async function renderHome(){
   const root = $("#viewRoot");
@@ -946,17 +972,32 @@ function renderPlaylistDetail(id){
 }
 function renderPlaylistNav(){
   $("#playlistNav").innerHTML = Library.playlists.map(p=>`<div class="nav-item" data-open-pl="${p.id}">🎵 ${p.name}</div>`).join('');
-  $$("[data-open-pl]").forEach(el=>el.addEventListener("click", ()=>{ setActiveView(null); renderPlaylistDetail(el.dataset.openPl); }));
+  $$("[data-open-pl]").forEach(el=>el.addEventListener("click", ()=>{ setActiveView(null); renderPlaylistDetail(el.dataset.openPl); closeSidebarMobile(); }));
 }
+
+/* FIX SINGLE CLICK/TAP UNTUK MEMUTAR LAGU ANGKAT DARI DBLCLICK */
 function bindTrackClicks(root, contextList){
   $$(".card, .list-row", root).forEach(el=>{
     const id = el.dataset.id;
     if(!id) return;
     const track = trackCache[id];
-    const playHandler = ()=>Player.playTrack(track, contextList || Object.values(trackCache));
-    el.querySelector(".cardPlay")?.addEventListener("click", (e)=>{ e.stopPropagation(); playHandler(); });
-    if(el.classList.contains("card")) el.addEventListener("click", playHandler);
-    if(el.classList.contains("list-row")) el.addEventListener("dblclick", playHandler);
+    if(!track) return;
+
+    const playHandler = (e)=>{
+      if(e.target.closest(".row-actions")) return; // Jangan putar jika klik tombol aksi
+      
+      // Unlock AudioContext secara sinkron saat klik pengguna
+      audio.play().then(()=>{}).catch(()=>{});
+      if(window.audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+
+      Player.playTrack(track, contextList || Object.values(trackCache));
+    };
+
+    el.querySelector(".cardPlay")?.addEventListener("click", (e)=>{ e.stopPropagation(); playHandler(e); });
+    
+    // Single-click listener untuk memutar lagu langsung di Laptop maupun HP
+    el.addEventListener("click", playHandler);
+
     el.querySelector(".rowLike")?.addEventListener("click", (e)=>{ e.stopPropagation(); Library.toggleLike(track); renderCurrentView(); });
     el.querySelector(".rowLyrics")?.addEventListener("click", (e)=>{ e.stopPropagation(); loadLyrics(track); });
     el.querySelector(".rowAdd")?.addEventListener("click", (e)=>{
@@ -969,6 +1010,7 @@ function bindTrackClicks(root, contextList){
     });
   });
 }
+
 function renderNP(){
   const t = Player.current();
   if(!t){ $("#npTitle").textContent="Nothing playing"; $("#npArtist").textContent="Search to begin"; $("#npArt").src=""; return; }
@@ -1009,12 +1051,20 @@ function renderCurrentView(){
   else if(activeView==="library") renderLibrary();
 }
 
+function closeSidebarMobile(){
+  if(innerWidth <= 880){
+    $("#sidebar").classList.remove("open");
+    $("#sidebarOverlay").classList.remove("active");
+  }
+}
+
 /* ---------------------------------------------------------------
    10. EVENTS
    --------------------------------------------------------------- */
 $$(".nav-item[data-view]").forEach(el=>{
   el.addEventListener("click", ()=>{
     setActiveView(el.dataset.view);
+    closeSidebarMobile();
     if(el.dataset.view==="search") $("#searchInput").focus();
     else renderCurrentView();
   });
@@ -1063,7 +1113,10 @@ $("#micBtn").addEventListener("click", ()=>{
 });
 
 // Transport controls
-$("#playBtn").addEventListener("click", ()=>Player.toggle());
+$("#playBtn").addEventListener("click", ()=>{
+  if(window.audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+  Player.toggle();
+});
 $("#nextBtn").addEventListener("click", ()=>Player.next());
 $("#prevBtn").addEventListener("click", ()=>Player.prev());
 $("#shuffleBtn").addEventListener("click", (e)=>{ Player.shuffle=!Player.shuffle; e.currentTarget.classList.toggle("active", Player.shuffle); toast(Player.shuffle?"Shuffle on":"Shuffle off"); });
@@ -1110,7 +1163,12 @@ $("#themeToggle").addEventListener("change", (e)=>{
   document.documentElement.setAttribute("data-theme", e.target.checked ? "light" : "dark");
   store.set("theme", e.target.checked ? "light" : "dark");
 });
-$("#sidebarToggle").addEventListener("click", ()=>$("#sidebar").classList.toggle("open"));
+
+$("#sidebarToggle").addEventListener("click", ()=>{
+  $("#sidebar").classList.toggle("open");
+  $("#sidebarOverlay").classList.toggle("active");
+});
+$("#sidebarOverlay").addEventListener("click", closeSidebarMobile);
 
 // Keyboard shortcuts
 document.addEventListener("keydown", (e)=>{
