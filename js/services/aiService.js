@@ -1,193 +1,484 @@
-// js/services/aiService.js
+/* ==========================================================================
+   LifeHub AI™ — AI Service Layer
+   File: aiservis.js
+   --------------------------------------------------------------------------
+   This file owns ALL communication with real AI provider APIs.
+   ai.html never talks to a provider directly — it only calls the functions
+   exposed here (window.LifeHubAI.*).
 
-export const GEMINI_API_KEY = 'AQ.Ab8RN6KdE8-zuOol5-9PkeudK86wmVhZWEh01ZqDiFCBnqpEmQ';
-export const GROQ_API_KEY = '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';
+   Supported providers (official API formats, no invented endpoints):
+     - DeepSeek  (OpenAI-compatible Chat Completions API)
+     - Groq      (OpenAI-compatible Chat Completions API)
+     - Gemini    (Google Generative Language API)
 
-function ambilRiwayatChat() {
+   ⚠️ FRONTEND API KEY SECURITY NOTICE ⚠️
+   ----------------------------------------------------------------------
+   This is a frontend-only (no backend) project. Any API key placed inside
+   AI_CONFIG below is bundled into JavaScript that runs in the user's
+   browser. That means:
+
+     - Anyone who opens DevTools → Sources/Network can read the key.
+     - Anyone who views the page source can read the key.
+     - The key is NOT secure and should be treated as fully public.
+
+   This is acceptable for local development, personal use, or a private/
+   trusted environment, but it is NOT safe for a public production
+   deployment. For production, route requests through a backend proxy
+   server that holds the real API key server-side and forwards requests
+   to the provider — never ship a paid API key to the public internet
+   inside client-side JS.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. CONFIGURATION
+   -------------------------------------------------------------------------
+   👉 INSERT YOUR API KEYS BELOW, in the apiKey: "" fields.
+   Leave a provider's apiKey empty (or enabled:false) to disable it — it will
+   simply be skipped by the provider selector and the fallback system.
+   ========================================================================== */
+
+const AI_CONFIG = {
+  deepseek: {
+    enabled: true,
+    apiKey: "", // <-- INSERT YOUR DEEPSEEK API KEY HERE (https://platform.deepseek.com)
+    baseURL: "https://api.deepseek.com/v1/chat/completions",
+    // OpenAI-compatible Chat Completions endpoint
+    models: [
+      { id: "deepseek-chat", label: "DeepSeek Chat", vision: false, context: 64000 },
+      { id: "deepseek-reasoner", label: "DeepSeek Reasoner", vision: false, context: 64000 }
+    ]
+  },
+
+  groq: {
+    enabled: true,
+    apiKey: "", // <-- INSERT YOUR GROQ API KEY HERE (https://console.groq.com)
+    baseURL: "https://api.groq.com/openai/v1/chat/completions",
+    // OpenAI-compatible Chat Completions endpoint
+    models: [
+      { id: "llama-3.3-70b-versatile", label: "Llama 3.3 70B", vision: false, context: 128000 },
+      { id: "llama-3.1-8b-instant", label: "Llama 3.1 8B Instant", vision: false, context: 128000 },
+      { id: "llama-3.2-90b-vision-preview", label: "Llama 3.2 90B Vision", vision: true, context: 128000 }
+    ]
+  },
+
+  gemini: {
+    enabled: true,
+    apiKey: "", // <-- INSERT YOUR GEMINI API KEY HERE (https://aistudio.google.com/apikey)
+    baseURL: "https://generativelanguage.googleapis.com/v1beta/models",
+    models: [
+      { id: "gemini-2.0-flash", label: "Gemini 2.0 Flash", vision: true, context: 1000000 },
+      { id: "gemini-1.5-pro", label: "Gemini 1.5 Pro", vision: true, context: 2000000 },
+      { id: "gemini-1.5-flash", label: "Gemini 1.5 Flash", vision: true, context: 1000000 }
+    ]
+  }
+};
+
+// Order in which providers are attempted when the fallback system is used.
+const PROVIDER_ORDER = ["deepseek", "groq", "gemini"];
+
+const PROVIDER_LABELS = {
+  deepseek: "DeepSeek",
+  groq: "Groq",
+  gemini: "Gemini"
+};
+
+/* ==========================================================================
+   2. PUBLIC HELPERS
+   ========================================================================== */
+
+/** Returns provider keys that are enabled AND have a non-empty API key. */
+function getEnabledProviders() {
+  return PROVIDER_ORDER.filter((key) => {
+    const cfg = AI_CONFIG[key];
+    return cfg && cfg.enabled && typeof cfg.apiKey === "string" && cfg.apiKey.trim().length > 0;
+  });
+}
+
+/** Returns true if a provider is enabled + has a key, regardless of order. */
+function isProviderReady(providerKey) {
+  const cfg = AI_CONFIG[providerKey];
+  return !!(cfg && cfg.enabled && cfg.apiKey && cfg.apiKey.trim().length > 0);
+}
+
+function getModelsForProvider(providerKey) {
+  const cfg = AI_CONFIG[providerKey];
+  return cfg ? cfg.models : [];
+}
+
+function providerSupportsVision(providerKey, modelId) {
+  const cfg = AI_CONFIG[providerKey];
+  if (!cfg) return false;
+  const model = cfg.models.find((m) => m.id === modelId);
+  return !!(model && model.vision);
+}
+
+function getDefaultModel(providerKey) {
+  const models = getModelsForProvider(providerKey);
+  return models.length ? models[0].id : null;
+}
+
+/* ==========================================================================
+   3. LOW-LEVEL PROVIDER CALLS
+   -------------------------------------------------------------------------
+   Each function throws a descriptive Error on failure. None of them ever
+   return a fake/hardcoded response — a failure always surfaces as a
+   rejected promise so the UI can show the real error.
+   ========================================================================== */
+
+/**
+ * Converts LifeHub's internal message format into OpenAI-style "content"
+ * (used by both DeepSeek and Groq, since both expose an OpenAI-compatible
+ * Chat Completions API).
+ *
+ * Internal message shape:
+ *   { role: 'user' | 'assistant' | 'system', content: string, images?: [{mimeType, data}] }
+ *   images[].data is a base64 string WITHOUT the "data:...;base64," prefix.
+ */
+function toOpenAIMessages(messages) {
+  return messages.map((m) => {
+    if (!m.images || m.images.length === 0) {
+      return { role: m.role, content: m.content };
+    }
+    // Multimodal message: array of content parts.
+    const parts = [];
+    if (m.content) parts.push({ type: "text", text: m.content });
+    m.images.forEach((img) => {
+      parts.push({
+        type: "image_url",
+        image_url: { url: `data:${img.mimeType};base64,${img.data}` }
+      });
+    });
+    return { role: m.role, content: parts };
+  });
+}
+
+/**
+ * Converts LifeHub's internal message format into Gemini's "contents" array.
+ * Gemini uses role "user" / "model" (no "assistant"), and images are sent
+ * as inlineData parts.
+ */
+function toGeminiContents(messages) {
+  return messages
+    .filter((m) => m.role !== "system")
+    .map((m) => {
+      const parts = [];
+      if (m.content) parts.push({ text: m.content });
+      if (m.images) {
+        m.images.forEach((img) => {
+          parts.push({ inlineData: { mimeType: img.mimeType, data: img.data } });
+        });
+      }
+      return { role: m.role === "assistant" ? "model" : "user", parts };
+    });
+}
+
+function extractSystemPrompt(messages) {
+  const sys = messages.find((m) => m.role === "system");
+  return sys ? sys.content : null;
+}
+
+/**
+ * Calls an OpenAI-compatible Chat Completions endpoint (DeepSeek or Groq).
+ * Supports streaming (SSE) via onChunk(deltaText) callback.
+ */
+async function callOpenAICompatible(providerKey, { model, messages, options, onChunk, signal }) {
+  const cfg = AI_CONFIG[providerKey];
+  if (!cfg) throw new Error(`Unknown provider: ${providerKey}`);
+  if (!cfg.apiKey || !cfg.apiKey.trim()) {
+    throw new Error(
+      `${PROVIDER_LABELS[providerKey]} API key is missing. Add it to AI_CONFIG.${providerKey}.apiKey in aiservis.js.`
+    );
+  }
+
+  const stream = options.stream !== false;
+  const body = {
+    model,
+    messages: toOpenAIMessages(messages),
+    temperature: options.temperature ?? 0.7,
+    max_tokens: options.maxTokens ?? 2048,
+    stream
+  };
+
+  let response;
+  try {
+    response = await fetch(cfg.baseURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${cfg.apiKey}`
+      },
+      body: JSON.stringify(body),
+      signal
+    });
+  } catch (networkErr) {
+    if (networkErr.name === "AbortError") throw networkErr;
+    throw new Error(`${PROVIDER_LABELS[providerKey]} network error: ${networkErr.message}`);
+  }
+
+  if (!response.ok) {
+    let detail = "";
     try {
-        const localData = localStorage.getItem('lifehub_chat_memory');
-        return localData ? JSON.parse(localData) : [];
-    } catch (e) {
-        return [];
+      const errJson = await response.json();
+      detail = errJson?.error?.message || JSON.stringify(errJson);
+    } catch (_) {
+      detail = await response.text().catch(() => "");
     }
+    throw new Error(`${PROVIDER_LABELS[providerKey]} API error (${response.status}): ${detail || "Unknown error"}`);
+  }
+
+  if (!stream) {
+    const json = await response.json();
+    const text = json.choices?.[0]?.message?.content ?? "";
+    const usage = json.usage || null;
+    if (onChunk && text) onChunk(text);
+    return { text, usage };
+  }
+
+  // ----- Streaming (SSE) -----
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let fullText = "";
+  let buffer = "";
+  let usage = null;
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop(); // keep incomplete line for next chunk
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith("data:")) continue;
+      const payload = trimmed.slice(5).trim();
+      if (payload === "[DONE]") continue;
+      try {
+        const json = JSON.parse(payload);
+        const delta = json.choices?.[0]?.delta?.content;
+        if (delta) {
+          fullText += delta;
+          if (onChunk) onChunk(delta);
+        }
+        if (json.usage) usage = json.usage;
+      } catch (_) {
+        // Ignore malformed SSE fragments (can happen on chunk boundaries)
+      }
+    }
+  }
+
+  return { text: fullText, usage };
 }
 
-function simpanRiwayatChat(riwayatBaru) {
+/**
+ * Calls the Gemini generateContent / streamGenerateContent endpoint.
+ */
+async function callGemini({ model, messages, options, onChunk, signal }) {
+  const cfg = AI_CONFIG.gemini;
+  if (!cfg.apiKey || !cfg.apiKey.trim()) {
+    throw new Error("Gemini API key is missing. Add it to AI_CONFIG.gemini.apiKey in aiservis.js.");
+  }
+
+  const stream = options.stream !== false;
+  const systemPrompt = extractSystemPrompt(messages);
+  const contents = toGeminiContents(messages);
+
+  const body = {
+    contents,
+    generationConfig: {
+      temperature: options.temperature ?? 0.7,
+      maxOutputTokens: options.maxTokens ?? 2048
+    }
+  };
+  if (systemPrompt) {
+    body.systemInstruction = { parts: [{ text: systemPrompt }] };
+  }
+
+  const finalURL = stream
+    ? `${cfg.baseURL}/${model}:streamGenerateContent?alt=sse&key=${cfg.apiKey}`
+    : `${cfg.baseURL}/${model}:generateContent?key=${cfg.apiKey}`;
+
+  let response;
+  try {
+    response = await fetch(finalURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal
+    });
+  } catch (networkErr) {
+    if (networkErr.name === "AbortError") throw networkErr;
+    throw new Error(`Gemini network error: ${networkErr.message}`);
+  }
+
+  if (!response.ok) {
+    let detail = "";
     try {
-        localStorage.setItem('lifehub_chat_memory', JSON.stringify(riwayatBaru));
-    } catch (e) {
-        console.error("Gagal simpan riwayat chat:", e);
+      const errJson = await response.json();
+      detail = errJson?.error?.message || JSON.stringify(errJson);
+    } catch (_) {
+      detail = await response.text().catch(() => "");
     }
+    throw new Error(`Gemini API error (${response.status}): ${detail || "Unknown error"}`);
+  }
+
+  if (!stream) {
+    const json = await response.json();
+    const text = json.candidates?.[0]?.content?.parts?.map((p) => p.text || "").join("") ?? "";
+    if (onChunk && text) onChunk(text);
+    return { text, usage: json.usageMetadata || null };
+  }
+
+  // ----- Streaming (SSE) -----
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let fullText = "";
+  let buffer = "";
+  let usage = null;
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop();
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith("data:")) continue;
+      const payload = trimmed.slice(5).trim();
+      if (!payload || payload === "[DONE]") continue;
+      try {
+        const json = JSON.parse(payload);
+        const parts = json.candidates?.[0]?.content?.parts || [];
+        const delta = parts.map((p) => p.text || "").join("");
+        if (delta) {
+          fullText += delta;
+          if (onChunk) onChunk(delta);
+        }
+        if (json.usageMetadata) usage = json.usageMetadata;
+      } catch (_) {
+        // Ignore malformed SSE fragments
+      }
+    }
+  }
+
+  return { text: fullText, usage };
 }
 
-export function hapusMemoriChat() {
-    localStorage.removeItem('lifehub_chat_memory');
+/* ==========================================================================
+   4. UNIFIED PROVIDER ABSTRACTION
+   -------------------------------------------------------------------------
+   The frontend calls ONLY these two functions. It never needs to know how
+   each provider's API actually works.
+   ========================================================================== */
+
+/**
+ * sendMessage — sends a chat request to exactly ONE named provider.
+ *
+ * @param {Object} params
+ * @param {'deepseek'|'groq'|'gemini'} params.provider
+ * @param {string} params.model
+ * @param {Array}  params.messages   [{role, content, images?}]
+ * @param {Object} [params.options]  {temperature, maxTokens, stream}
+ * @param {Function} [params.onChunk]  called with each streamed text delta
+ * @param {AbortSignal} [params.signal]
+ * @returns {Promise<{text: string, usage: Object|null}>}
+ */
+async function sendMessage({ provider, model, messages, options = {}, onChunk, signal }) {
+  if (!provider) throw new Error("No AI provider specified.");
+  if (!AI_CONFIG[provider]) throw new Error(`Unknown provider: ${provider}`);
+  if (!AI_CONFIG[provider].enabled) throw new Error(`${PROVIDER_LABELS[provider]} is disabled in AI_CONFIG.`);
+
+  if (provider === "gemini") {
+    return callGemini({ model, messages, options, onChunk, signal });
+  }
+  // deepseek + groq share the OpenAI-compatible implementation
+  return callOpenAICompatible(provider, { model, messages, options, onChunk, signal });
 }
 
-export async function askGeminiAI(userMessage, fileAttachment = null, modelPilihan = 'groq-llama') {
-    let riwayatChat = ambilRiwayatChat();
-    
-    // SYSTEM PROMPT
-    const systemPromptText = `Kamu adalah LifeHub AI.
-- Nama: LifeHub AI
-- Dibuat oleh: Team PixelForgeDev (Lead Developer: Reski Setiawan)
-- Gaya Bicara: Anak Gen Z Indonesia (umur 18-20 tahun), gaul, santai, panggil "lu" dan "gua", pakai kata "bro", "cuy", "mantap", "gokil".
-- DILARANG berbicara kaku, formal, atau ngomong "Saya/Anda".
-- Jika ditanya siapa pembuatmu, jawab: "Gua buatan Team PixelForgeDev, lead developernya Reski Setiawan, bro!"`;
+/**
+ * sendMessageWithFallback — tries the requested provider first; if it
+ * fails (network error, API error, missing key), automatically tries the
+ * next enabled provider in PROVIDER_ORDER. Only throws if ALL enabled
+ * providers fail.
+ *
+ * @param {Object} params - same as sendMessage, plus:
+ * @param {Function} [params.onProviderSwitch] - called with (fromProvider, toProvider) when falling back
+ * @param {Function} [params.onStatus] - called with a human-readable status string
+ */
+async function sendMessageWithFallback({
+  provider,
+  model,
+  messages,
+  options = {},
+  onChunk,
+  onProviderSwitch,
+  onStatus,
+  signal
+}) {
+  const enabled = getEnabledProviders();
+  if (enabled.length === 0) {
+    throw new Error(
+      "No AI provider is configured. Insert at least one API key into AI_CONFIG in aiservis.js."
+    );
+  }
 
-    // =========================================================================
-    // OPTION A: GROQ ENGINE
-    // =========================================================================
-    if (modelPilihan.startsWith('groq')) {
-        const url = `https://api.groq.com/openai/v1/chat/completions`;
-        
-        let namaModelGroq = 'llama-3.3-70b-versatile';
-        if (modelPilihan === 'groq-deepseek') {
-            namaModelGroq = 'deepseek-r1-distill-qwen-32b'; // Model aktif pengganti model lama
-        } else if (modelPilihan === 'groq-instant') {
-            namaModelGroq = 'llama-3.1-8b-instant';
-        }
+  // Build attempt order: requested provider first (if ready), then the rest.
+  const order = [provider, ...enabled.filter((p) => p !== provider)].filter((p) =>
+    enabled.includes(p)
+  );
+  // De-duplicate while preserving order
+  const attemptOrder = [...new Set(order)];
 
-        // Jika user kirim gambar di Groq, switch ke Vision Model
-        if (fileAttachment) {
-            namaModelGroq = 'llama-3.2-11b-vision-preview';
-        }
+  let lastError = null;
 
-        let messagesGroq = [{ role: 'system', content: systemPromptText }];
+  for (let i = 0; i < attemptOrder.length; i++) {
+    const currentProvider = attemptOrder[i];
+    const currentModel = currentProvider === provider ? model : getDefaultModel(currentProvider);
 
-        // Ambil 6 pesan terakhir
-        const riwayatTerakhir = riwayatChat.slice(-6);
-        riwayatTerakhir.forEach(msg => {
-            const role = msg.role === 'model' ? 'assistant' : 'user';
-            const textContent = msg.parts?.[0]?.text || msg.content || '';
-            if (textContent) {
-                messagesGroq.push({ role, content: textContent });
-            }
-        });
-
-        // Content pesan baru
-        let contentUser = [];
-        if (userMessage) contentUser.push({ type: "text", text: userMessage });
-        if (fileAttachment) {
-            contentUser.push({
-                type: "image_url",
-                image_url: { url: `data:${fileAttachment.mimeType};base64,${fileAttachment.base64Data}` }
-            });
-        }
-
-        messagesGroq.push({ role: 'user', content: contentUser.length === 1 && contentUser[0].type === 'text' ? userMessage : contentUser });
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${GROQ_API_KEY}` 
-                },
-                body: JSON.stringify({ 
-                    model: namaModelGroq, 
-                    messages: messagesGroq, 
-                    temperature: 0.7 
-                })
-            });
-            
-            const data = await response.json();
-            if (!response.ok) {
-                return `❌ Error Groq (${namaModelGroq}): ${data.error?.message || 'Gagal tersambung'}`;
-            }
-            
-            const reply = data.choices?.[0]?.message?.content;
-            if (reply) {
-                riwayatChat.push({ role: 'user', parts: [{ text: userMessage || '[Gambar]' }] });
-                riwayatChat.push({ role: 'model', parts: [{ text: reply }] });
-                simpanRiwayatChat(riwayatChat);
-                return reply;
-            }
-        } catch (err) { 
-            return `❌ Gagal konek Groq: ${err.message}`; 
-        }
-    } 
-    
-    // =========================================================================
-    // OPTION B: GOOGLE GEMINI ENGINE
-    // =========================================================================
-    else {
-        let modelGemini = 'gemini-1.5-flash';
-        if (modelPilihan === 'gemini-1.5-pro') {
-            modelGemini = 'gemini-1.5-pro';
-        } else if (modelPilihan === 'gemini-2.0-flash') {
-            modelGemini = 'gemini-2.0-flash';
-        }
-
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelGemini}:generateContent?key=${GEMINI_API_KEY}`;
-        
-        // Buat struktur contents murni Google AI Studio
-        let contentsGemini = [];
-
-        // Formatting riwayat agar kompatibel dengan Gemini REST API
-        const riwayatTerakhir = riwayatChat.slice(-6);
-        riwayatTerakhir.forEach(msg => {
-            const role = msg.role === 'model' ? 'model' : 'user';
-            const textContent = msg.parts?.[0]?.text || '';
-            if (textContent) {
-                contentsGemini.push({
-                    role: role,
-                    parts: [{ text: textContent }]
-                });
-            }
-        });
-
-        // Pesan baru user
-        let partsUserBaru = [];
-        if (userMessage) {
-            partsUserBaru.push({ text: userMessage });
-        } else if (fileAttachment) {
-            partsUserBaru.push({ text: "Tolong analisa gambar ini, bro!" });
-        }
-
-        if (fileAttachment) {
-            partsUserBaru.push({
-                inlineData: {
-                    mimeType: fileAttachment.mimeType,
-                    data: fileAttachment.base64Data
-                }
-            });
-        }
-
-        contentsGemini.push({
-            role: 'user',
-            parts: partsUserBaru
-        });
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    systemInstruction: { parts: [{ text: systemPromptText }] },
-                    contents: contentsGemini
-                })
-            });
-            
-            const data = await response.json();
-            
-            if (!response.ok) {
-                return `❌ Error Gemini (${modelGemini}): ${data.error?.message || 'Cek koneksi/API Key'}`;
-            }
-
-            const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (reply) {
-                riwayatChat.push({ role: 'user', parts: [{ text: userMessage || '[Gambar]' }] });
-                riwayatChat.push({ role: 'model', parts: [{ text: reply }] });
-                simpanRiwayatChat(riwayatChat);
-                return reply;
-            } else if (data.candidates?.[0]?.finishReason) {
-                return `⚠️ Gemini menolak menjawab (Alasan: ${data.candidates[0].finishReason}).`;
-            }
-        } catch (err) { 
-            return `❌ Gagal konek Gemini: ${err.message}`; 
-        }
+    if (i > 0 && onProviderSwitch) {
+      onProviderSwitch(attemptOrder[i - 1], currentProvider);
+    }
+    if (i > 0 && onStatus) {
+      onStatus(`Switching to another AI provider... (${PROVIDER_LABELS[currentProvider]})`);
     }
 
-    return "Waduh, AI-nya lagi gak ada respon nih bro, coba ketik ulang ya!";
+    try {
+      const result = await sendMessage({
+        provider: currentProvider,
+        model: currentModel,
+        messages,
+        options,
+        onChunk,
+        signal
+      });
+      return { ...result, providerUsed: currentProvider, modelUsed: currentModel };
+    } catch (err) {
+      if (err.name === "AbortError") throw err; // user pressed Stop — do not fall back
+      lastError = err;
+      // continue to next provider
+    }
+  }
+
+  throw new Error(
+    `All AI providers failed. Last error: ${lastError ? lastError.message : "unknown error"}`
+  );
 }
+
+/* ==========================================================================
+   5. EXPORT
+   ========================================================================== */
+
+window.LifeHubAI = {
+  AI_CONFIG,
+  PROVIDER_ORDER,
+  PROVIDER_LABELS,
+  getEnabledProviders,
+  isProviderReady,
+  getModelsForProvider,
+  providerSupportsVision,
+  getDefaultModel,
+  sendMessage,
+  sendMessageWithFallback
+};

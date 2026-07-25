@@ -1,1170 +1,2326 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>LifeHub AI — Dashboard</title>
-
-<style>
-  /* =========================================================
-     1. DESIGN TOKENS
-     ========================================================= */
-  :root{
-    --bg:             #09090B;
-    --bg-elevated:    #0E0E11;
-    --card:           #18181B;
-    --card-hover:     #1E1E22;
-    --border:         rgba(255,255,255,0.07);
-    --border-strong:  rgba(255,255,255,0.14);
-
-    --accent:         #00E5FF;
-    --accent-dim:     rgba(0,229,255,0.14);
-    --purple:         #7C3AED;
-    --purple-dim:     rgba(124,58,237,0.16);
-    --green:          #22C55E;
-    --green-dim:      rgba(34,197,94,0.14);
-    --amber:          #F59E0B;
-    --red:            #EF4444;
-
-    --text:           #FFFFFF;
-    --text-dim:       rgba(255,255,255,0.62);
-    --text-faint:     rgba(255,255,255,0.38);
-
-    --radius-lg:      24px;
-    --radius-md:      18px;
-    --radius-sm:      12px;
-
-    --font-display:  'Poppins', 'SF Pro Display', -apple-system, sans-serif;
-    --font-body:     'Inter', 'SF Pro Display', -apple-system, sans-serif;
-
-    --shadow-soft:    0 8px 30px rgba(0,0,0,0.35);
-    --shadow-glow-cyan:   0 0 0 1px rgba(0,229,255,0.15), 0 0 24px rgba(0,229,255,0.15);
-    --shadow-glow-purple: 0 0 0 1px rgba(124,58,237,0.18), 0 0 24px rgba(124,58,237,0.18);
-
-    --ease: cubic-bezier(.16,1,.3,1);
-  }
-
-  [data-theme="light"]{
-    --bg:             #F4F4F6;
-    --bg-elevated:    #FFFFFF;
-    --card:           #FFFFFF;
-    --card-hover:     #F0F0F3;
-    --border:         rgba(0,0,0,0.08);
-    --border-strong:  rgba(0,0,0,0.14);
-    --text:           #0B0B0D;
-    --text-dim:       rgba(0,0,0,0.62);
-    --text-faint:     rgba(0,0,0,0.4);
-    --shadow-soft:    0 8px 30px rgba(0,0,0,0.08);
-  }
-
-  *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
-  html{ scroll-behavior:smooth; }
-
-  body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:var(--font-body);
-    min-height:100vh;
-    overflow-x:hidden;
-    transition:background .4s var(--ease), color .4s var(--ease);
-  }
-
-  ::selection{ background:var(--accent); color:#00131a; }
-
-  ::-webkit-scrollbar{ width:6px; height:6px; }
-  ::-webkit-scrollbar-thumb{ background:var(--border-strong); border-radius:10px; }
-  ::-webkit-scrollbar-track{ background:transparent; }
-
-  a{ color:inherit; text-decoration:none; }
-  button{ font-family:inherit; border:none; cursor:pointer; background:none; color:inherit; }
-
-  :focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:6px; }
-
-  /* =========================================================
-     2. BACKGROUND ANIMATIONS
-     ========================================================= */
-  .aurora{
-    position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;
-  }
-  .aurora::before, .aurora::after{
-    content:''; position:absolute; width:60vw; height:60vw; border-radius:50%;
-    filter:blur(120px); opacity:.35; will-change:transform;
-  }
-  .aurora::before{
-    background:radial-gradient(circle, var(--accent), transparent 70%);
-    top:-20%; left:-10%;
-    animation:auroraMove1 22s ease-in-out infinite alternate;
-  }
-  .aurora::after{
-    background:radial-gradient(circle, var(--purple), transparent 70%);
-    bottom:-25%; right:-10%;
-    animation:auroraMove2 26s ease-in-out infinite alternate;
-  }
-  @keyframes auroraMove1{ 0%{transform:translate(0,0) scale(1);} 100%{transform:translate(8%,10%) scale(1.15);} }
-  @keyframes auroraMove2{ 0%{transform:translate(0,0) scale(1);} 100%{transform:translate(-6%,-8%) scale(1.2);} }
-
-  #particles{ position:fixed; inset:0; z-index:0; pointer-events:none; }
-
-  /* =========================================================
-     3. LAYOUT SHELL
-     ========================================================= */
-  .app{
-    position:relative; z-index:1;
-    display:grid;
-    grid-template-columns: 80px 1fr 340px;
-    min-height:100vh;
-    max-width:1800px; margin:0 auto;
-  }
-
-  /* ---- Left icon rail ---- */
-  .rail{
-    position:sticky; top:0; height:100vh;
-    display:flex; flex-direction:column; align-items:center;
-    gap:22px; padding:24px 0;
-    border-right:1px solid var(--border);
-    background:var(--bg); z-index:40;
-    transition:transform .3s var(--ease);
-  }
-  .rail-logo{
-    padding:6px 10px; height:38px; border-radius:12px;
-    background:linear-gradient(135deg, var(--accent), var(--purple));
-    display:flex; align-items:center; justify-content:center;
-    font-family:var(--font-display); font-weight:800; font-size:11px; color:#00131a;
-    letter-spacing:-0.02em;
-    box-shadow:var(--shadow-glow-cyan);
-    margin-bottom:12px;
-  }
-  .rail-btn{
-    width:44px; height:44px; border-radius:14px;
-    display:flex; align-items:center; justify-content:center;
-    color:var(--text-faint);
-    transition:.25s var(--ease);
-  }
-  .rail-btn svg{ width:20px; height:20px; }
-  .rail-btn:hover{ background:var(--card); color:var(--text); transform:translateY(-2px); }
-  .rail-btn.active{ background:var(--accent-dim); color:var(--accent); }
-  .rail-spacer{ flex:1; }
-
-  /* ---- Main column ---- */
-  .main{ padding:28px 32px 140px; min-width:0; }
-
-  .sidebar-overlay{
-    position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
-    z-index:35; display:none; opacity:0; transition:opacity .3s;
-  }
-  .sidebar-overlay.active{ display:block; opacity:1; }
-
-  /* =========================================================
-     4. TOP BAR
-     ========================================================= */
-  .topbar{
-    display:flex; justify-content:space-between; align-items:center;
-    gap:20px; margin-bottom:28px; flex-wrap:wrap;
-  }
-  .greeting-block{ animation:fadeSlideUp .6s var(--ease) both; display:flex; align-items:center; gap:12px; }
-  .greeting{
-    font-family:var(--font-display); font-weight:600;
-    font-size:clamp(22px,3vw,32px); letter-spacing:-0.02em;
-    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
-  }
-  .greeting .wave{ display:inline-block; animation:wave 2.4s ease-in-out infinite; transform-origin:70% 70%; }
-  @keyframes wave{ 0%,60%,100%{transform:rotate(0);} 10%,30%{transform:rotate(14deg);} 20%{transform:rotate(-8deg);} 40%{transform:rotate(10deg);} }
-  .quote{ margin-top:4px; color:var(--text-dim); font-size:14px; }
-  .quote::before{ content:'✦ '; color:var(--accent); }
-
-  .topbar-right{ display:flex; align-items:center; gap:12px; }
-
-  .clock-chip{
-    display:flex; flex-direction:column; align-items:flex-end;
-    padding:8px 14px; border-radius:var(--radius-sm);
-    background:var(--card); border:1px solid var(--border);
-  }
-  .clock-chip .time{ font-variant-numeric:tabular-nums; font-weight:600; font-size:14.5px; }
-  .clock-chip .date{ font-size:11px; color:var(--text-faint); }
-
-  .icon-btn{
-    width:42px; height:42px; border-radius:14px; background:var(--card);
-    border:1px solid var(--border); display:flex; align-items:center; justify-content:center;
-    position:relative; transition:.2s var(--ease); color:var(--text-dim); flex-shrink:0;
-  }
-  .icon-btn svg{ width:19px; height:19px; }
-  .icon-btn:hover{ background:var(--card-hover); color:var(--text); transform:translateY(-2px); }
-  .icon-btn .dot{
-    position:absolute; top:8px; right:8px; width:7px; height:7px; border-radius:50%;
-    background:var(--accent); box-shadow:0 0 8px var(--accent);
-  }
-
-  .avatar-wrap{ display:flex; align-items:center; gap:10px; cursor:pointer; padding:4px 12px 4px 4px; border-radius:100px; background:var(--card); border:1px solid var(--border); transition:.2s var(--ease); }
-  .avatar-wrap:hover{ background:var(--card-hover); }
-  .avatar{
-    width:36px; height:36px; border-radius:50%; object-fit:cover;
-    border:2px solid var(--border-strong);
-  }
-  .avatar-fallback{
-    width:36px; height:36px; border-radius:50%;
-    background:linear-gradient(135deg, var(--purple), var(--accent));
-    display:flex; align-items:center; justify-content:center;
-    font-weight:700; font-size:14px; color:#fff;
-  }
-  .avatar-name{ font-size:13px; font-weight:600; line-height:1.1; }
-  .avatar-email{ font-size:11px; color:var(--text-faint); line-height:1.1; }
-
-  .mobile-menu-btn{ display:none; }
-
-  /* =========================================================
-     5. SEARCH BAR
-     ========================================================= */
-  .search-shell{ margin-bottom:32px; animation:fadeSlideUp .6s var(--ease) .05s both; }
-  .search-bar{
-    position:relative; display:flex; align-items:center; gap:12px;
-    padding:14px 20px; border-radius:100px;
-    background:rgba(255,255,255,0.045);
-    backdrop-filter:blur(20px) saturate(160%);
-    -webkit-backdrop-filter:blur(20px) saturate(160%);
-    border:1px solid var(--border);
-    box-shadow:var(--shadow-soft);
-    transition:.3s var(--ease);
-  }
-  .search-bar:focus-within{ border-color:var(--accent); box-shadow:var(--shadow-glow-cyan); }
-  .search-bar svg{ width:19px; height:19px; color:var(--text-faint); flex-shrink:0; }
-  .search-bar input{
-    flex:1; background:none; border:none; color:var(--text); font-size:14.5px; outline:none;
-    font-family:var(--font-body);
-  }
-  .search-kbd{
-    font-size:11px; color:var(--text-faint); border:1px solid var(--border-strong);
-    padding:3px 7px; border-radius:6px; flex-shrink:0;
-  }
-  .search-placeholder-cycle{ position:absolute; left:52px; pointer-events:none; color:var(--text-faint); font-size:14.5px; }
-
-  /* =========================================================
-     6. SECTION HEADERS
-     ========================================================= */
-  .section{ margin-bottom:34px; }
-  .section-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:14px; }
-  .section-title{ font-family:var(--font-display); font-weight:600; font-size:16.5px; letter-spacing:-0.01em; }
-  .section-link{ font-size:12.5px; color:var(--text-faint); transition:.2s; }
-  .section-link:hover{ color:var(--accent); }
-
-  /* =========================================================
-     7. STAT CARDS
-     ========================================================= */
-  .stats-grid{
-    display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr));
-    gap:16px;
-  }
-  .stat-card{
-    position:relative; overflow:hidden;
-    background:var(--card); border:1px solid var(--border); border-radius:var(--radius-md);
-    padding:18px; transition:.35s var(--ease);
-    animation:fadeSlideUp .6s var(--ease) forwards;
-  }
-  .stat-card:hover{ transform:translateY(-4px); border-color:var(--border-strong); box-shadow:var(--shadow-soft); }
-  .stat-card::after{
-    content:''; position:absolute; inset:0; opacity:0; transition:opacity .35s;
-    background:radial-gradient(120px 80px at 80% 0%, var(--glow, var(--accent-dim)), transparent 70%);
-  }
-  .stat-card:hover::after{ opacity:1; }
-  .stat-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
-  .stat-icon{
-    width:36px; height:36px; border-radius:11px; display:flex; align-items:center; justify-content:center;
-    background:var(--glow, var(--accent-dim)); color:var(--tint, var(--accent));
-  }
-  .stat-icon svg{ width:18px; height:18px; }
-  .stat-trend{ font-size:11.5px; font-weight:600; padding:3px 8px; border-radius:100px; }
-  .stat-trend.up{ color:var(--green); background:var(--green-dim); }
-  .stat-trend.down{ color:var(--red); background:rgba(239,68,68,0.14); }
-  .stat-value{ font-family:var(--font-display); font-weight:700; font-size:24px; letter-spacing:-0.01em; }
-  .stat-label{ font-size:12px; color:var(--text-faint); margin-top:2px; }
-  .stat-spark{ width:100%; height:28px; margin-top:10px; }
-  .stat-spark path{ fill:none; stroke:var(--tint, var(--accent)); stroke-width:2; }
-  .stat-spark .fill{ stroke:none; opacity:.15; fill:var(--tint, var(--accent)); }
-
-  /* =========================================================
-     8. QUICK ACCESS CARDS
-     ========================================================= */
-  .quick-grid{
-    display:grid; grid-template-columns:repeat(auto-fill, minmax(135px,1fr));
-    gap:14px;
-  }
-  .quick-card{
-    position:relative; overflow:hidden;
-    background:var(--card); border:1px solid var(--border); border-radius:var(--radius-md);
-    padding:18px 14px; display:flex; flex-direction:column; gap:28px;
-    cursor:pointer; transition:.35s var(--ease);
-    animation:fadeSlideUp .6s var(--ease) forwards;
-  }
-  .quick-card:hover{ transform:translateY(-6px) scale(1.015); box-shadow:var(--shadow-soft), var(--shadow-glow-cyan); border-color:transparent; }
-  .quick-card::before{
-    content:''; position:absolute; inset:0; opacity:0; transition:opacity .35s;
-    background:linear-gradient(135deg, var(--qc1, var(--accent)) 0%, transparent 60%);
-  }
-  .quick-card:hover::before{ opacity:.16; }
-  .quick-card .ripple{
-    position:absolute; border-radius:50%; background:rgba(255,255,255,0.35);
-    transform:scale(0); animation:rippleAnim .6s var(--ease);
-    pointer-events:none;
-  }
-  @keyframes rippleAnim{ to{ transform:scale(1); opacity:0; } }
-  .quick-icon{
-    width:40px; height:40px; border-radius:13px; display:flex; align-items:center; justify-content:center;
-    background:var(--qc-dim, var(--accent-dim)); color:var(--qc1, var(--accent));
-    position:relative; z-index:1;
-  }
-  .quick-icon svg{ width:20px; height:20px; }
-  .quick-name{ font-weight:600; font-size:13.5px; position:relative; z-index:1; }
-  .quick-sub{ font-size:11px; color:var(--text-faint); position:relative; z-index:1; margin-top:-22px; }
-
-  /* =========================================================
-     9. GENERIC PANEL
-     ========================================================= */
-  .panel{
-    background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg);
-    padding:20px; margin-bottom:20px;
-    animation:fadeSlideUp .6s var(--ease) forwards;
-  }
-  .panel-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
-  .panel-title{ font-weight:600; font-size:14.5px; display:flex; align-items:center; gap:8px; }
-  .panel-title svg{ width:16px; height:16px; color:var(--accent); }
-
-  .content-grid{ display:grid; grid-template-columns:1.4fr 1fr; gap:20px; align-items:start; }
-  .grid-two{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-
-  /* Activity list */
-  .activity-row{
-    display:flex; align-items:center; gap:12px; padding:10px 4px; border-radius:12px;
-    transition:.2s;
-  }
-  .activity-row:hover{ background:rgba(255,255,255,0.03); }
-  .activity-icon{
-    width:34px; height:34px; border-radius:10px; flex-shrink:0;
-    display:flex; align-items:center; justify-content:center; background:var(--accent-dim); color:var(--accent);
-  }
-  .activity-icon svg{ width:16px; height:16px; }
-  .activity-text{ flex:1; min-width:0; }
-  .activity-title{ font-size:13.5px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .activity-meta{ font-size:11.5px; color:var(--text-faint); }
-  .activity-time{ font-size:11px; color:var(--text-faint); flex-shrink:0; }
-
-  /* AI status */
-  .status-row{ display:flex; justify-content:space-between; align-items:center; padding:9px 0; font-size:13px; border-bottom:1px solid var(--border); }
-  .status-row:last-child{ border-bottom:none; }
-  .status-label{ color:var(--text-faint); }
-  .status-value{ font-weight:600; display:flex; align-items:center; gap:6px; }
-  .live-dot{ width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 2s infinite; }
-  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.4;} }
-
-  /* Weather */
-  .weather-hero{ display:flex; align-items:center; justify-content:space-between; }
-  .weather-temp{ font-family:var(--font-display); font-size:42px; font-weight:700; letter-spacing:-0.02em; }
-  .weather-city{ color:var(--text-dim); font-size:13px; margin-top:2px; }
-  .weather-icon{ width:58px; height:58px; }
-  .weather-meta{ display:flex; gap:16px; margin-top:14px; font-size:12px; color:var(--text-faint); flex-wrap:wrap; }
-  .weather-meta b{ color:var(--text); }
-
-  /* Calendar */
-  .cal-date{ display:flex; align-items:baseline; gap:8px; }
-  .cal-day{ font-family:var(--font-display); font-size:36px; font-weight:700; }
-  .cal-month{ color:var(--text-dim); font-size:13px; }
-  .cal-event{ display:flex; align-items:center; gap:10px; padding:8px 0; font-size:13px; border-top:1px solid var(--border); margin-top:10px; }
-  .cal-event:first-of-type{ border-top:1px solid var(--border); margin-top:14px; }
-  .cal-dot{ width:7px; height:7px; border-radius:50%; flex-shrink:0; }
-
-  /* Focus */
-  .focus-ring-wrap{ display:flex; align-items:center; gap:20px; }
-  .focus-ring{ position:relative; width:96px; height:96px; flex-shrink:0; }
-  .focus-ring svg{ transform:rotate(-90deg); }
-  .focus-ring-bg{ stroke:var(--border); }
-  .focus-ring-fg{ stroke:var(--accent); stroke-linecap:round; transition:stroke-dashoffset 1s var(--ease); }
-  .focus-ring-label{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; }
-  .focus-ring-label b{ font-size:17px; font-family:var(--font-display); }
-  .focus-ring-label span{ font-size:9.5px; color:var(--text-faint); }
-  .focus-btns{ display:flex; gap:8px; margin-top:14px; }
-  .pill-btn{
-    padding:8px 14px; border-radius:100px; font-size:12.5px; font-weight:600;
-    background:var(--accent-dim); color:var(--accent); transition:.2s;
-  }
-  .pill-btn:hover{ background:var(--accent); color:#00131a; }
-  .pill-btn.ghost{ background:var(--card-hover); color:var(--text-dim); }
-
-  /* Music */
-  .now-playing{ display:flex; align-items:center; gap:12px; }
-  .album-art{
-    width:50px; height:50px; border-radius:12px; flex-shrink:0;
-    background:linear-gradient(135deg, var(--purple), var(--accent));
-    display:flex; align-items:center; justify-content:center;
-    animation:spin 8s linear infinite; animation-play-state:paused;
-  }
-  .now-playing.playing .album-art{ animation-play-state:running; }
-  @keyframes spin{ to{ transform:rotate(360deg); } }
-  .np-bars{ display:flex; align-items:flex-end; gap:2px; height:16px; margin-left:auto; }
-  .np-bars span{ width:3px; background:var(--accent); border-radius:2px; animation:bar 1s infinite ease-in-out; }
-  .np-bars span:nth-child(2){ animation-delay:.2s; } .np-bars span:nth-child(3){ animation-delay:.4s; }
-  @keyframes bar{ 0%,100%{height:4px;} 50%{height:16px;} }
-  .track-title{ font-size:13.5px; font-weight:600; }
-  .track-artist{ font-size:11.5px; color:var(--text-faint); }
-  .mini-row{ display:flex; align-items:center; gap:10px; padding:7px 0; font-size:12.5px; }
-  .mini-cover{ width:30px; height:30px; border-radius:8px; flex-shrink:0; }
-
-  /* Notes */
-  .note-item{ display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
-  .note-item:last-child{ border-bottom:none; }
-  .note-pin{ color:var(--amber); flex-shrink:0; margin-top:2px; }
-  .note-text{ font-size:13px; }
-  .note-check{ width:15px; height:15px; border-radius:5px; border:1.5px solid var(--border-strong); flex-shrink:0; margin-top:2px; }
-  .note-check.done{ background:var(--green); border-color:var(--green); }
-  .quick-note-input{
-    width:100%; background:var(--card-hover); border:1px solid var(--border); border-radius:12px;
-    padding:10px 12px; color:var(--text); font-size:13px; margin-top:12px; resize:none; font-family:inherit;
-  }
-
-  /* =========================================================
-     10. RIGHT SIDEBAR
-     ========================================================= */
-  .right-sidebar{
-    padding:28px 24px; border-left:1px solid var(--border);
-    position:sticky; top:0; height:100vh; overflow-y:auto;
-  }
-  .profile-card{
-    background:var(--card); border:1px solid var(--border); border-radius:var(--radius-lg);
-    padding:24px; text-align:center; margin-bottom:20px;
-  }
-  .profile-avatar{ width:72px; height:72px; border-radius:50%; margin:0 auto 12px; object-fit:cover; border:2px solid var(--border-strong); }
-  .profile-avatar-fallback{
-    width:72px; height:72px; border-radius:50%; margin:0 auto 12px;
-    background:linear-gradient(135deg, var(--purple), var(--accent));
-    display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:700; color:#fff;
-  }
-  .profile-name{ font-weight:600; font-size:16px; }
-  .profile-email{ font-size:12px; color:var(--text-faint); margin-top:2px; }
-  .profile-badge{
-    display:inline-flex; align-items:center; gap:5px; margin-top:12px; padding:5px 12px;
-    border-radius:100px; background:linear-gradient(135deg, var(--purple-dim), var(--accent-dim));
-    font-size:11px; font-weight:600; color:var(--accent);
-  }
-  .profile-stat-row{ display:flex; justify-content:space-between; padding:8px 0; font-size:12.5px; border-top:1px solid var(--border); margin-top:6px; }
-  .storage-bar{ height:6px; border-radius:100px; background:var(--card-hover); margin-top:6px; overflow:hidden; }
-  .storage-fill{ height:100%; background:linear-gradient(90deg, var(--accent), var(--purple)); border-radius:100px; }
-
-  .tip-card{
-    background:linear-gradient(160deg, var(--purple-dim), transparent);
-    border:1px solid var(--border); border-radius:var(--radius-md); padding:16px;
-    font-size:12.5px; color:var(--text-dim); line-height:1.5;
-  }
-  .tip-card b{ color:var(--text); display:block; margin-bottom:4px; font-size:13px; }
-
-  /* =========================================================
-     11. FLOATING DOCK
-     ========================================================= */
-  .dock-wrap{
-    position:fixed; bottom:18px; left:50%; transform:translateX(-50%); z-index:50;
-    max-width:calc(100vw - 24px);
-  }
-  .dock{
-    display:flex; align-items:flex-end; gap:8px; padding:8px 14px; border-radius:24px;
-    background:rgba(24,24,27,0.75);
-    backdrop-filter:blur(24px) saturate(180%); -webkit-backdrop-filter:blur(24px) saturate(180%);
-    border:1px solid var(--border-strong);
-    box-shadow:0 12px 40px rgba(0,0,0,0.5);
-    overflow-x:auto; max-width:100%; -webkit-overflow-scrolling:touch;
-  }
-  .dock::-webkit-scrollbar{ display:none; }
-  [data-theme="light"] .dock{ background:rgba(255,255,255,0.85); }
-  .dock-item{
-    width:44px; height:44px; border-radius:14px; display:flex; align-items:center; justify-content:center;
-    color:var(--text-dim); transition:transform .22s var(--ease), background .22s, color .22s;
-    position:relative; flex-shrink:0;
-  }
-  .dock-item svg{ width:20px; height:20px; }
-  .dock-item:hover{ transform:translateY(-8px) scale(1.1); background:var(--accent-dim); color:var(--accent); }
-  .dock-item.active{ color:var(--accent); }
-  .dock-item.active::after{
-    content:''; position:absolute; bottom:-6px; left:50%; transform:translateX(-50%);
-    width:4px; height:4px; border-radius:50%; background:var(--accent); box-shadow:0 0 6px var(--accent);
-  }
-  .dock-tooltip{
-    position:absolute; bottom:56px; left:50%; transform:translateX(-50%);
-    background:#000; color:#fff; font-size:11px; padding:4px 9px; border-radius:8px;
-    opacity:0; pointer-events:none; transition:.2s; white-space:nowrap;
-  }
-  .dock-item:hover .dock-tooltip{ opacity:1; }
-
-  /* =========================================================
-     12. TOASTS + FAB
-     ========================================================= */
-  .toast-stack{ position:fixed; top:20px; right:20px; z-index:200; display:flex; flex-direction:column; gap:10px; }
-  .toast{
-    display:flex; align-items:center; gap:10px; padding:13px 16px; border-radius:14px;
-    background:var(--bg-elevated); border:1px solid var(--border-strong); box-shadow:var(--shadow-soft);
-    font-size:13px; min-width:240px; animation:toastIn .4s var(--ease);
-  }
-  @keyframes toastIn{ from{ opacity:0; transform:translateX(30px); } to{ opacity:1; transform:translateX(0); } }
-  .toast.out{ animation:toastOut .3s var(--ease) forwards; }
-  @keyframes toastOut{ to{ opacity:0; transform:translateX(30px); } }
-  .toast-dot{ width:8px; height:8px; border-radius:50%; background:var(--accent); flex-shrink:0; }
-
-  .fab{
-    position:fixed; bottom:86px; right:24px; z-index:40;
-    width:50px; height:50px; border-radius:50%;
-    background:linear-gradient(135deg, var(--accent), var(--purple));
-    display:flex; align-items:center; justify-content:center; color:#00131a;
-    box-shadow:var(--shadow-glow-cyan); transition:.25s var(--ease);
-  }
-  .fab:hover{ transform:scale(1.08) rotate(90deg); }
-  .fab svg{ width:22px; height:22px; }
-
-  /* =========================================================
-     13. LOADING SCREEN
-     ========================================================= */
-  #loader{
-    position:fixed; inset:0; z-index:999; background:var(--bg);
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px;
-    transition:opacity .6s var(--ease), visibility .6s;
-  }
-  #loader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
-  .loader-logo{
-    padding:0 24px; height:56px; border-radius:18px;
-    background:linear-gradient(135deg, var(--accent), var(--purple));
-    display:flex; align-items:center; justify-content:center;
-    font-family:var(--font-display); font-weight:800; font-size:22px; color:#00131a;
-    letter-spacing:-0.03em;
-    animation:loaderPulse 1.4s ease-in-out infinite;
-  }
-  @keyframes loaderPulse{ 0%,100%{ transform:scale(1); box-shadow:0 0 0 rgba(0,229,255,0);} 50%{ transform:scale(1.05); box-shadow:0 0 40px rgba(0,229,255,0.5);} }
-  .loader-text{ font-size:12.5px; color:var(--text-faint); letter-spacing:.05em; }
-  .loader-bar{ width:160px; height:3px; border-radius:10px; background:var(--card); overflow:hidden; }
-  .loader-bar-fill{ height:100%; width:0%; background:linear-gradient(90deg, var(--accent), var(--purple)); transition:width .3s var(--ease); }
-
-  /* =========================================================
-     14. SHARED ANIMATIONS & RESPONSIVE
-     ========================================================= */
-  @keyframes fadeSlideUp{ from{ opacity:0; transform:translateY(16px);} to{ opacity:1; transform:translateY(0);} }
-
-  @media (max-width:1200px){
-    .app{ grid-template-columns: 80px 1fr; }
-    .right-sidebar{ display:none; }
-  }
-
-  @media (max-width:820px){
-    .app{ grid-template-columns: 1fr; }
-    .rail{
-      position:fixed; left:0; top:0; bottom:0; width:240px; height:100vh;
-      transform:translateX(-100%); box-shadow:10px 0 30px rgba(0,0,0,0.6);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>LifeHub Workspace</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ==========================================================================
+       1. CSS VARIABLES & DESIGN TOKENS (OBSIDIAN & AMBER THEME)
+       ========================================================================== */
+    :root {
+      /* Color Palette */
+      --bg-base: #09090b;       /* Zinc 950 - Deepest black */
+      --bg-surface: #18181b;    /* Zinc 900 - Card background */
+      --bg-elevated: #27272a;   /* Zinc 800 - Hover states */
+      --bg-highlight: #3f3f46;  /* Zinc 700 - Active states */
+      
+      --border-subtle: rgba(255, 255, 255, 0.05);
+      --border-base: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.2);
+      
+      /* Brand Accents based on Nocturne/Movies */
+      --accent-main: #f59e0b;    /* Amber 500 - Primary Gold */
+      --accent-hover: #d97706;   /* Amber 600 */
+      --accent-dim: rgba(245, 158, 11, 0.15);
+      --accent-glow: rgba(245, 158, 11, 0.3);
+      
+      /* Secondary Accents for Charts/Badges */
+      --color-success: #10b981;
+      --color-danger: #ef4444;
+      --color-info: #3b82f6;
+      --color-purple: #8b5cf6;
+      
+      /* Typography */
+      --text-primary: #f4f4f5;   /* Zinc 100 */
+      --text-secondary: #a1a1aa; /* Zinc 400 */
+      --text-tertiary: #71717a;  /* Zinc 500 */
+      
+      /* Geometry */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-xl: 32px;
+      
+      /* Layout & Animation */
+      --sidebar-width: 280px;
+      --header-height: 80px;
+      --transition-snappy: 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+      --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
     }
-    .rail.open{ transform:translateX(0); }
-    .mobile-menu-btn{ display:flex; margin-right:8px; }
-    .main{ padding:20px 16px 160px; }
-    .topbar{ gap:12px; margin-bottom:20px; }
-    .greeting{ font-size:20px; }
-    .quote{ font-size:12.5px; }
-    .clock-chip{ display:none; }
-    
-    .stats-grid{ grid-template-columns:repeat(2, 1fr); gap:12px; }
-    .quick-grid{ grid-template-columns:repeat(2, 1fr); gap:10px; }
-    .grid-two{ grid-template-columns:1fr; gap:14px; }
-    .panel{ padding:16px; margin-bottom:14px; }
-    .search-shell{ margin-bottom:22px; }
-    .search-bar{ padding:12px 16px; }
-    .search-kbd{ display:none; }
-    
-    .focus-ring-wrap{ flex-direction:column; align-items:center; text-align:center; }
-    .toast-stack{ top:auto; bottom:150px; right:16px; left:16px; }
-    .toast{ min-width:auto; width:100%; text-align:center; }
-    .fab{ bottom:150px; right:16px; width:44px; height:44px; }
-  }
 
-  @media (max-width:480px){
-    .stats-grid{ grid-template-columns:1fr; }
-    .quick-grid{ grid-template-columns:repeat(2, 1fr); }
-    .avatar-email{ display:none; }
-  }
+    /* ==========================================================================
+       2. GLOBAL RESET & BASE STYLES
+       ========================================================================== */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  .empty-state{ text-align:center; padding:24px 10px; color:var(--text-faint); font-size:13px; }
-</style>
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.5;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Scrollbar Engineering */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--bg-highlight);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-tertiary);
+    }
+
+    /* Base Typographic utilities */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text-primary);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      background: none;
+      border: none;
+      font-family: inherit;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    button:focus,
+    input:focus {
+      outline: 2px solid var(--accent-main);
+      outline-offset: 2px;
+    }
+
+    input:focus:not(:focus-visible) {
+      outline: none;
+    }
+
+    /* Custom SVG Icon Sizing */
+    .icon-svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Background Canvas */
+    #ambientCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    /* ==========================================================================
+       3. STRUCTURAL LAYOUT
+       ========================================================================== */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* --------------------------------------------------------------------------
+       SIDEBAR COMPONENT
+       -------------------------------------------------------------------------- */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: rgba(9, 9, 11, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-right: 1px solid var(--border-base);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      left: 0;
+      top: 0;
+      z-index: 50;
+      transition: transform var(--transition-smooth);
+    }
+
+    .sidebar-header {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .brand-combo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent-main);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--bg-base);
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    .brand-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 2.5;
+    }
+
+    .brand-text {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 24px 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nav-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 12px 0 4px 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 14px;
+      transition: all var(--transition-snappy);
+    }
+
+    .nav-item:hover {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background: var(--accent-dim);
+      color: var(--accent-main);
+    }
+
+    .nav-item.active .icon-svg {
+      stroke: var(--accent-main);
+    }
+
+    .nav-item.logout {
+      margin-top: auto;
+      color: var(--color-danger);
+    }
+
+    .nav-item.logout:hover {
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Mobile Sidebar Overlay */
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+      z-index: 40;
+      opacity: 0;
+      visibility: hidden;
+      transition: all var(--transition-smooth);
+    }
+
+    .sidebar-overlay.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* --------------------------------------------------------------------------
+       MAIN CONTENT AREA
+       -------------------------------------------------------------------------- */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      transition: margin var(--transition-smooth);
+    }
+
+    /* Top Header */
+    .top-header {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      position: sticky;
+      top: 0;
+      background: rgba(9, 9, 11, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      z-index: 30;
+    }
+
+    .header-left,
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .mobile-trigger {
+      display: none;
+      color: var(--text-primary);
+      padding: 8px;
+      margin-left: -8px;
+    }
+
+    /* Search Bar */
+    .search-wrapper {
+      position: relative;
+      width: 400px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 999px;
+      padding: 12px 20px 12px 48px;
+      color: var(--text-primary);
+      font-size: 14px;
+      transition: all var(--transition-snappy);
+    }
+
+    .search-input:focus {
+      background: var(--bg-elevated);
+      border-color: var(--accent-main);
+      box-shadow: 0 0 0 4px var(--accent-dim);
+    }
+
+    .search-input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    /* Quick Actions */
+    .action-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      color: var(--text-secondary);
+      transition: all var(--transition-snappy);
+      position: relative;
+    }
+
+    .action-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--text-tertiary);
+      background: var(--bg-elevated);
+    }
+
+    .badge-indicator {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 10px;
+      height: 10px;
+      background: var(--color-danger);
+      border: 2px solid var(--bg-base);
+      border-radius: 50%;
+    }
+
+    /* User Profile */
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 16px 6px 6px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: border var(--transition-snappy);
+    }
+
+    .user-profile:hover {
+      border-color: var(--border-strong);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent-main);
+      color: var(--bg-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .user-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .user-role {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    /* --------------------------------------------------------------------------
+       DASHBOARD WORKSPACE (BENTO GRID & WIDGETS)
+       -------------------------------------------------------------------------- */
+    .workspace {
+      padding: 40px;
+      max-width: 1600px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    /* Hero Greeting Section */
+    .hero-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .greeting-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 600;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .greeting-title span {
+      color: var(--accent-main);
+      font-style: italic;
+    }
+
+    .greeting-subtitle {
+      font-size: 15px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      background: var(--accent-main);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-glow);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+      }
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(245, 158, 11, 0);
+      }
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+      }
+    }
+
+    .clock-widget {
+      text-align: right;
+    }
+
+    .clock-time {
+      font-size: 32px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -1px;
+    }
+
+    .clock-date {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    /* Bento Layout Grid */
+    .bento-layout {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+
+    /* Generic Card Base */
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--transition-snappy), border-color var(--transition-snappy);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title .icon-svg {
+      color: var(--text-tertiary);
+      width: 20px;
+      height: 20px;
+    }
+
+    .card-action {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-main);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-action:hover {
+      text-decoration: underline;
+    }
+
+    /* Stats Row (Spans 3 cols each) */
+    .stat-card {
+      grid-column: span 3;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-icon-wrap {
+      width: 48px;
+      height: 48px;
+      background: var(--bg-elevated);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: -1px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .stat-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .trend-up {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--color-success);
+    }
+
+    .trend-down {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--color-danger);
+    }
+
+    .trend-neutral {
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+    }
+
+    /* Main Modules (Spans 8 cols) */
+    .modules-section {
+      grid-column: span 8;
+    }
+
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .module-card {
+      height: 200px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      transition: all var(--transition-snappy);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .module-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(9, 9, 11, 0.8) 100%);
+      z-index: 1;
+    }
+
+    .module-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-main);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .module-card-icon {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 44px;
+      height: 44px;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-main);
+      z-index: 2;
+    }
+
+    .module-card-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .module-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .module-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Agenda / Tasks (Spans 4 cols) */
+    .agenda-section {
+      grid-column: span 4;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .agenda-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+      overflow-y: auto;
+      max-height: 200px;
+      padding-right: 4px;
+    }
+
+    .agenda-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg-elevated);
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      transition: all var(--transition-snappy);
+    }
+
+    .agenda-item:hover {
+      border-color: var(--border-base);
+    }
+
+    .agenda-checkbox {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--text-tertiary);
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 2px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .agenda-item.completed .agenda-checkbox {
+      background: var(--accent-main);
+      border-color: var(--accent-main);
+    }
+
+    .agenda-item.completed .agenda-checkbox::after {
+      content: '✓';
+      color: var(--bg-base);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .agenda-content {
+      flex: 1;
+    }
+
+    .agenda-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .agenda-item.completed .agenda-text {
+      text-decoration: line-through;
+      color: var(--text-tertiary);
+    }
+
+    .agenda-time {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+
+    .agenda-delete {
+      color: var(--text-tertiary);
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .agenda-item:hover .agenda-delete {
+      opacity: 1;
+    }
+
+    .agenda-delete:hover {
+      color: var(--color-danger);
+    }
+
+    /* Add Task Input */
+    .add-task-form {
+      display: flex;
+      margin-top: 16px;
+      gap: 8px;
+    }
+
+    .task-input {
+      flex: 1;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-base);
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 13px;
+    }
+
+    .task-submit {
+      background: var(--accent-main);
+      color: var(--bg-base);
+      border: none;
+      padding: 0 16px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Now Playing Music Sync (Spans 6 cols) */
+    .music-section {
+      grid-column: span 6;
+    }
+
+    .player-container {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      background: var(--bg-elevated);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-base);
+    }
+
+    .album-art {
+      width: 80px;
+      height: 80px;
+      border-radius: var(--radius-sm);
+      background: #000;
+      background-size: cover;
+      background-position: center;
+      flex-shrink: 0;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .album-art .fallback-icon {
+      color: var(--text-tertiary);
+      width: 32px;
+      height: 32px;
+    }
+
+    .player-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .track-title {
+      font-size: 18px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 4px;
+    }
+
+    .track-artist {
+      font-size: 14px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .ctrl-btn {
+      color: var(--text-secondary);
+      transition: color 0.2s;
+    }
+
+    .ctrl-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .play-pause-btn {
+      width: 40px;
+      height: 40px;
+      background: var(--accent-main);
+      color: var(--bg-base);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+
+    .play-pause-btn:hover {
+      transform: scale(1.05);
+      background: var(--accent-hover);
+    }
+
+    .progress-container {
+      width: 100%;
+      margin-top: 16px;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: var(--bg-highlight);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 30%; /* Simulated */
+      background: var(--accent-main);
+      border-radius: 2px;
+      transition: width 1s linear;
+    }
+
+    .progress-times {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-tertiary);
+      margin-top: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Weather & Environment (Spans 6 cols) */
+    .weather-section {
+      grid-column: span 6;
+    }
+
+    .weather-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .weather-temp-box {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .temp-value {
+      font-size: 64px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -2px;
+    }
+
+    .temp-unit {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--accent-main);
+      margin-top: 8px;
+      margin-left: 4px;
+    }
+
+    .weather-condition {
+      text-align: right;
+    }
+
+    .weather-icon {
+      width: 48px;
+      height: 48px;
+      color: var(--accent-main);
+      margin-bottom: 8px;
+    }
+
+    .condition-text {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .location-text {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .weather-details {
+      display: flex;
+      gap: 16px;
+    }
+
+    .w-detail {
+      flex: 1;
+      background: var(--bg-elevated);
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .w-detail svg {
+      color: var(--text-tertiary);
+    }
+
+    .w-data {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .w-label {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+    }
+
+    .w-val {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* --------------------------------------------------------------------------
+       4. FLOATING AI CHAT (FAB & MODAL)
+       -------------------------------------------------------------------------- */
+    .fab-container {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      z-index: 40;
+    }
+
+    .fab-btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--accent-main);
+      color: var(--bg-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+      cursor: pointer;
+      transition: all var(--transition-snappy);
+    }
+
+    .fab-btn:hover {
+      transform: translateY(-4px) scale(1.05);
+      background: var(--accent-hover);
+    }
+
+    .fab-btn svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    /* AI Modal Backdrop */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all var(--transition-snappy);
+    }
+
+    .modal-backdrop.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .ai-modal {
+      width: 100%;
+      max-width: 560px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      transform: translateY(20px) scale(0.95);
+      transition: all var(--transition-smooth);
+    }
+
+    .modal-backdrop.is-active .ai-modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-base);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-title svg {
+      color: var(--accent-main);
+    }
+
+    .modal-close {
+      color: var(--text-tertiary);
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .chat-window {
+      height: 350px;
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .chat-bubble {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .chat-bubble.ai {
+      align-self: flex-start;
+      background: var(--bg-elevated);
+      border-bottom-left-radius: 4px;
+      border: 1px solid var(--border-base);
+    }
+
+    .chat-bubble.user {
+      align-self: flex-end;
+      background: var(--accent-dim);
+      color: var(--accent-main);
+      border-bottom-right-radius: 4px;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .chat-input-area {
+      padding: 20px 24px;
+      border-top: 1px solid var(--border-base);
+      display: flex;
+      gap: 12px;
+    }
+
+    .chat-input-area input {
+      flex: 1;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-base);
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .send-btn {
+      width: 48px;
+      height: 48px;
+      background: var(--accent-main);
+      color: var(--bg-base);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .send-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    /* ==========================================================================
+       5. RESPONSIVE DESIGN BREAKPOINTS
+       ========================================================================== */
+    @media (max-width: 1400px) {
+      .stat-card {
+        grid-column: span 6;
+      }
+      .modules-section {
+        grid-column: span 12;
+      }
+      .agenda-section {
+        grid-column: span 12;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .music-section {
+        grid-column: span 12;
+      }
+      .weather-section {
+        grid-column: span 12;
+      }
+    }
+
+    @media (max-width: 860px) {
+      /* Enable Mobile Sidebar */
+      :root {
+        --sidebar-width: 280px;
+      }
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.is-active {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+      }
+      .mobile-trigger {
+        display: block;
+      }
+      /* Layout adjustments */
+      .top-header {
+        padding: 0 20px;
+      }
+      .search-wrapper {
+        display: none;
+      }
+      .workspace {
+        padding: 24px 20px;
+        gap: 24px;
+      }
+      .greeting-title {
+        font-size: 36px;
+      }
+      .module-grid {
+        grid-template-columns: 1fr;
+      }
+      .stat-card {
+        grid-column: span 12;
+      }
+      .fab-container {
+        bottom: 20px;
+        right: 20px;
+      }
+      .weather-details {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<div id="loader">
-  <div class="loader-logo">LifeHub</div>
-  <div class="loader-bar"><div class="loader-bar-fill" id="loaderFill"></div></div>
-  <div class="loader-text">PREPARING YOUR WORKSPACE…</div>
-</div>
+  <canvas id="ambientCanvas"></canvas>
 
-<div class="aurora"></div>
-<canvas id="particles"></canvas>
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="app-layout">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<div class="toast-stack" id="toastStack"></div>
-
-<div class="app">
-
-  <nav class="rail" id="railNav" aria-label="Primary">
-    <div class="rail-logo">LifeHub</div>
-    <a href="dashboard.html" class="rail-btn active" title="Dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg></a>
-    <a href="ai.html" class="rail-btn" title="AI Assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/><circle cx="12" cy="12" r="3"/></svg></a>
-    <a href="music.html" class="rail-btn" title="Music"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></a>
-    <a href="movies.html" class="rail-btn" title="Movies"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/></svg></a>
-    <a href="notes.html" class="rail-btn" title="Notes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg></a>
-    <a href="downloader.html" class="rail-btn" title="Downloader"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></a>
-    <div class="rail-spacer"></div>
-    <button class="rail-btn" id="themeToggleRail" title="Toggle theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
-    <button class="rail-btn" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
-  </nav>
-
-  <main class="main">
-
-    <header class="topbar">
-      <div class="greeting-block">
-        <button class="icon-btn mobile-menu-btn" id="mobileMenuBtn" title="Toggle menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-        </button>
-        <div>
-          <h1 class="greeting"><span class="wave">👋</span><span id="greetingText">Good Morning</span>,&nbsp;<span id="greetingName">User</span></h1>
-          <p class="quote" id="quoteText">System synchronized.</p>
-        </div>
-      </div>
-      <div class="topbar-right">
-        <div class="clock-chip">
-          <span class="time" id="liveClock">--:--:--</span>
-          <span class="date" id="liveDate">—</span>
-        </div>
-        <button class="icon-btn" id="notifBtn" title="Notifications">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-          <span class="dot"></span>
-        </button>
-        <div class="avatar-wrap" id="avatarWrap">
-          <img class="avatar" id="avatarImg" src="" alt="" style="display:none;">
-          <div class="avatar-fallback" id="avatarFallback">U</div>
-          <div>
-            <div class="avatar-name" id="avatarName">User</div>
-            <div class="avatar-email" id="avatarEmail">Active Session</div>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <div class="search-shell">
-      <div class="search-bar">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        <input type="text" id="searchInput" aria-label="Search LifeHub" autocomplete="off">
-        <span class="search-placeholder-cycle" id="placeholderCycle"></span>
-        <span class="search-kbd">⌘K</span>
-      </div>
-    </div>
-
-    <section class="section">
-      <div class="section-head">
-        <h2 class="section-title">Overview</h2>
-        <a class="section-link" href="#">View report →</a>
-      </div>
-      <div class="stats-grid" id="statsGrid"></div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <h2 class="section-title">Quick Access</h2>
-        <a class="section-link" href="#">Customize</a>
-      </div>
-      <div class="quick-grid" id="quickGrid"></div>
-    </section>
-
-    <section class="section grid-two">
-      <div class="panel" style="animation-delay:.05s">
-        <div class="panel-head">
-          <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/><circle cx="12" cy="12" r="3"/></svg>AI Status</div>
-          <span class="stat-trend up">Operational</span>
-        </div>
-        <div class="status-row"><span class="status-label">Provider</span><span class="status-value" id="aiProvider">Gemini</span></div>
-        <div class="status-row"><span class="status-label">Model</span><span class="status-value" id="aiModel">Gemini 2.5 Flash</span></div>
-        <div class="status-row"><span class="status-label">API Status</span><span class="status-value"><span class="live-dot"></span>Online</span></div>
-        <div class="status-row"><span class="status-label">Latency</span><span class="status-value" id="aiLatency">—</span></div>
-        <div class="status-row"><span class="status-label">Response time</span><span class="status-value" id="aiResponse">—</span></div>
-        <div class="status-row"><span class="status-label">System health</span><span class="status-value" style="color:var(--green)">Excellent</span></div>
-      </div>
-
-      <div class="panel" style="animation-delay:.1s">
-        <div class="panel-head">
-          <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v2M12 19v2M5 5l1.4 1.4M17.6 17.6L19 19M3 12h2M19 12h2M5 19l1.4-1.4M17.6 6.4L19 5"/><circle cx="12" cy="12" r="4"/></svg>Weather</div>
-          <span class="section-link" id="weatherLocLabel">Detecting…</span>
-        </div>
-        <div class="weather-hero">
-          <div>
-            <div class="weather-temp" id="weatherTemp">--°</div>
-            <div class="weather-city" id="weatherCity">Locating you…</div>
-          </div>
-          <svg class="weather-icon" id="weatherIcon" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><path d="M12 1v3M12 20v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M1 12h3M20 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
-        </div>
-        <div class="weather-meta">
-          <span>Humidity <b id="weatherHumidity">—</b></span>
-          <span>Wind <b id="weatherWind">—</b></span>
-          <span>Feels like <b id="weatherFeels">—</b></span>
-        </div>
-      </div>
-    </section>
-
-    <section class="section grid-two">
-      <div class="panel" style="animation-delay:.15s">
-        <div class="panel-head">
-          <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendar</div>
-          <span class="section-link" id="calMonthLabel">—</span>
-        </div>
-        <div class="cal-date">
-          <span class="cal-day" id="calDay">--</span>
-          <span class="cal-month" id="calWeekday">—</span>
-        </div>
-        <div id="calEvents"></div>
-      </div>
-
-      <div class="panel" style="animation-delay:.2s">
-        <div class="panel-head">
-          <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Focus Panel</div>
-          <span class="section-link">Pomodoro</span>
-        </div>
-        <div class="focus-ring-wrap">
-          <div class="focus-ring">
-            <svg width="96" height="96">
-              <circle class="focus-ring-bg" cx="48" cy="48" r="42" stroke-width="7" fill="none"/>
-              <circle class="focus-ring-fg" id="focusRingFg" cx="48" cy="48" r="42" stroke-width="7" fill="none" stroke-dasharray="264"/>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-combo">
+          <div class="brand-icon">
+            <svg 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+              />
             </svg>
-            <div class="focus-ring-label"><b id="focusTimeLabel">25:00</b><span>REMAINING</span></div>
           </div>
-          <div>
-            <div style="font-size:13px;color:var(--text-dim)">Daily goal: <b id="focusGoalLabel" style="color:var(--text)">2 / 4 sessions</b></div>
-            <div class="focus-btns">
-              <button class="pill-btn" id="focusStart">Start</button>
-              <button class="pill-btn ghost" id="focusReset">Reset</button>
+          <div class="brand-text">LifeHub</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">Main Menu</div>
+        
+        <a href="dashboard.html" class="nav-item active">
+          <svg 
+            class="icon-svg" 
+            viewBox="0 0 24 24"
+          >
+            <rect x="3" y="3" width="7" height="9" rx="1"/>
+            <rect x="14" y="3" width="7" height="5" rx="1"/>
+            <rect x="14" y="12" width="7" height="9" rx="1"/>
+            <rect x="3" y="16" width="7" height="5" rx="1"/>
+          </svg>
+          Dashboard
+        </a>
+        
+        <a href="ai.html" class="nav-item">
+          <svg 
+            class="icon-svg" 
+            viewBox="0 0 24 24"
+          >
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            <circle cx="12" cy="12" r="4"/>
+          </svg>
+          AI Assistant
+        </a>
+        
+        <a href="music.html" class="nav-item">
+          <svg 
+            class="icon-svg" 
+            viewBox="0 0 24 24"
+          >
+            <path d="M9 18V5l12-2v13"/>
+            <circle cx="6" cy="18" r="3"/>
+            <circle cx="18" cy="16" r="3"/>
+          </svg>
+          Music (Nocturne)
+        </a>
+        
+        <a href="movies.html" class="nav-item">
+          <svg 
+            class="icon-svg" 
+            viewBox="0 0 24 24"
+          >
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/>
+          </svg>
+          Movies
+        </a>
+
+        <div class="nav-label" style="margin-top:24px;">Tools & Space</div>
+        
+        <a href="downloader.html" class="nav-item">
+          <svg 
+            class="icon-svg" 
+            viewBox="0 0 24 24"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+          </svg>
+          Downloader
+        </a>
+        
+        <a href="notes.html" class="nav-item">
+          <svg 
+            class="icon-svg" 
+            viewBox="0 0 24 24"
+          >
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          Notes
+        </a>
+        
+        <a href="focus.html" class="nav-item">
+          <svg 
+            class="icon-svg" 
+            viewBox="0 0 24 24"
+          >
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="4"/>
+            <line x1="21.17" y1="8" x2="12" y2="8"/>
+            <line x1="3.95" y1="6.06" x2="8.54" y2="14"/>
+            <line x1="10.88" y1="21.94" x2="15.46" y2="14"/>
+          </svg>
+          Focus Space
+        </a>
+        
+        <a href="qr-tools.html" class="nav-item">
+          <svg 
+            class="icon-svg" 
+            viewBox="0 0 24 24"
+          >
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+            <path d="M3 14h7v7H3z"/>
+          </svg>
+          QR Tools
+        </a>
+
+        <a href="#" class="nav-item logout" id="logoutBtn">
+          <svg 
+            class="icon-svg" 
+            viewBox="0 0 24 24"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+          </svg>
+          Logout Session
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-trigger" id="mobileMenuTrigger">
+            <svg 
+              class="icon-svg" 
+              viewBox="0 0 24 24"
+            >
+              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+          
+          <div class="search-wrapper">
+            <svg 
+              class="icon-svg search-icon" 
+              viewBox="0 0 24 24"
+            >
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input 
+              type="text" 
+              class="search-input" 
+              placeholder="Search across LifeHub..."
+            >
+          </div>
+        </div>
+        
+        <div class="header-right">
+          <button class="action-btn" title="Notifications">
+            <svg 
+              class="icon-svg" 
+              viewBox="0 0 24 24"
+            >
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span class="badge-indicator"></span>
+          </button>
+          
+          <div class="user-profile">
+            <div class="user-avatar" id="headerAvatarInitials">
+              AR
+            </div>
+            <div class="user-details">
+              <span class="user-name" id="headerUserName">
+                Alex Rivera
+              </span>
+              <span class="user-role">
+                PRO PLAN
+              </span>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </header>
 
-    <section class="section grid-two">
-      <div class="panel" style="animation-delay:.1s">
-        <div class="panel-head">
-          <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Now Playing</div>
-          <a href="music.html" class="section-link">Open player →</a>
-        </div>
-        <div class="now-playing playing">
-          <div class="album-art"></div>
+      <div class="workspace">
+        <section class="hero-section">
           <div>
-            <div class="track-title">33x</div>
-            <div class="track-artist">Perunggu</div>
+            <h1 class="greeting-title">
+              Good <span>Evening</span>, Alex.
+            </h1>
+            <div class="greeting-subtitle">
+              <div class="status-indicator"></div> 
+              Obsidian & Gold protocols active. All systems online.
+            </div>
           </div>
-          <div class="np-bars"><span></span><span></span><span></span></div>
+          
+          <div class="clock-widget">
+            <div class="clock-time" id="realTimeClock">
+              00:00
+            </div>
+            <div class="clock-date" id="realTimeDate">
+              LOADING...
+            </div>
+          </div>
+        </section>
+
+        <div class="bento-layout">
+          <div class="card stat-card">
+            <div class="stat-icon-wrap">
+              <svg 
+                class="icon-svg" 
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <div class="stat-value">1,248</div>
+            <div class="stat-label">AI Interactions</div>
+            <div class="stat-trend trend-up">
+              <svg 
+                width="14" 
+                height="14" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                stroke-width="2"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                <polyline points="17 6 23 6 23 12"/>
+              </svg> 
+              +12.5%
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon-wrap">
+              <svg 
+                class="icon-svg" 
+                viewBox="0 0 24 24"
+              >
+                <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+              </svg>
+            </div>
+            <div class="stat-value">45.2k</div>
+            <div class="stat-label">Tokens Used</div>
+            <div class="stat-trend trend-down">
+              <svg 
+                width="14" 
+                height="14" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                stroke-width="2"
+              >
+                <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/>
+                <polyline points="17 18 23 18 23 12"/>
+              </svg> 
+              -2.1%
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon-wrap">
+              <svg 
+                class="icon-svg" 
+                viewBox="0 0 24 24"
+              >
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+            </div>
+            <div class="stat-value">
+              94<span style="font-size:16px; color:var(--text-tertiary)">/100</span>
+            </div>
+            <div class="stat-label">Productivity Score</div>
+            <div class="stat-trend trend-up">
+              <svg 
+                width="14" 
+                height="14" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                stroke-width="2"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                <polyline points="17 6 23 6 23 12"/>
+              </svg> 
+              Peak
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon-wrap">
+              <svg 
+                class="icon-svg" 
+                viewBox="0 0 24 24"
+              >
+                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+                <line x1="6" y1="6" x2="6.01" y2="6"/>
+                <line x1="6" y1="18" x2="6.01" y2="18"/>
+              </svg>
+            </div>
+            <div class="stat-value">
+              64<span style="font-size:16px; color:var(--text-tertiary)">%</span>
+            </div>
+            <div class="stat-label">Storage Active (2.4GB)</div>
+            <div class="stat-trend trend-neutral">
+              <svg 
+                width="14" 
+                height="14" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                stroke-width="2"
+              >
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg> 
+              Stable
+            </div>
+          </div>
+
+          <div class="modules-section">
+            <div class="card" style="height: 100%;">
+              <div class="card-header">
+                <h2 class="card-title">
+                  <svg class="icon-svg">
+                    <path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <path d="M2 15h10"/>
+                    <path d="M9 18l3-3-3-3"/>
+                  </svg> 
+                  Quick Modules
+                </h2>
+                <a href="ai.html" class="card-action">View All</a>
+              </div>
+              <div class="module-grid">
+                <div 
+                  class="module-card" 
+                  onclick="location.href='ai.html'" 
+                  style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100%\' height=\'100%\'><rect width=\'100%\' height=\'100%\' fill=\'%2318181b\'/><circle cx=\'80\' cy=\'80\' r=\'60\' fill=\'none\' stroke=\'%2327272a\' stroke-width=\'2\'/></svg>'); background-size: cover;"
+                >
+                  <div class="module-card-icon">
+                    <svg class="icon-svg">
+                      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                      <circle cx="12" cy="12" r="4"/>
+                    </svg>
+                  </div>
+                  <div class="module-card-content">
+                    <div class="module-title">Neural Chat</div>
+                    <div class="module-desc">Engage with sophisticated AI models.</div>
+                  </div>
+                </div>
+                
+                <div 
+                  class="module-card" 
+                  onclick="location.href='music.html'" 
+                  style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100%\' height=\'100%\'><rect width=\'100%\' height=\'100%\' fill=\'%2318181b\'/><path d=\'M0 100 Q 50 50 100 100 T 200 100\' fill=\'none\' stroke=\'%2327272a\' stroke-width=\'4\'/></svg>'); background-size: cover;"
+                >
+                  <div class="module-card-icon">
+                    <svg class="icon-svg">
+                      <path d="M9 18V5l12-2v13"/>
+                      <circle cx="6" cy="18" r="3"/>
+                      <circle cx="18" cy="16" r="3"/>
+                    </svg>
+                  </div>
+                  <div class="module-card-content">
+                    <div class="module-title">Nocturne Audio</div>
+                    <div class="module-desc">Your curated music library.</div>
+                  </div>
+                </div>
+                
+                <div 
+                  class="module-card" 
+                  onclick="location.href='movies.html'" 
+                  style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100%\' height=\'100%\'><rect width=\'100%\' height=\'100%\' fill=\'%2318181b\'/><rect x=\'20\' y=\'20\' width=\'60\' height=\'40\' fill=\'none\' stroke=\'%2327272a\' stroke-width=\'2\'/></svg>'); background-size: cover;"
+                >
+                  <div class="module-card-icon">
+                    <svg class="icon-svg">
+                      <rect x="2" y="4" width="20" height="16" rx="2"/>
+                      <path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/>
+                    </svg>
+                  </div>
+                  <div class="module-card-content">
+                    <div class="module-title">Vision Media</div>
+                    <div class="module-desc">Stream and manage cinematic assets.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="agenda-section">
+            <div class="card" style="height: 100%; display: flex; flex-direction: column;">
+              <div class="card-header">
+                <h2 class="card-title">
+                  <svg class="icon-svg">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <path d="M14 2v6h6"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10 9 9 9 8 9"/>
+                  </svg> 
+                  Agenda
+                </h2>
+              </div>
+              <div class="agenda-list" id="agendaContainer"></div>
+              <form class="add-task-form" id="addTaskForm">
+                <input 
+                  type="text" 
+                  class="task-input" 
+                  id="newTaskInput" 
+                  placeholder="Add new task..." 
+                  required
+                >
+                <button type="submit" class="task-submit">+</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="music-section">
+            <div class="card" style="height: 100%;">
+              <div class="card-header">
+                <h2 class="card-title">
+                  <svg class="icon-svg">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                  </svg> 
+                  Now Playing
+                </h2>
+                <a href="music.html" class="card-action">Open Player</a>
+              </div>
+              <div class="player-container">
+                <div class="album-art" id="dashAlbumArt">
+                  <svg class="icon-svg fallback-icon" viewBox="0 0 24 24">
+                    <path d="M9 18V5l12-2v13"/>
+                    <circle cx="6" cy="18" r="3"/>
+                    <circle cx="18" cy="16" r="3"/>
+                  </svg>
+                </div>
+                <div class="player-info">
+                  <div class="track-title" id="dashTrackTitle">
+                    Nocturne Standby
+                  </div>
+                  <div class="track-artist" id="dashTrackArtist">
+                    Awaiting signal
+                  </div>
+                  
+                  <div class="progress-container">
+                    <div class="progress-bar">
+                      <div class="progress-fill" id="dashProgressFill" style="width: 0%;"></div>
+                    </div>
+                    <div class="progress-times">
+                      <span id="dashTimeCurrent">0:00</span>
+                      <span id="dashTimeTotal">-:--</span>
+                    </div>
+                  </div>
+                  
+                  <div class="player-controls">
+                    <button class="ctrl-btn">
+                      <svg class="icon-svg" viewBox="0 0 24 24">
+                        <polygon points="19 20 9 12 19 4 19 20"/>
+                        <line x1="5" y1="19" x2="5" y2="5"/>
+                      </svg>
+                    </button>
+                    
+                    <button class="play-pause-btn" id="dashPlayPauseBtn">
+                      <svg class="icon-svg" viewBox="0 0 24 24" style="fill:currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                      </svg>
+                    </button>
+                    
+                    <button class="ctrl-btn">
+                      <svg class="icon-svg" viewBox="0 0 24 24">
+                        <polygon points="5 4 15 12 5 20 5 4"/>
+                        <line x1="19" y1="5" x2="19" y2="19"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="weather-section">
+            <div class="card" style="height: 100%;">
+              <div class="card-header">
+                <h2 class="card-title">
+                  <svg class="icon-svg">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/>
+                    <line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                  </svg> 
+                  Environment
+                </h2>
+                <span class="card-action" style="color:var(--text-tertiary)">
+                  Jakarta, ID
+                </span>
+              </div>
+              
+              <div class="weather-main">
+                <div class="weather-temp-box">
+                  <div class="temp-value" id="simTemp">28</div>
+                  <div class="temp-unit">°C</div>
+                </div>
+                <div class="weather-condition">
+                  <svg class="icon-svg weather-icon" viewBox="0 0 24 24">
+                    <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                  </svg>
+                  <div class="condition-text">Partly Cloudy</div>
+                </div>
+              </div>
+              
+              <div class="weather-details">
+                <div class="w-detail">
+                  <svg class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                  </svg>
+                  <div class="w-data">
+                    <span class="w-label">Humidity</span>
+                    <span class="w-val">65%</span>
+                  </div>
+                </div>
+                
+                <div class="w-detail">
+                  <svg class="icon-svg" viewBox="0 0 24 24">
+                    <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/>
+                  </svg>
+                  <div class="w-data">
+                    <span class="w-label">Wind Force</span>
+                    <span class="w-val">12 km/h</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
-        <div style="margin-top:14px;font-size:12px;color:var(--text-faint);font-weight:600;letter-spacing:.03em">RECENTLY PLAYED</div>
-        <div id="recentTracks"></div>
       </div>
+    </main>
+  </div>
 
-      <div class="panel" style="animation-delay:.15s">
-        <div class="panel-head">
-          <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16"/></svg>Continue Watching</div>
-          <a href="movies.html" class="section-link">Library →</a>
+  <div class="fab-container">
+    <button class="fab-btn" id="fabBtn" aria-label="Ask AI">
+      <svg 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        stroke-width="2" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+      >
+        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+        <circle cx="12" cy="12" r="4"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="modal-backdrop" id="aiModalBackdrop">
+    <div class="ai-modal">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <svg class="icon-svg" viewBox="0 0 24 24">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+          </svg>
+          LifeHub Intelligence
+        </h3>
+        <button class="modal-close" id="closeAiModal">
+          <svg class="icon-svg" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="chat-window" id="chatWindow">
+        <div class="chat-bubble ai">
+          Greetings, Alex. I am ready to assist. You can ask me to draft emails, analyze code, or manage your workspace. What do you need?
         </div>
-        <div id="movieList"></div>
       </div>
-    </section>
-
-    <section class="section grid-two">
-      <div class="panel" style="animation-delay:.1s">
-        <div class="panel-head">
-          <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Notes</div>
-          <a href="notes.html" class="section-link">All notes →</a>
-        </div>
-        <div id="notesList"></div>
-        <textarea class="quick-note-input" id="quickNoteInput" rows="2" placeholder="Quick note… press Enter to pin"></textarea>
+      
+      <div class="chat-input-area">
+        <input 
+          type="text" 
+          id="aiInput" 
+          placeholder="Command or question..." 
+          autocomplete="off"
+        >
+        <button class="send-btn" id="aiSendBtn">
+          <svg class="icon-svg" viewBox="0 0 24 24">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
       </div>
-
-      <div class="panel" style="animation-delay:.2s">
-        <div class="panel-head">
-          <div class="panel-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg>Recent Activity</div>
-          <span class="section-link">See all →</span>
-        </div>
-        <div id="activityList"></div>
-      </div>
-    </section>
-
-  </main>
-
-  <aside class="right-sidebar">
-    <div class="profile-card">
-      <img class="profile-avatar" id="profileAvatarImg" src="" alt="" style="display:none;">
-      <div class="profile-avatar-fallback" id="profileAvatarFallback">U</div>
-      <div class="profile-name" id="profileName">User</div>
-      <div class="profile-email" id="profileEmail">Active Session</div>
-      <div class="profile-badge" id="profileBadge">✦ Premium Plan</div>
-
-      <div class="profile-stat-row"><span style="color:var(--text-faint)">AI Model</span><span id="profileModel">Gemini 2.5 Flash</span></div>
-      <div class="profile-stat-row"><span style="color:var(--text-faint)">Provider</span><span id="profileProvider">Gemini</span></div>
-      <div class="profile-stat-row">
-        <span style="color:var(--text-faint)">Storage</span><span id="profileStorageText">2.4 GB / 15 GB</span>
-      </div>
-      <div class="storage-bar"><div class="storage-fill" id="storageFill" style="width:16%"></div></div>
     </div>
+  </div>
 
-    <div class="tip-card" id="tipCard">
-      <b>💡 AI Tip of the day</b>
-      <span id="tipText">Loading a tip…</span>
-    </div>
-  </aside>
+  <script>
+    /**
+     * LifeHub Core Dashboard Script
+     * Implements Obsidian & Amber theme mechanics, local storage syncing,
+     * and ambient canvas animations.
+     */
+    document.addEventListener('DOMContentLoaded', () => {
 
-</div>
+      // --- 1. CORE UTILITIES ---
+      const DOM = {
+        sidebar: document.getElementById('sidebar'),
+        sidebarOverlay: document.getElementById('sidebarOverlay'),
+        mobileTrigger: document.getElementById('mobileMenuTrigger'),
+        clockTime: document.getElementById('realTimeClock'),
+        clockDate: document.getElementById('realTimeDate'),
+        greetingTitle: document.querySelector('.greeting-title span'),
+        
+        // Music
+        dashAlbumArt: document.getElementById('dashAlbumArt'),
+        dashTrackTitle: document.getElementById('dashTrackTitle'),
+        dashTrackArtist: document.getElementById('dashTrackArtist'),
+        dashProgressFill: document.getElementById('dashProgressFill'),
+        dashTimeCurrent: document.getElementById('dashTimeCurrent'),
+        dashTimeTotal: document.getElementById('dashTimeTotal'),
+        dashPlayPauseBtn: document.getElementById('dashPlayPauseBtn'),
+        
+        // Agenda
+        agendaContainer: document.getElementById('agendaContainer'),
+        addTaskForm: document.getElementById('addTaskForm'),
+        newTaskInput: document.getElementById('newTaskInput'),
+        
+        // Modal
+        fabBtn: document.getElementById('fabBtn'),
+        aiModalBackdrop: document.getElementById('aiModalBackdrop'),
+        closeAiModal: document.getElementById('closeAiModal'),
+        aiInput: document.getElementById('aiInput'),
+        aiSendBtn: document.getElementById('aiSendBtn'),
+        chatWindow: document.getElementById('chatWindow'),
+        
+        // User
+        headerUserName: document.getElementById('headerUserName'),
+        headerAvatarInitials: document.getElementById('headerAvatarInitials'),
+        logoutBtn: document.getElementById('logoutBtn')
+      };
 
-<button class="fab" id="fab" title="New (⌘N)">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-</button>
+      // --- 2. CANVAS AMBIENT ENGINE (Golden Dust) ---
+      class AmbientEngine {
+        constructor(canvasId) {
+          this.canvas = document.getElementById(canvasId);
+          this.ctx = this.canvas.getContext('2d');
+          this.particles = [];
+          this.resize();
+          window.addEventListener('resize', () => this.resize());
+          this.initParticles();
+          this.animate();
+        }
 
-<div class="dock-wrap">
-  <nav class="dock" aria-label="Dock">
-    <a href="dashboard.html" class="dock-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg><span class="dock-tooltip">Dashboard</span></a>
-    <a href="ai.html" class="dock-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/><circle cx="12" cy="12" r="3"/></svg><span class="dock-tooltip">AI</span></a>
-    <a href="music.html" class="dock-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span class="dock-tooltip">Music</span></a>
-    <a href="movies.html" class="dock-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16"/></svg><span class="dock-tooltip">Movies</span></a>
-    <a href="notes.html" class="dock-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span class="dock-tooltip">Notes</span></a>
-    <a href="downloader.html" class="dock-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg><span class="dock-tooltip">Downloader</span></a>
-    <a href="focus.html" class="dock-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span class="dock-tooltip">Focus</span></a>
-    <a href="tools.html" class="dock-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="dock-tooltip">Tools</span></a>
-  </nav>
-</div>
+        resize() {
+          this.width = this.canvas.width = window.innerWidth;
+          this.height = this.canvas.height = window.innerHeight;
+        }
 
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  "use strict";
+        initParticles() {
+          const count = window.innerWidth < 768 ? 20 : 50;
+          this.particles = [];
+          
+          for (let i = 0; i < count; i++) {
+            this.particles.push({
+              x: Math.random() * this.width,
+              y: Math.random() * this.height,
+              radius: Math.random() * 1.5 + 0.5,
+              vx: (Math.random() - 0.5) * 0.3,
+              vy: (Math.random() - 0.5) * 0.3,
+              alpha: Math.random() * 0.5 + 0.1
+            });
+          }
+        }
 
-  /* A. USER PROFILE DATA */
-  const storedName = localStorage.getItem('lifehub_user_name');
-  const GOOGLE_USER = {
-    isLoggedIn: !!storedName,
-    name: storedName || "User",
-    email: storedName ? "Google Connected" : "Not signed in",
-    photo: ""
-  };
+        animate() {
+          this.ctx.clearRect(0, 0, this.width, this.height);
+          
+          this.particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
 
-  function initUserProfile(){
-    const name = GOOGLE_USER.name;
-    const email = GOOGLE_USER.email;
-    const initial = name.charAt(0).toUpperCase();
+            // Wrap around
+            if (p.x < 0) p.x = this.width;
+            if (p.x > this.width) p.x = 0;
+            if (p.y < 0) p.y = this.height;
+            if (p.y > this.height) p.y = 0;
 
-    const gName = document.getElementById('greetingName');
-    const aName = document.getElementById('avatarName');
-    const aEmail = document.getElementById('avatarEmail');
-    const pName = document.getElementById('profileName');
-    const pEmail = document.getElementById('profileEmail');
-    const pBadge = document.getElementById('profileBadge');
-
-    if(gName) gName.textContent = name.split(' ')[0];
-    if(aName) aName.textContent = name;
-    if(aEmail) aEmail.textContent = email;
-    if(pName) pName.textContent = name;
-    if(pEmail) pEmail.textContent = GOOGLE_USER.isLoggedIn ? email : "Sign in to sync your data";
-    if(pBadge) pBadge.textContent = GOOGLE_USER.isLoggedIn ? "✦ Premium Plan" : "✦ Free Plan";
-
-    const fallbacks = [document.getElementById('avatarFallback'), document.getElementById('profileAvatarFallback')];
-    fallbacks.forEach(f => { if(f) f.textContent = initial; });
-  }
-
-  /* B. GREETING & CLOCK */
-  function getGreeting(hour){
-    if (hour >= 5 && hour < 11) return "Good Morning";
-    if (hour >= 11 && hour < 15) return "Good Afternoon";
-    if (hour >= 15 && hour < 18) return "Good Evening";
-    return "Good Night";
-  }
-
-  function updateGreeting(){
-    const el = document.getElementById('greetingText');
-    if(el) el.textContent = getGreeting(new Date().getHours());
-  }
-
-  function updateClock(){
-    const now = new Date();
-    const lc = document.getElementById('liveClock');
-    const ld = document.getElementById('liveDate');
-    if(lc) lc.textContent = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-    if(ld) ld.textContent = now.toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'});
-  }
-
-  /* C. QUOTES & TOASTS */
-  const QUOTES = ["System synchronized.", "Everything is ready.", "Stay productive today.", "AI is ready to help you.", "Workspace optimized."];
-  function setRandomQuote(){
-    const el = document.getElementById('quoteText');
-    if(el) el.textContent = QUOTES[Math.floor(Math.random()*QUOTES.length)];
-  }
-
-  function showToast(message){
-    const stack = document.getElementById('toastStack');
-    if(!stack) return;
-    const el = document.createElement('div');
-    el.className = 'toast';
-    el.innerHTML = `<span class="toast-dot"></span><span>${message}</span>`;
-    stack.appendChild(el);
-    setTimeout(()=>{ el.classList.add('out'); setTimeout(()=> el.remove(), 300); }, 3800);
-  }
-
-  const notifBtn = document.getElementById('notifBtn');
-  if(notifBtn) notifBtn.addEventListener('click', ()=> showToast('You are all caught up 🎉'));
-
-  /* D. PARTICLES */
-  function initParticles(){
-    const canvas = document.getElementById('particles');
-    if(!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let w, h, particles;
-
-    function resize(){
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
-    }
-    function makeParticles(){
-      const count = Math.min(60, Math.floor(w/28));
-      particles = Array.from({length:count}, () => ({
-        x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.6+0.4,
-        vx: (Math.random()-0.5)*0.15, vy: (Math.random()-0.5)*0.15, o: Math.random()*0.5+0.1
-      }));
-    }
-    function tick(){
-      ctx.clearRect(0,0,w,h);
-      ctx.fillStyle = 'rgba(0,229,255,0.6)';
-      particles.forEach(p=>{
-        p.x += p.vx; p.y += p.vy;
-        if (p.x<0) p.x=w; if (p.x>w) p.x=0;
-        if (p.y<0) p.y=h; if (p.y>h) p.y=0;
-        ctx.globalAlpha = p.o;
-        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
-      });
-      ctx.globalAlpha = 1;
-      requestAnimationFrame(tick);
-    }
-    resize(); makeParticles();
-    window.addEventListener('resize', ()=>{ resize(); makeParticles(); });
-    requestAnimationFrame(tick);
-  }
-
-  /* E. STATS & QUICK ACCESS */
-  const ICONS = {
-    chat: '<path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-4-1L3 20l1.1-3.3A8.5 8.5 0 1 1 21 11.5z"/>',
-    token: '<circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/>',
-    bolt: '<path d="M13 2 3 14h8l-1 8 10-12h-8l1-8z"/>',
-    file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
-    trend: '<path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v6h-6"/>',
-    music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
-    movie: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16"/>',
-    focus: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
-    download: '<path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
-    storage: '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>'
-  };
-
-  const STAT_DATA = [
-    { label:'AI Chats', value:1284, suffix:'', icon:'chat', tint:'var(--accent)', glow:'var(--accent-dim)', trend:'+12%', up:true },
-    { label:'Tokens Used', value:842000, suffix:'', compact:true, icon:'token', tint:'var(--purple)', glow:'var(--purple-dim)', trend:'+8%', up:true },
-    { label:"Today's Requests", value:96, suffix:'', icon:'bolt', tint:'var(--green)', glow:'var(--green-dim)', trend:'+4%', up:true },
-    { label:'Files Processed', value:312, suffix:'', icon:'file', tint:'var(--accent)', glow:'var(--accent-dim)', trend:'+2%', up:true },
-    { label:'Productivity Score', value:87, suffix:'%', icon:'trend', tint:'var(--green)', glow:'var(--green-dim)', trend:'+5%', up:true },
-    { label:'Music Played', value:54, suffix:' tracks', icon:'music', tint:'var(--purple)', glow:'var(--purple-dim)', trend:'+9%', up:true },
-    { label:'Movies Watched', value:8, suffix:'', icon:'movie', tint:'var(--amber)', glow:'rgba(245,158,11,0.14)', trend:'-1', up:false },
-    { label:'Focus Time', value:4.2, suffix:'h', icon:'focus', tint:'var(--accent)', glow:'var(--accent-dim)', trend:'+18%', up:true },
-    { label:'Downloads', value:29, suffix:'', icon:'download', tint:'var(--purple)', glow:'var(--purple-dim)', trend:'+3%', up:true },
-    { label:'Storage Used', value:2.4, suffix:' GB', icon:'storage', tint:'var(--green)', glow:'var(--green-dim)', trend:'16%', up:true }
-  ];
-
-  function renderStats(){
-    const grid = document.getElementById('statsGrid');
-    if(!grid) return;
-    grid.innerHTML = STAT_DATA.map((s,i)=>`
-      <div class="stat-card" style="--tint:${s.tint}; --glow:${s.glow}; animation-delay:${i*0.04}s">
-        <div class="stat-top">
-          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">${ICONS[s.icon]}</svg></div>
-          <span class="stat-trend ${s.up?'up':'down'}">${s.trend}</span>
-        </div>
-        <div class="stat-value">${s.compact ? (s.value/1000).toFixed(0)+'K' : s.value}${s.suffix}</div>
-        <div class="stat-label">${s.label}</div>
-      </div>
-    `).join('');
-  }
-
-  const QUICK_ITEMS = [
-    { name:'AI Assistant', sub:'Chat now', icon:'chat', c1:'#00E5FF', url:'ai.html' },
-    { name:'Music', sub:'Your mix', icon:'music', c1:'#7C3AED', url:'music.html' },
-    { name:'Movies', sub:'Watch', icon:'movie', c1:'#F59E0B', url:'movies.html' },
-    { name:'Finance', sub:'Track', icon:'trend', c1:'#22C55E', url:'#' },
-    { name:'Downloader', sub:'Save media', icon:'download', c1:'#00E5FF', url:'downloader.html' },
-    { name:'Notes', sub:'Jot ideas', icon:'file', c1:'#7C3AED', url:'notes.html' },
-    { name:'Tasks', sub:'Get things done', icon:'bolt', c1:'#22C55E', url:'#' },
-    { name:'Calendar', sub:'Plan ahead', icon:'storage', c1:'#00E5FF', url:'focus.html' },
-    { name:'QR Tools', sub:'Generate & scan', icon:'focus', c1:'#F59E0B', url:'#' },
-    { name:'Focus Space', sub:'Deep work', icon:'focus', c1:'#7C3AED', url:'focus.html' },
-    { name:'Weather', sub:'Stay ahead', icon:'trend', c1:'#00E5FF', url:'#' },
-    { name:'Gallery', sub:'Your media', icon:'file', c1:'#22C55E', url:'#' }
-  ];
-
-  function renderQuick(){
-    const grid = document.getElementById('quickGrid');
-    if(!grid) return;
-    grid.innerHTML = QUICK_ITEMS.map((q,i)=>`
-      <a href="${q.url || '#'}" class="quick-card" style="--qc1:${q.c1}; --qc-dim:${q.c1}22; animation-delay:${i*0.03}s">
-        <div class="quick-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">${ICONS[q.icon]}</svg></div>
-        <div><div class="quick-name">${q.name}</div><div class="quick-sub">${q.sub}</div></div>
-      </a>
-    `).join('');
-  }
-
-  /* F. OTHER PANELS */
-  function renderActivity(){
-    const el = document.getElementById('activityList');
-    if(!el) return;
-    const list = [
-      { icon:'chat', title:'Asked AI about quarterly planning', meta:'AI Assistant', time:'2m ago' },
-      { icon:'music', title:'Played "33x - Perunggu"', meta:'Music', time:'18m ago' },
-      { icon:'movie', title:'Continued watching Nebula Drift', meta:'Movies', time:'1h ago' },
-      { icon:'file', title:'Edited "Q3 roadmap" note', meta:'Notes', time:'5h ago' }
-    ];
-    el.innerHTML = list.map(a=>`
-      <div class="activity-row">
-        <div class="activity-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">${ICONS[a.icon]}</svg></div>
-        <div class="activity-text"><div class="activity-title">${a.title}</div><div class="activity-meta">${a.meta}</div></div>
-        <div class="activity-time">${a.time}</div>
-      </div>
-    `).join('');
-  }
-
-  function renderCalendar(){
-    const now = new Date();
-    const cd = document.getElementById('calDay');
-    const cw = document.getElementById('calWeekday');
-    const cm = document.getElementById('calMonthLabel');
-    const ce = document.getElementById('calEvents');
-
-    if(cd) cd.textContent = now.getDate();
-    if(cw) cw.textContent = now.toLocaleDateString([], { weekday:'long' });
-    if(cm) cm.textContent = now.toLocaleDateString([], { month:'long', year:'numeric' });
-    if(ce) ce.innerHTML = `
-      <div class="cal-event"><span class="cal-dot" style="background:var(--accent)"></span>Design review — 2:00 PM</div>
-      <div class="cal-event"><span class="cal-dot" style="background:var(--purple)"></span>Ship dashboard v1 — Today</div>
-    `;
-  }
-
-  function renderMusicMoviesNotes(){
-    const rt = document.getElementById('recentTracks');
-    const ml = document.getElementById('movieList');
-    const nl = document.getElementById('notesList');
-
-    if(rt) rt.innerHTML = `
-      <div class="mini-row"><div class="mini-cover" style="background:linear-gradient(135deg,var(--purple),var(--accent))"></div><div><div style="font-weight:600">33x</div><div style="color:var(--text-faint);font-size:11px">Perunggu</div></div></div>
-      <div class="mini-row"><div class="mini-cover" style="background:linear-gradient(135deg,var(--accent),var(--green))"></div><div><div style="font-weight:600">Secukupnya</div><div style="color:var(--text-faint);font-size:11px">Hindia</div></div></div>
-    `;
-
-    if(ml) ml.innerHTML = `
-      <div style="margin-bottom:12px">
-        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="font-weight:600">Nebula Drift</span><span style="color:var(--text-faint)">64%</span></div>
-        <div class="storage-bar"><div class="storage-fill" style="width:64%"></div></div>
-      </div>
-    `;
-
-    if(nl) nl.innerHTML = `
-      <div class="note-item"><div class="note-check"></div><div class="note-text">📌 Finalize LifeHub UI theme</div></div>
-      <div class="note-item"><div class="note-check done"></div><div class="note-text" style="text-decoration:line-through;color:var(--text-faint)">Send weekly report</div></div>
-    `;
-  }
-
-  /* G. FOCUS TIMER */
-  function initFocusTimer(){
-    const fg = document.getElementById('focusRingFg');
-    const startBtn = document.getElementById('focusStart');
-    const resetBtn = document.getElementById('focusReset');
-    const timeLabel = document.getElementById('focusTimeLabel');
-
-    if(!fg || !startBtn || !resetBtn || !timeLabel) return;
-
-    const TOTAL = 25*60;
-    let remaining = TOTAL;
-    let running = false;
-    let intervalId = null;
-    const circumference = 2*Math.PI*42;
-    fg.style.strokeDasharray = circumference;
-
-    function render(){
-      const m = String(Math.floor(remaining/60)).padStart(2,'0');
-      const s = String(remaining%60).padStart(2,'0');
-      timeLabel.textContent = `${m}:${s}`;
-      fg.style.strokeDashoffset = circumference*(1 - remaining/TOTAL);
-    }
-
-    startBtn.addEventListener('click', function(){
-      running = !running;
-      this.textContent = running ? 'Pause' : 'Start';
-      if(running){
-        intervalId = setInterval(()=>{
-          remaining--;
-          if(remaining<=0){ clearInterval(intervalId); running=false; startBtn.textContent='Start'; showToast('Focus complete 🎯'); remaining=TOTAL; }
-          render();
-        }, 1000);
-      } else { clearInterval(intervalId); }
-    });
-
-    resetBtn.addEventListener('click', ()=>{
-      clearInterval(intervalId); running=false; remaining=TOTAL;
-      startBtn.textContent='Start';
-      render();
-    });
-    render();
-  }
-
-  /* H. THEME & MOBILE DRAWER */
-  function initThemeAndDrawer(){
-    const themeBtn = document.getElementById('themeToggleRail');
-    const menuBtn = document.getElementById('mobileMenuBtn');
-    const rail = document.getElementById('railNav');
-    const overlay = document.getElementById('sidebarOverlay');
-
-    if(themeBtn){
-      if(localStorage.getItem('lifehub-theme')==='light') document.documentElement.setAttribute('data-theme','light');
-      themeBtn.addEventListener('click', ()=>{
-        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        if(isLight){ document.documentElement.removeAttribute('data-theme'); localStorage.setItem('lifehub-theme','dark'); }
-        else{ document.documentElement.setAttribute('data-theme','light'); localStorage.setItem('lifehub-theme','light'); }
-      });
-    }
-
-    if(menuBtn && rail && overlay){
-      menuBtn.addEventListener('click', ()=>{ rail.classList.toggle('open'); overlay.classList.toggle('active'); });
-      overlay.addEventListener('click', ()=>{ rail.classList.remove('open'); overlay.classList.remove('active'); });
-    }
-  }
-
-  /* I. LOADER */
-  function runLoader(){
-    const fill = document.getElementById('loaderFill');
-    const loader = document.getElementById('loader');
-    if(!fill || !loader) return;
-    let p = 0;
-    const id = setInterval(()=>{
-      p += 35;
-      fill.style.width = Math.min(p,100)+'%';
-      if(p>=100){
-        clearInterval(id);
-        setTimeout(()=> loader.classList.add('hide'), 200);
+            // Draw (Amber/Gold hue)
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            this.ctx.fillStyle = `rgba(245, 158, 11, ${p.alpha})`;
+            this.ctx.fill();
+          });
+          
+          requestAnimationFrame(() => this.animate());
+        }
       }
-    }, 100);
-  }
+      
+      new AmbientEngine('ambientCanvas');
 
-  /* START EVERYTHING SAFELY */
-  initUserProfile();
-  updateGreeting();
-  setRandomQuote();
-  updateClock();
-  setInterval(updateClock, 1000);
-  initParticles();
-  renderStats();
-  renderQuick();
-  renderActivity();
-  renderCalendar();
-  renderMusicMoviesNotes();
-  initFocusTimer();
-  initThemeAndDrawer();
-  runLoader();
-});
-</script>
+      // --- 3. SYSTEM CLOCK & GREETING ---
+      class SystemClock {
+        constructor() {
+          this.update();
+          setInterval(() => this.update(), 1000);
+        }
 
+        update() {
+          const now = new Date();
+          
+          // Format Time (e.g., 14:30)
+          DOM.clockTime.textContent = now.toLocaleTimeString('en-US', { 
+            hour12: false, 
+            hour: '2-digit', 
+            minute: '2-digit' 
+          });
+          
+          // Format Date (e.g., MON, OCT 24)
+          DOM.clockDate.textContent = now.toLocaleDateString('en-US', { 
+            weekday: 'short', 
+            month: 'short', 
+            day: 'numeric' 
+          }).toUpperCase();
+          
+          // Segment Greeting
+          const hour = now.getHours();
+          let segment = "Night";
+          
+          if (hour >= 5 && hour < 12) {
+            segment = "Morning";
+          } else if (hour >= 12 && hour < 17) {
+            segment = "Afternoon";
+          } else if (hour >= 17 && hour < 21) {
+            segment = "Evening";
+          }
+          
+          DOM.greetingTitle.textContent = segment;
+        }
+      }
+      
+      new SystemClock();
+
+      // --- 4. NOCTURNE MUSIC SYNC ---
+      class MusicSyncManager {
+        constructor() {
+          this.isPlaying = false;
+          this.progressInterval = null;
+          this.progress = 0;
+          this.duration = 180; // Default simulated 3 mins
+          
+          this.loadFromStorage();
+          this.setupControls();
+        }
+
+        loadFromStorage() {
+          try {
+            // Read from Nocturne's local storage key
+            const history = JSON.parse(localStorage.getItem('noct_history') || '[]');
+            
+            if (history.length > 0) {
+              const track = history[0];
+              
+              DOM.dashTrackTitle.textContent = track.title || 'Unknown Track';
+              DOM.dashTrackArtist.textContent = track.artist || 'Unknown Artist';
+              
+              if (track.cover) {
+                DOM.dashAlbumArt.style.backgroundImage = `url("${track.cover}")`;
+                DOM.dashAlbumArt.innerHTML = ''; // Remove fallback icon
+              }
+              
+              // Reset simulation
+              this.progress = 0;
+              this.updateUI();
+            }
+          } catch (error) {
+            console.error("Music sync error:", error);
+          }
+        }
+
+        setupControls() {
+          DOM.dashPlayPauseBtn.addEventListener('click', () => {
+            this.isPlaying = !this.isPlaying;
+            this.updatePlayBtnIcon();
+            
+            if (this.isPlaying) {
+              this.startSimulation();
+            } else {
+              clearInterval(this.progressInterval);
+            }
+          });
+        }
+
+        updatePlayBtnIcon() {
+          const icon = this.isPlaying 
+            ? `<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>` // Pause
+            : `<polygon points="5 3 19 12 5 21 5 3"/>`; // Play
+            
+          DOM.dashPlayPauseBtn.innerHTML = `<svg class="icon-svg" viewBox="0 0 24 24" style="fill:currentColor; stroke:none;">${icon}</svg>`;
+        }
+
+        startSimulation() {
+          clearInterval(this.progressInterval);
+          
+          this.progressInterval = setInterval(() => {
+            this.progress++;
+            if (this.progress > this.duration) {
+              this.progress = 0;
+            }
+            this.updateUI();
+          }, 1000);
+        }
+
+        formatTime(seconds) {
+          const m = Math.floor(seconds / 60);
+          const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+          return `${m}:${s}`;
+        }
+
+        updateUI() {
+          const pct = (this.progress / this.duration) * 100;
+          DOM.dashProgressFill.style.width = `${pct}%`;
+          DOM.dashTimeCurrent.textContent = this.formatTime(this.progress);
+          DOM.dashTimeTotal.textContent = this.formatTime(this.duration);
+        }
+      }
+      
+      new MusicSyncManager();
+
+      // --- 5. SMART AGENDA SYSTEM ---
+      class AgendaManager {
+        constructor() {
+          this.storageKey = 'lifehub_agenda';
+          
+          this.tasks = JSON.parse(localStorage.getItem(this.storageKey)) || [
+            { id: 1, text: "Review Neural Chat API integration", completed: false, time: "10:00 AM" },
+            { id: 2, text: "Compile Vision Media assets", completed: true, time: "02:30 PM" }
+          ];
+          
+          this.render();
+          this.setupEvents();
+        }
+
+        save() {
+          localStorage.setItem(this.storageKey, JSON.stringify(this.tasks));
+          this.render();
+        }
+
+        setupEvents() {
+          DOM.addTaskForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const val = DOM.newTaskInput.value.trim();
+            
+            if (val) {
+              this.tasks.push({
+                id: Date.now(),
+                text: val,
+                completed: false,
+                time: new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'})
+              });
+              
+              DOM.newTaskInput.value = '';
+              this.save();
+            }
+          });
+
+          // Event delegation for clicks
+          DOM.agendaContainer.addEventListener('click', (e) => {
+            const item = e.target.closest('.agenda-item');
+            if (!item) return;
+            
+            const id = parseInt(item.dataset.id);
+
+            // Handle Delete
+            if (e.target.closest('.agenda-delete')) {
+              this.tasks = this.tasks.filter(t => t.id !== id);
+              this.save();
+              return;
+            }
+
+            // Handle Check/Uncheck
+            if (e.target.closest('.agenda-checkbox') || e.target.closest('.agenda-content')) {
+              const task = this.tasks.find(t => t.id === id);
+              if (task) {
+                task.completed = !task.completed;
+                this.save();
+              }
+            }
+          });
+        }
+
+        render() {
+          DOM.agendaContainer.innerHTML = '';
+          
+          if (this.tasks.length === 0) {
+            DOM.agendaContainer.innerHTML = `<div style="color:var(--text-tertiary); font-size:12px; padding:12px;">No tasks. You're all caught up!</div>`;
+            return;
+          }
+          
+          this.tasks.forEach(task => {
+            const el = document.createElement('div');
+            el.className = `agenda-item ${task.completed ? 'completed' : ''}`;
+            el.dataset.id = task.id;
+            
+            el.innerHTML = `
+              <div class="agenda-checkbox"></div>
+              <div class="agenda-content">
+                <div class="agenda-text">${task.text}</div>
+                <div class="agenda-time">${task.time}</div>
+              </div>
+              <div class="agenda-delete">
+                <svg class="icon-svg" style="width:16px;height:16px;" viewBox="0 0 24 24">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </div>
+            `;
+            
+            DOM.agendaContainer.appendChild(el);
+          });
+        }
+      }
+      
+      new AgendaManager();
+
+      // --- 6. AI MODAL INTERFACE ---
+      class AiModal {
+        constructor() {
+          DOM.fabBtn.addEventListener('click', () => this.open());
+          DOM.closeAiModal.addEventListener('click', () => this.close());
+          DOM.aiSendBtn.addEventListener('click', () => this.handleSend());
+          
+          DOM.aiInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+              this.handleSend();
+            }
+          });
+        }
+
+        open() {
+          DOM.aiModalBackdrop.classList.add('is-active');
+          setTimeout(() => DOM.aiInput.focus(), 100);
+        }
+
+        close() {
+          DOM.aiModalBackdrop.classList.remove('is-active');
+        }
+
+        handleSend() {
+          const val = DOM.aiInput.value.trim();
+          if (!val) return;
+
+          // Add user bubble
+          this.appendBubble(val, 'user');
+          DOM.aiInput.value = '';
+
+          // Simulate AI processing & redirect
+          setTimeout(() => {
+            this.appendBubble(`Redirecting query "${val}" to main Neural Chat module...`, 'ai');
+            
+            setTimeout(() => {
+              window.location.href = `ai.html?q=${encodeURIComponent(val)}`;
+            }, 1200);
+          }, 600);
+        }
+
+        appendBubble(text, type) {
+          const bubble = document.createElement('div');
+          bubble.className = `chat-bubble ${type}`;
+          bubble.textContent = text;
+          
+          DOM.chatWindow.appendChild(bubble);
+          DOM.chatWindow.scrollTop = DOM.chatWindow.scrollHeight;
+        }
+      }
+      
+      new AiModal();
+
+      // --- 7. MOBILE SIDEBAR TOGGLE ---
+      class MobileNav {
+        constructor() {
+          DOM.mobileTrigger.addEventListener('click', () => this.toggle(true));
+          DOM.sidebarOverlay.addEventListener('click', () => this.toggle(false));
+        }
+
+        toggle(show) {
+          if (show) {
+            DOM.sidebar.style.transform = 'translateX(0)';
+            DOM.sidebarOverlay.classList.add('is-active');
+          } else {
+            DOM.sidebar.style.transform = ''; // resets to css default (-100%)
+            DOM.sidebarOverlay.classList.remove('is-active');
+          }
+        }
+      }
+      
+      new MobileNav();
+
+      // --- 8. USER PROFILE SYNC & LOGOUT ---
+      const userName = localStorage.getItem('lifehub_user_name') || 'Alex Rivera';
+      DOM.headerUserName.textContent = userName;
+      DOM.headerAvatarInitials.textContent = userName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+
+      DOM.logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        if (confirm("Logout from LifeHub Secure Workspace?")) {
+          localStorage.removeItem('lifehub_user_name');
+          location.reload();
+        }
+      });
+
+    });
+  </script>
 </body>
 </html>
