@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Mastery Academy | LifeHub AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-obsidian:#09090b;
+  --surface-1:#18181b;
+  --surface-2:#27272a;
+  --surface-3:#3f3f46;
+  --border-soft:#2f2f34;
+  --amber:#f59e0b;
+  --amber-hover:#d97706;
+  --amber-soft:rgba(245,158,11,0.12);
+  --text-hi:#fafafa;
+  --text-mid:#a1a1aa;
+  --text-low:#71717a;
+  --danger:#ef4444;
+  --success:#22c55e;
+  --radius-md:10px;
+  --radius-lg:16px;
+  --mono:'JetBrains Mono', 'Courier New', monospace;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  background:
+    radial-gradient(1100px 600px at 85% -10%, rgba(245,158,11,0.08), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(245,158,11,0.05), transparent 55%),
+    var(--bg-obsidian);
+  color:var(--text-hi);
+  font-family:'Inter', sans-serif;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+::-webkit-scrollbar{ width:10px; height:10px; }
+::-webkit-scrollbar-track{ background:var(--surface-1); }
+::-webkit-scrollbar-thumb{ background:var(--surface-3); border-radius:8px; }
+::-webkit-scrollbar-thumb:hover{ background:var(--amber); }
+
+a{ color:inherit; text-decoration:none; }
+button{ font-family:inherit; cursor:pointer; }
+
+/* ---------- Header ---------- */
+.topbar{
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px;
+  padding:14px 28px;
+  background:rgba(9,9,11,0.85);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border-soft);
+}
+.topbar-left{ display:flex; align-items:center; gap:16px; min-width:0; }
+.back-btn{
+  display:flex; align-items:center; gap:8px;
+  padding:9px 16px;
+  background:var(--surface-1);
+  border:1px solid var(--border-soft);
+  border-radius:999px;
+  color:var(--text-mid);
+  font-size:13px; font-weight:600;
+  white-space:nowrap;
+  transition:.2s ease;
+}
+.back-btn:hover{ border-color:var(--amber); color:var(--amber); background:var(--surface-2); }
+.brand{ display:flex; flex-direction:column; min-width:0; }
+.brand-title{
+  font-size:16px; font-weight:800; letter-spacing:-0.01em;
+  display:flex; align-items:center; gap:8px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.brand-title .dot{ color:var(--amber); }
+.brand-sub{ font-size:11px; color:var(--text-low); letter-spacing:.04em; text-transform:uppercase; }
+.topbar-right{ display:flex; align-items:center; gap:10px; }
+.badge{
+  font-size:11px; font-weight:700; letter-spacing:.03em;
+  padding:6px 12px; border-radius:999px;
+  background:var(--amber-soft); color:var(--amber);
+  border:1px solid rgba(245,158,11,0.3);
+  white-space:nowrap;
+}
+
+/* ---------- Hero / Lang Tabs ---------- */
+.hero{
+  padding:28px 28px 0;
+  max-width:1500px; margin:0 auto; width:100%;
+}
+.hero-heading{ font-size:26px; font-weight:800; letter-spacing:-0.02em; margin-bottom:6px; }
+.hero-heading span{ color:var(--amber); }
+.hero-desc{ color:var(--text-mid); font-size:13.5px; max-width:640px; line-height:1.6; margin-bottom:22px; }
+
+.lang-tabs{
+  display:flex; gap:8px; flex-wrap:wrap;
+  border-bottom:1px solid var(--border-soft);
+  padding-bottom:18px;
+}
+.lang-tab{
+  display:flex; align-items:center; gap:8px;
+  padding:10px 18px;
+  background:var(--surface-1);
+  border:1px solid var(--border-soft);
+  border-radius:999px;
+  font-size:13px; font-weight:700;
+  color:var(--text-mid);
+  transition:.18s ease;
+}
+.lang-tab .count{
+  font-size:10.5px; font-weight:700; color:var(--text-low);
+  background:var(--surface-2); padding:2px 7px; border-radius:999px;
+}
+.lang-tab:hover{ color:var(--text-hi); border-color:var(--surface-3); }
+.lang-tab.active{
+  background:linear-gradient(135deg, var(--amber), var(--amber-hover));
+  border-color:transparent; color:#09090b;
+}
+.lang-tab.active .count{ background:rgba(9,9,11,0.25); color:#09090b; }
+
+/* ---------- Main Layout ---------- */
+.workspace{
+  max-width:1500px; margin:0 auto; width:100%;
+  padding:22px 28px 60px;
+  display:grid;
+  grid-template-columns:300px 1fr;
+  gap:20px;
+  flex:1;
+}
+
+/* Materi list */
+.materi-panel{
+  background:var(--surface-1);
+  border:1px solid var(--border-soft);
+  border-radius:var(--radius-lg);
+  display:flex; flex-direction:column;
+  max-height:calc(100vh - 210px);
+  min-height:420px;
+  overflow:hidden;
+}
+.materi-panel-head{
+  padding:16px 16px 12px;
+  border-bottom:1px solid var(--border-soft);
+}
+.materi-panel-head h3{ font-size:13px; font-weight:700; color:var(--text-hi); }
+.materi-panel-head p{ font-size:11px; color:var(--text-low); margin-top:3px; }
+.materi-search{
+  margin:12px 14px 6px;
+  padding:9px 12px;
+  background:var(--surface-2);
+  border:1px solid var(--border-soft);
+  border-radius:8px;
+  color:var(--text-hi);
+  font-size:12.5px;
+  width:calc(100% - 28px);
+}
+.materi-search:focus{ outline:none; border-color:var(--amber); }
+.materi-list{
+  overflow-y:auto;
+  padding:8px 10px 16px;
+  flex:1;
+}
+.materi-item{
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px;
+  border-radius:9px;
+  cursor:pointer;
+  transition:.15s ease;
+  border:1px solid transparent;
+  margin-bottom:3px;
+}
+.materi-item:hover{ background:var(--surface-2); }
+.materi-item.active{
+  background:var(--amber-soft);
+  border-color:rgba(245,158,11,0.35);
+}
+.materi-item .no{
+  font-family:var(--mono);
+  font-size:10.5px; font-weight:700;
+  color:var(--text-low);
+  min-width:22px;
+}
+.materi-item.active .no{ color:var(--amber); }
+.materi-item .label{
+  font-family:var(--mono);
+  font-size:12px; font-weight:600;
+  color:var(--text-mid);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.materi-item.active .label{ color:var(--text-hi); }
+
+/* Right column */
+.editor-col{ display:flex; flex-direction:column; gap:16px; min-width:0; }
+
+.concept-card{
+  background:var(--surface-1);
+  border:1px solid var(--border-soft);
+  border-radius:var(--radius-lg);
+  padding:18px 20px;
+}
+.concept-card .eyebrow{
+  font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--amber); margin-bottom:6px;
+}
+.concept-card h2{
+  font-family:var(--mono);
+  font-size:19px; font-weight:700; color:var(--text-hi);
+  margin-bottom:8px; word-break:break-word;
+}
+.concept-card p{ font-size:13.5px; color:var(--text-mid); line-height:1.65; }
+
+.ide{
+  background:var(--surface-1);
+  border:1px solid var(--border-soft);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.ide-titlebar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:11px 16px;
+  background:var(--surface-2);
+  border-bottom:1px solid var(--border-soft);
+}
+.ide-dots{ display:flex; gap:6px; }
+.ide-dots span{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+.ide-dots span:nth-child(1){ background:#ef4444; }
+.ide-dots span:nth-child(2){ background:#f59e0b; }
+.ide-dots span:nth-child(3){ background:#22c55e; }
+.ide-filename{ font-family:var(--mono); font-size:12px; color:var(--text-mid); }
+.ide-actions{ display:flex; gap:8px; }
+.ide-btn{
+  display:flex; align-items:center; gap:6px;
+  padding:7px 14px;
+  border-radius:7px;
+  font-size:12px; font-weight:700;
+  border:1px solid var(--border-soft);
+  background:var(--surface-1);
+  color:var(--text-mid);
+  transition:.15s ease;
+}
+.ide-btn:hover{ border-color:var(--surface-3); color:var(--text-hi); }
+.ide-btn.run{
+  background:linear-gradient(135deg, var(--amber), var(--amber-hover));
+  color:#09090b; border-color:transparent;
+}
+.ide-btn.run:hover{ filter:brightness(1.08); }
+
+.ide-body{
+  display:flex;
+  min-height:280px;
+}
+.editor-wrap{
+  flex:1; min-width:0;
+  display:flex; flex-direction:column;
+  border-right:1px solid var(--border-soft);
+}
+#codeEditor{
+  flex:1;
+  width:100%;
+  resize:none;
+  border:none;
+  outline:none;
+  background:var(--bg-obsidian);
+  color:#e4e4e7;
+  font-family:var(--mono);
+  font-size:13px;
+  line-height:1.65;
+  padding:16px;
+  tab-size:2;
+  min-height:260px;
+}
+.status-bar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:7px 16px;
+  background:var(--surface-2);
+  border-top:1px solid var(--border-soft);
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--text-low);
+}
+.status-bar .lang-pill{
+  color:var(--amber); font-weight:700;
+}
+
+.output-wrap{
+  flex:1; min-width:0;
+  display:flex; flex-direction:column;
+  background:#000;
+}
+.output-header{
+  padding:9px 16px;
+  background:var(--surface-2);
+  border-bottom:1px solid var(--border-soft);
+  font-size:11px; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+  color:var(--text-low);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.output-mode-tag{
+  font-size:10px; padding:2px 8px; border-radius:999px;
+  background:var(--surface-1); color:var(--text-mid);
+  border:1px solid var(--border-soft);
+}
+#outputFrame{
+  flex:1; width:100%; border:none; background:#fff; min-height:260px;
+}
+.terminal{
+  flex:1; padding:16px;
+  font-family:var(--mono); font-size:12.5px; line-height:1.7;
+  color:#4ade80;
+  background:#000;
+  white-space:pre-wrap;
+  word-break:break-word;
+  overflow-y:auto;
+  min-height:260px;
+}
+.terminal .term-line-prompt{ color:var(--amber); }
+.terminal .term-note{ color:var(--text-low); font-style:italic; }
+
+.hint-bar{
+  display:flex; gap:18px; flex-wrap:wrap;
+  padding:12px 20px;
+  background:var(--surface-1);
+  border:1px solid var(--border-soft);
+  border-radius:var(--radius-lg);
+  font-size:11.5px; color:var(--text-low);
+}
+.hint-bar b{ color:var(--text-mid); }
+.hint-bar kbd{
+  font-family:var(--mono);
+  background:var(--surface-2);
+  border:1px solid var(--border-soft);
+  padding:1px 6px; border-radius:4px;
+  color:var(--amber);
+}
+
+/* ---------- Footer ---------- */
+footer{
+  border-top:1px solid var(--border-soft);
+  padding:20px 28px;
+  text-align:center;
+  color:var(--text-low);
+  font-size:12px;
+}
+footer b{ color:var(--amber); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px){
+  .workspace{ grid-template-columns:1fr; }
+  .materi-panel{ max-height:320px; min-height:260px; }
+  .ide-body{ flex-direction:column; }
+  .editor-wrap{ border-right:none; border-bottom:1px solid var(--border-soft); }
+  .topbar{ padding:12px 16px; }
+  .hero{ padding:20px 16px 0; }
+  .workspace{ padding:16px 16px 40px; }
+  .brand-sub{ display:none; }
+}
+@media (max-width: 480px){
+  .lang-tab{ padding:8px 12px; font-size:12px; }
+  .hero-heading{ font-size:21px; }
+  .concept-card h2{ font-size:16px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="dashboard.html" class="back-btn">&larr; Dashboard</a>
+    <div class="brand">
+      <div class="brand-title"><span class="dot">&#9673;</span> Code Mastery Academy</div>
+      <div class="brand-sub">LifeHub AI &middot; Belajar Koding dari Nol</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="badge" id="totalBadge">150+ Konsep</span>
+  </div>
+</header>
+
+<section class="hero">
+  <h1 class="hero-heading">Mini VS Code &amp; <span>Ultimate Code Academy</span></h1>
+  <p class="hero-desc">Pilih bahasa pemrograman, klik materi di panel kiri untuk memuat contoh kode ke editor, lalu tekan <b style="color:var(--text-mid)">RUN CODE</b> untuk melihat hasilnya. Editor ini punya fitur auto-close tag, indentasi Tab, dan status bar seperti VS Code sungguhan.</p>
+
+  <div class="lang-tabs" id="langTabs"></div>
+</section>
+
+<main class="workspace">
+  <aside class="materi-panel">
+    <div class="materi-panel-head">
+      <h3 id="panelTitle">&#127760; HTML &middot; 30 Tag</h3>
+      <p>Klik salah satu materi untuk memuat ke editor</p>
+    </div>
+    <input type="text" class="materi-search" id="materiSearch" placeholder="Cari materi...">
+    <div class="materi-list" id="materiList"></div>
+  </aside>
+
+  <section class="editor-col">
+    <div class="concept-card">
+      <div class="eyebrow" id="conceptEyebrow">HTML &middot; 01 / 30</div>
+      <h2 id="conceptName">-</h2>
+      <p id="conceptDesc">-</p>
+    </div>
+
+    <div class="ide">
+      <div class="ide-titlebar">
+        <div class="ide-dots"><span></span><span></span><span></span></div>
+        <div class="ide-filename" id="ideFilename">contoh.html</div>
+        <div class="ide-actions">
+          <button class="ide-btn" id="resetBtn" type="button">&#8635; Reset Default</button>
+          <button class="ide-btn run" id="runBtn" type="button">&#9654; Run Code</button>
+        </div>
+      </div>
+      <div class="ide-body">
+        <div class="editor-wrap">
+          <textarea id="codeEditor" spellcheck="false"></textarea>
+          <div class="status-bar">
+            <span>Baris <b id="lineNo">1</b>, Kolom <b id="colNo">1</b></span>
+            <span class="lang-pill" id="langPill">HTML</span>
+          </div>
+        </div>
+        <div class="output-wrap">
+          <div class="output-header">
+            <span>Output</span>
+            <span class="output-mode-tag" id="outputModeTag">Live Preview</span>
+          </div>
+          <iframe id="outputFrame" title="output" sandbox="allow-scripts allow-modals"></iframe>
+          <div class="terminal" id="terminalOutput" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hint-bar">
+      <span><kbd>Tab</kbd> = indentasi 2 spasi di dalam editor</span>
+      <span>Ketik tag seperti <b>&lt;div&gt;</b> lalu editor otomatis membuat penutupnya</span>
+      <span>PHP &amp; Python ditampilkan sebagai <b>simulasi terminal</b> (tidak dieksekusi asli di browser)</span>
+    </div>
+  </section>
+</main>
+
+<footer>
+  &copy; 2026 LifeHub AI. Developed with &#10084;&#65039; by <b>Reski X Legacyy403</b>
+</footer>
+
+<script>
+const MATERI = {"html": [{"id": "html-1", "no": 1, "name": "<!DOCTYPE html>", "desc": "Deklarasi wajib di baris paling atas yang memberitahu browser bahwa dokumen ini ditulis menggunakan standar HTML5.", "code": "<!DOCTYPE html>\n<html>\n  <body>\n    <p>Halo, ini halaman HTML5!<\/p>\n  <\/body>\n<\/html>", "output": null}, {"id": "html-2", "no": 2, "name": "<html>", "desc": "Elemen root/akar yang membungkus seluruh isi halaman, mulai dari <head> sampai <body>.", "code": "<html lang=\"id\">\n  <head><title>Contoh<\/title><\/head>\n  <body>\n    <p>Semua konten ada di dalam tag html.<\/p>\n  <\/body>\n<\/html>", "output": null}, {"id": "html-3", "no": 3, "name": "<head>", "desc": "Tempat menaruh informasi 'di balik layar' seperti judul tab, meta data, dan file CSS. Tidak tampil di layar.", "code": "<head>\n  <meta charset=\"UTF-8\">\n  <title>Judul Tab Browser<\/title>\n<\/head>\n<body>\n  <p>Cek judul tab di atas!<\/p>\n<\/body>", "output": null}, {"id": "html-4", "no": 4, "name": "<body>", "desc": "Tempat seluruh konten yang benar-benar tampil di layar pengguna: teks, gambar, tombol, dll.", "code": "<body>\n  <h1>Selamat Datang<\/h1>\n  <p>Ini isi body yang tampil di layar.<\/p>\n<\/body>", "output": null}, {"id": "html-5", "no": 5, "name": "<title>", "desc": "Menentukan teks yang muncul di tab/judul jendela browser.", "code": "<head>\n  <title>LifeHub AI - Code Mastery<\/title>\n<\/head>\n<body>\n  <p>Lihat judul di tab browser Anda.<\/p>\n<\/body>", "output": null}, {"id": "html-6", "no": 6, "name": "<meta>", "desc": "Tag tanpa penutup untuk mengatur metadata, misalnya viewport agar tampilan pas di layar HP dan set karakter UTF-8.", "code": "<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<\/head>\n<body>\n  <p>Halaman ini responsive di HP.<\/p>\n<\/body>", "output": null}, {"id": "html-7", "no": 7, "name": "<link>", "desc": "Menghubungkan file eksternal ke HTML, paling sering dipakai untuk memanggil file CSS atau Google Fonts.", "code": "<head>\n  <link rel=\"stylesheet\" href=\"style.css\">\n<\/head>\n<body>\n  <p style=\"color:#f59e0b\">Contoh styling manual (karena file css eksternal tidak tersedia di playground).<\/p>\n<\/body>", "output": null}, {"id": "html-8", "no": 8, "name": "<script>", "desc": "Menyisipkan kode JavaScript ke dalam halaman agar web menjadi interaktif.", "code": "<body>\n  <button onclick=\"alert('Tombol diklik!')\">Klik Saya<\/button>\n  <script>\n    console.log('Script berjalan!');\n  <\/script>\n<\/body>", "output": null}, {"id": "html-9", "no": 9, "name": "<style>", "desc": "Menuliskan aturan CSS langsung di dalam file HTML, biasanya diletakkan di dalam <head>.", "code": "<head>\n  <style>\n    p { color: #f59e0b; font-weight: bold; }\n  <\/style>\n<\/head>\n<body>\n  <p>Teks ini berwarna amber gold.<\/p>\n<\/body>", "output": null}, {"id": "html-10", "no": 10, "name": "<h1> - <h6>", "desc": "Enam tingkat judul/heading, dari <h1> (terbesar & terpenting) sampai <h6> (terkecil).", "code": "<body>\n  <h1>Ini H1 - Judul Utama<\/h1>\n  <h3>Ini H3 - Sub Judul<\/h3>\n  <h6>Ini H6 - Judul Terkecil<\/h6>\n<\/body>", "output": null}, {"id": "html-11", "no": 11, "name": "<p>", "desc": "Membuat paragraf teks biasa. Browser otomatis memberi jarak sebelum dan sesudah paragraf.", "code": "<body>\n  <p>Ini adalah paragraf pertama.<\/p>\n  <p>Ini adalah paragraf kedua yang terpisah.<\/p>\n<\/body>", "output": null}, {"id": "html-12", "no": 12, "name": "<a>", "desc": "Membuat link/tautan menuju halaman lain. Atribut href menentukan tujuan, target=\"_blank\" membuka tab baru.", "code": "<body>\n  <a href=\"https://www.google.com\" target=\"_blank\">Kunjungi Google<\/a>\n<\/body>", "output": null}, {"id": "html-13", "no": 13, "name": "<img>", "desc": "Menampilkan gambar/foto. Wajib punya atribut src (sumber gambar) dan alt (teks alternatif).", "code": "<body>\n  <img src=\"https://placehold.co/200x120/f59e0b/09090b?text=LifeHub+AI\" alt=\"Logo LifeHub\" width=\"200\">\n<\/body>", "output": null}, {"id": "html-14", "no": 14, "name": "<button>", "desc": "Membuat tombol yang bisa diklik pengguna, biasanya dipasangkan dengan JavaScript agar interaktif.", "code": "<body>\n  <button onclick=\"document.body.style.background='#27272a'\">Ubah Background<\/button>\n<\/body>", "output": null}, {"id": "html-15", "no": 15, "name": "<div>", "desc": "Kontainer/kotak pembungkus generik berjenis block (mengambil satu baris penuh), dipakai untuk mengelompokkan elemen.", "code": "<body>\n  <div style=\"background:#18181b; padding:16px; border-radius:8px;\">\n    <p>Saya berada di dalam sebuah div.<\/p>\n  <\/div>\n<\/body>", "output": null}, {"id": "html-16", "no": 16, "name": "<span>", "desc": "Kontainer generik berjenis inline (hanya mengambil ruang seperlunya), dipakai untuk menandai sebagian kecil teks.", "code": "<body>\n  <p>Nilai kamu adalah <span style=\"color:#f59e0b; font-weight:bold;\">98<\/span> dari 100.<\/p>\n<\/body>", "output": null}, {"id": "html-17", "no": 17, "name": "<strong>", "desc": "Membuat teks tebal (bold) sekaligus menandakan teks tersebut penting secara makna.", "code": "<body>\n  <p><strong>Perhatian:<\/strong> Jangan lupa submit tugas sebelum jam 12 malam.<\/p>\n<\/body>", "output": null}, {"id": "html-18", "no": 18, "name": "<em>", "desc": "Membuat teks miring (italic) sekaligus menandakan penekanan pada kata tersebut.", "code": "<body>\n  <p>Saya <em>sangat<\/em> menyukai pelajaran Pemrograman Web.<\/p>\n<\/body>", "output": null}, {"id": "html-19", "no": 19, "name": "<mark>", "desc": "Memberi efek stabilo/highlight berwarna kuning pada teks yang ditandai.", "code": "<body>\n  <p>Materi yang wajib dihafal adalah <mark>Tag Semantik HTML5<\/mark>.<\/p>\n<\/body>", "output": null}, {"id": "html-20", "no": 20, "name": "<small>", "desc": "Membuat ukuran teks menjadi lebih kecil, biasa dipakai untuk catatan kaki atau syarat & ketentuan.", "code": "<body>\n  <p>Harga paket Rp 50.000 <small>(belum termasuk pajak)<\/small><\/p>\n<\/body>", "output": null}, {"id": "html-21", "no": 21, "name": "<br>", "desc": "Tag tanpa penutup yang memaksa teks pindah ke baris baru (seperti menekan Enter).", "code": "<body>\n  <p>Baris pertama.<br>Baris kedua setelah br.<\/p>\n<\/body>", "output": null}, {"id": "html-22", "no": 22, "name": "<hr>", "desc": "Tag tanpa penutup yang menampilkan garis horizontal sebagai pemisah antar bagian konten.", "code": "<body>\n  <p>Bagian atas.<\/p>\n  <hr>\n  <p>Bagian bawah, sudah terpisah garis.<\/p>\n<\/body>", "output": null}, {"id": "html-23", "no": 23, "name": "<ul>, <ol>, <li>", "desc": "ul membuat daftar bertitik (unordered), ol membuat daftar bernomor (ordered), li adalah tiap itemnya.", "code": "<body>\n  <ul>\n    <li>HTML<\/li>\n    <li>CSS<\/li>\n  <\/ul>\n  <ol>\n    <li>Belajar Dasar<\/li>\n    <li>Bikin Project<\/li>\n  <\/ol>\n<\/body>", "output": null}, {"id": "html-24", "no": 24, "name": "<input type=\"text\">", "desc": "Kolom isian teks satu baris, biasa dipakai untuk nama, email, atau pencarian.", "code": "<body>\n  <label>Nama: <input type=\"text\" placeholder=\"Tulis nama kamu\"><\/label>\n<\/body>", "output": null}, {"id": "html-25", "no": 25, "name": "<input type=\"color\">", "desc": "Menampilkan color picker bawaan browser sehingga pengguna bisa memilih warna secara visual.", "code": "<body>\n  <label>Pilih warna favorit: <input type=\"color\" value=\"#f59e0b\"><\/label>\n<\/body>", "output": null}, {"id": "html-26", "no": 26, "name": "<input type=\"password\">", "desc": "Kolom input yang menyembunyikan karakter yang diketik (biasanya jadi tanda titik) untuk data rahasia.", "code": "<body>\n  <label>Password: <input type=\"password\" placeholder=\"Rahasia\"><\/label>\n<\/body>", "output": null}, {"id": "html-27", "no": 27, "name": "<form>", "desc": "Wadah utama yang membungkus semua elemen input untuk dikirim sebagai satu paket data.", "code": "<body>\n  <form>\n    <input type=\"text\" placeholder=\"Username\">\n    <button type=\"submit\">Kirim<\/button>\n  <\/form>\n<\/body>", "output": null}, {"id": "html-28", "no": 28, "name": "<textarea>", "desc": "Kolom input untuk teks panjang/multi-baris, seperti komentar atau pesan.", "code": "<body>\n  <textarea rows=\"4\" cols=\"30\" placeholder=\"Tulis catatanmu di sini...\"><\/textarea>\n<\/body>", "output": null}, {"id": "html-29", "no": 29, "name": "<select> & <option>", "desc": "Membuat menu dropdown, select adalah kontainernya dan option adalah tiap pilihannya.", "code": "<body>\n  <select>\n    <option>PPLG<\/option>\n    <option>TKJ<\/option>\n    <option>Multimedia<\/option>\n  <\/select>\n<\/body>", "output": null}, {"id": "html-30", "no": 30, "name": "<header>, <nav>, <main>, <footer>", "desc": "Tag semantik HTML5 yang memberi makna struktur: header (kepala halaman), nav (navigasi), main (konten utama), footer (kaki halaman).", "code": "<body>\n  <header><h2>LifeHub AI<\/h2><\/header>\n  <nav><a href=\"#\">Home<\/a> | <a href=\"#\">Materi<\/a><\/nav>\n  <main><p>Ini konten utama halaman.<\/p><\/main>\n  <footer><small>&copy; 2026 LifeHub AI<\/small><\/footer>\n<\/body>", "output": null}], "css": [{"id": "css-1", "no": 1, "name": "color", "desc": "Mengatur warna teks. Bisa memakai nama warna, kode Hex (#f59e0b), atau format RGB.", "code": "<style>\n  p { color: #f59e0b; }\n<\/style>\n<p>Teks berwarna amber gold.<\/p>", "output": null}, {"id": "css-2", "no": 2, "name": "background-color", "desc": "Mengatur warna latar belakang sebuah elemen.", "code": "<style>\n  div { background-color: #18181b; padding: 12px; }\n<\/style>\n<div><p style=\"color:white\">Latar div ini gelap (zinc 900).<\/p><\/div>", "output": null}, {"id": "css-3", "no": 3, "name": "font-family", "desc": "Menentukan jenis huruf/font yang dipakai untuk menampilkan teks.", "code": "<style>\n  p { font-family: 'Courier New', monospace; }\n<\/style>\n<p>Teks ini pakai font monospace.<\/p>", "output": null}, {"id": "css-4", "no": 4, "name": "font-size", "desc": "Mengatur ukuran besar-kecilnya teks, biasa memakai satuan px atau rem.", "code": "<style>\n  h1 { font-size: 28px; }\n<\/style>\n<h1>Judul Berukuran 28px<\/h1>", "output": null}, {"id": "css-5", "no": 5, "name": "font-weight", "desc": "Mengatur ketebalan huruf, misalnya normal, bold, atau angka 100-900.", "code": "<style>\n  p { font-weight: bold; }\n<\/style>\n<p>Teks ini dicetak tebal.<\/p>", "output": null}, {"id": "css-6", "no": 6, "name": "text-align", "desc": "Meratakan posisi teks secara horizontal: left, center, right, atau justify.", "code": "<style>\n  p { text-align: center; }\n<\/style>\n<p>Teks ini berada di tengah.<\/p>", "output": null}, {"id": "css-7", "no": 7, "name": "text-decoration", "desc": "Mengatur hiasan garis pada teks, sering dipakai untuk menghapus garis bawah default link.", "code": "<style>\n  a { text-decoration: none; color: #f59e0b; }\n<\/style>\n<a href=\"#\">Link tanpa garis bawah<\/a>", "output": null}, {"id": "css-8", "no": 8, "name": "line-height", "desc": "Mengatur jarak vertikal antar baris dalam sebuah paragraf agar lebih nyaman dibaca.", "code": "<style>\n  p { line-height: 2; }\n<\/style>\n<p>Baris pertama teks contoh.<br>Baris kedua teks contoh.<\/p>", "output": null}, {"id": "css-9", "no": 9, "name": "width & height", "desc": "Menentukan lebar dan tinggi sebuah elemen secara eksplisit.", "code": "<style>\n  div { width: 200px; height: 80px; background:#f59e0b; }\n<\/style>\n<div><\/div>", "output": null}, {"id": "css-10", "no": 10, "name": "margin", "desc": "Mengatur jarak KOSONG di LUAR elemen, memisahkan elemen dari elemen lain di sekitarnya.", "code": "<style>\n  div { margin: 20px; background:#27272a; padding:8px; }\n<\/style>\n<div style=\"color:white\">Div dengan margin 20px<\/div>", "output": null}, {"id": "css-11", "no": 11, "name": "padding", "desc": "Mengatur jarak DALAM elemen, antara border elemen dengan kontennya.", "code": "<style>\n  div { padding: 24px; background:#27272a; }\n<\/style>\n<div style=\"color:white\">Div dengan padding 24px<\/div>", "output": null}, {"id": "css-12", "no": 12, "name": "border", "desc": "Membuat garis tepi/bingkai di sekeliling elemen, formatnya: ketebalan - tipe - warna.", "code": "<style>\n  div { border: 2px solid #f59e0b; padding:10px; }\n<\/style>\n<div style=\"color:white\">Div dengan border amber<\/div>", "output": null}, {"id": "css-13", "no": 13, "name": "border-radius", "desc": "Membuat sudut elemen menjadi melengkung. Nilai 50% akan membuat elemen persegi jadi lingkaran.", "code": "<style>\n  div { width:80px; height:80px; background:#f59e0b; border-radius:50%; }\n<\/style>\n<div><\/div>", "output": null}, {"id": "css-14", "no": 14, "name": "box-shadow", "desc": "Memberi efek bayangan pada sebuah kotak/card agar terlihat lebih menonjol (efek 'melayang').", "code": "<style>\n  div { width:150px; height:80px; background:#18181b; box-shadow: 0 8px 20px rgba(245,158,11,0.4); }\n<\/style>\n<div><\/div>", "output": null}, {"id": "css-15", "no": 15, "name": "display: flex", "desc": "Mengubah elemen menjadi flex container sehingga anak-anaknya bisa disusun sejajar dengan mudah.", "code": "<style>\n  .box { display:flex; gap:8px; }\n  .box div { background:#f59e0b; padding:10px; }\n<\/style>\n<div class=\"box\"><div>1<\/div><div>2<\/div><div>3<\/div><\/div>", "output": null}, {"id": "css-16", "no": 16, "name": "justify-content", "desc": "Mengatur posisi item flexbox pada sumbu horizontal (main axis), misalnya center atau space-between.", "code": "<style>\n  .box { display:flex; justify-content: space-between; background:#18181b; }\n  .box div { background:#f59e0b; padding:10px; }\n<\/style>\n<div class=\"box\"><div>Kiri<\/div><div>Kanan<\/div><\/div>", "output": null}, {"id": "css-17", "no": 17, "name": "align-items", "desc": "Mengatur posisi item flexbox pada sumbu vertikal (cross axis), misalnya center.", "code": "<style>\n  .box { display:flex; align-items:center; height:100px; background:#18181b; }\n  .box div { background:#f59e0b; padding:10px; }\n<\/style>\n<div class=\"box\"><div>Rata Tengah Vertikal<\/div><\/div>", "output": null}, {"id": "css-18", "no": 18, "name": "gap", "desc": "Mengatur jarak antar item di dalam flexbox atau grid tanpa perlu margin manual.", "code": "<style>\n  .box { display:flex; gap:20px; }\n  .box div { background:#f59e0b; padding:10px; }\n<\/style>\n<div class=\"box\"><div>A<\/div><div>B<\/div><div>C<\/div><\/div>", "output": null}, {"id": "css-19", "no": 19, "name": "display: grid", "desc": "Mengubah elemen menjadi grid container, layout berbasis baris dan kolom.", "code": "<style>\n  .grid { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; }\n  .grid div { background:#f59e0b; padding:16px; text-align:center; }\n<\/style>\n<div class=\"grid\"><div>1<\/div><div>2<\/div><div>3<\/div><\/div>", "output": null}, {"id": "css-20", "no": 20, "name": "position: relative", "desc": "Elemen tetap pada alur normal, namun menjadi 'titik acuan' bagi elemen anak yang position: absolute.", "code": "<style>\n  .parent { position: relative; height:100px; background:#18181b; }\n<\/style>\n<div class=\"parent\"><p style=\"color:white\">Parent relative<\/p><\/div>", "output": null}, {"id": "css-21", "no": 21, "name": "position: absolute", "desc": "Melepas elemen dari alur normal dan menempatkannya bebas relatif terhadap parent terdekat yang position: relative.", "code": "<style>\n  .parent { position:relative; height:100px; background:#18181b; }\n  .child { position:absolute; top:10px; right:10px; background:#f59e0b; padding:6px; }\n<\/style>\n<div class=\"parent\"><div class=\"child\">Pojok Kanan Atas<\/div><\/div>", "output": null}, {"id": "css-22", "no": 22, "name": "top, right, bottom, left", "desc": "Empat properti untuk menentukan jarak/koordinat elemen yang position-nya absolute atau relative.", "code": "<style>\n  .parent { position:relative; height:100px; background:#18181b; }\n  .child { position:absolute; bottom:0; left:0; background:#f59e0b; padding:6px; }\n<\/style>\n<div class=\"parent\"><div class=\"child\">Pojok Kiri Bawah<\/div><\/div>", "output": null}, {"id": "css-23", "no": 23, "name": "z-index", "desc": "Mengatur urutan tumpukan (layer) elemen yang saling bertumpuk. Angka lebih besar tampil di atas.", "code": "<style>\n  .a { position:absolute; background:#f59e0b; width:80px; height:80px; z-index:1; }\n  .b { position:absolute; left:30px; top:30px; background:#18181b; width:80px; height:80px; z-index:2; }\n<\/style>\n<div style=\"position:relative; height:130px;\">\n  <div class=\"a\"><\/div><div class=\"b\"><\/div>\n<\/div>", "output": null}, {"id": "css-24", "no": 24, "name": "opacity", "desc": "Mengatur tingkat transparansi elemen, dari 0 (tidak terlihat) sampai 1 (terlihat penuh).", "code": "<style>\n  div { background:#f59e0b; padding:20px; opacity:0.5; }\n<\/style>\n<div>Div ini transparan 50%<\/div>", "output": null}, {"id": "css-25", "no": 25, "name": "cursor: pointer", "desc": "Mengubah bentuk kursor mouse menjadi ikon tangan penunjuk saat berada di atas elemen.", "code": "<style>\n  button { cursor: pointer; }\n<\/style>\n<button>Arahkan mouse ke sini<\/button>", "output": null}, {"id": "css-26", "no": 26, "name": ":hover", "desc": "Selector untuk memberi gaya khusus yang hanya aktif saat kursor mouse mengarah ke elemen.", "code": "<style>\n  button { background:#f59e0b; border:none; padding:10px; }\n  button:hover { background:#d97706; }\n<\/style>\n<button>Arahkan mouse ke tombol ini<\/button>", "output": null}, {"id": "css-27", "no": 27, "name": "transition", "desc": "Membuat perubahan nilai CSS (misal warna/ukuran) terjadi secara halus/animasi, bukan langsung berubah.", "code": "<style>\n  button { background:#f59e0b; padding:10px; border:none; transition: all 0.3s ease; }\n  button:hover { background:#d97706; transform: scale(1.1); }\n<\/style>\n<button>Hover saya (halus)<\/button>", "output": null}, {"id": "css-28", "no": 28, "name": "overflow: hidden", "desc": "Memotong/menyembunyikan konten yang ukurannya melebihi batas kotak induknya.", "code": "<style>\n  div { width:150px; height:60px; overflow:hidden; background:#18181b; }\n<\/style>\n<div style=\"color:white\">Teks yang sangat panjang ini akan terpotong rapi karena overflow hidden diterapkan pada kotaknya.<\/div>", "output": null}, {"id": "css-29", "no": 29, "name": "object-fit: cover", "desc": "Membuat gambar mengisi penuh ukuran kotaknya tanpa gepeng, dengan memotong bagian yang berlebih.", "code": "<style>\n  img { width:150px; height:100px; object-fit:cover; border-radius:8px; }\n<\/style>\n<img src=\"https://placehold.co/400x200/f59e0b/09090b?text=Gambar\" alt=\"Contoh\">", "output": null}, {"id": "css-30", "no": 30, "name": "@media (max-width: ...)", "desc": "Media query untuk menerapkan CSS berbeda pada ukuran layar tertentu, dasar dari desain responsive.", "code": "<style>\n  .box { background:#f59e0b; padding:20px; }\n  @media (max-width: 480px) {\n    .box { background:#ef4444; }\n  }\n<\/style>\n<div class=\"box\">Coba perkecil lebar layar/preview (di HP warnanya berubah merah)<\/div>", "output": null}], "js": [{"id": "js-1", "no": 1, "name": "let", "desc": "Mendeklarasikan variabel yang nilainya BISA diubah/diperbarui setelah didefinisikan.", "code": "<div id=\"out\"><\/div>\n<script>\n  let skor = 10;\n  skor = skor + 5;\n  document.getElementById('out').textContent = 'Skor sekarang: ' + skor;\n<\/script>", "output": null}, {"id": "js-2", "no": 2, "name": "const", "desc": "Mendeklarasikan variabel KONSTAN yang nilainya tidak boleh diubah setelah didefinisikan.", "code": "<div id=\"out\"><\/div>\n<script>\n  const namaSekolah = 'SMKN 1 Talaga';\n  document.getElementById('out').textContent = namaSekolah;\n<\/script>", "output": null}, {"id": "js-3", "no": 3, "name": "Tipe Data String, Number, Boolean", "desc": "Tiga tipe data dasar: String (teks), Number (angka), Boolean (benar/salah true-false).", "code": "<div id=\"out\"><\/div>\n<script>\n  let nama = 'Reski';       // String\n  let umur = 17;            // Number\n  let lulus = true;         // Boolean\n  document.getElementById('out').textContent = `${nama}, ${umur} tahun, lulus: ${lulus}`;\n<\/script>", "output": null}, {"id": "js-4", "no": 4, "name": "Array []", "desc": "Struktur data untuk menyimpan banyak nilai sekaligus dalam satu variabel, diakses lewat index (mulai dari 0).", "code": "<div id=\"out\"><\/div>\n<script>\n  const bahasa = ['HTML', 'CSS', 'JavaScript'];\n  document.getElementById('out').textContent = 'Bahasa ke-2: ' + bahasa[1];\n<\/script>", "output": null}, {"id": "js-5", "no": 5, "name": "Object {}", "desc": "Struktur data untuk menyimpan data berpasangan key: value, cocok untuk merepresentasikan satu entitas.", "code": "<div id=\"out\"><\/div>\n<script>\n  const siswa = { nama: 'Reski', kelas: 'XII PPLG' };\n  document.getElementById('out').textContent = siswa.nama + ' - ' + siswa.kelas;\n<\/script>", "output": null}, {"id": "js-6", "no": 6, "name": "function namaFungsi()", "desc": "Cara mendefinisikan sebuah fungsi (blok kode yang bisa dipanggil ulang kapan saja).", "code": "<div id=\"out\"><\/div>\n<script>\n  function sapa(nama) {\n    return 'Halo, ' + nama + '!';\n  }\n  document.getElementById('out').textContent = sapa('Ya');\n<\/script>", "output": null}, {"id": "js-7", "no": 7, "name": "Arrow Function () => {}", "desc": "Cara penulisan fungsi yang lebih singkat dan modern dibanding function biasa.", "code": "<div id=\"out\"><\/div>\n<script>\n  const tambah = (a, b) => a + b;\n  document.getElementById('out').textContent = 'Hasil: ' + tambah(5, 7);\n<\/script>", "output": null}, {"id": "js-8", "no": 8, "name": "if / else", "desc": "Struktur percabangan: menjalankan kode berbeda tergantung apakah suatu kondisi bernilai true atau false.", "code": "<div id=\"out\"><\/div>\n<script>\n  let nilai = 85;\n  let hasil = '';\n  if (nilai >= 75) { hasil = 'Lulus'; } else { hasil = 'Remedial'; }\n  document.getElementById('out').textContent = hasil;\n<\/script>", "output": null}, {"id": "js-9", "no": 9, "name": "switch", "desc": "Struktur percabangan dengan banyak kemungkinan pilihan, alternatif dari if-else bertingkat.", "code": "<div id=\"out\"><\/div>\n<script>\n  let hari = 3;\n  let nama;\n  switch (hari) {\n    case 1: nama = 'Senin'; break;\n    case 2: nama = 'Selasa'; break;\n    case 3: nama = 'Rabu'; break;\n    default: nama = 'Tidak diketahui';\n  }\n  document.getElementById('out').textContent = nama;\n<\/script>", "output": null}, {"id": "js-10", "no": 10, "name": "for Loop", "desc": "Perulangan yang dijalankan sebanyak jumlah hitungan yang sudah pasti/ditentukan.", "code": "<div id=\"out\"><\/div>\n<script>\n  let hasil = '';\n  for (let i = 1; i <= 5; i++) { hasil += i + ' '; }\n  document.getElementById('out').textContent = hasil;\n<\/script>", "output": null}, {"id": "js-11", "no": 11, "name": "while Loop", "desc": "Perulangan yang terus berjalan SELAMA suatu kondisi masih bernilai true.", "code": "<div id=\"out\"><\/div>\n<script>\n  let i = 1, hasil = '';\n  while (i <= 5) { hasil += i + ' '; i++; }\n  document.getElementById('out').textContent = hasil;\n<\/script>", "output": null}, {"id": "js-12", "no": 12, "name": "document.getElementById()", "desc": "Mengambil satu elemen HTML spesifik berdasarkan atribut id-nya.", "code": "<p id=\"judul\">Judul Lama<\/p>\n<script>\n  document.getElementById('judul').textContent = 'Judul Baru via JS!';\n<\/script>", "output": null}, {"id": "js-13", "no": 13, "name": "document.querySelector()", "desc": "Mengambil elemen HTML pertama yang cocok dengan selector CSS (misal '.kelas' atau '#id').", "code": "<p class=\"info\">Info Lama<\/p>\n<script>\n  document.querySelector('.info').textContent = 'Info Baru via querySelector!';\n<\/script>", "output": null}, {"id": "js-14", "no": 14, "name": "element.addEventListener('click', ...)", "desc": "Menjalankan sebuah fungsi ketika event tertentu terjadi, misalnya saat elemen diklik.", "code": "<button id=\"btn\">Klik Saya<\/button>\n<p id=\"out\">Belum diklik<\/p>\n<script>\n  document.getElementById('btn').addEventListener('click', function() {\n    document.getElementById('out').textContent = 'Tombol berhasil diklik!';\n  });\n<\/script>", "output": null}, {"id": "js-15", "no": 15, "name": "element.innerHTML", "desc": "Mengubah/mengisi isi HTML di dalam sebuah elemen, bisa menyisipkan tag HTML baru.", "code": "<div id=\"out\"><\/div>\n<script>\n  document.getElementById('out').innerHTML = '<strong style=\"color:#f59e0b\">Teks Tebal dari JS<\/strong>';\n<\/script>", "output": null}, {"id": "js-16", "no": 16, "name": "element.textContent", "desc": "Mengubah/mengisi teks murni di dalam elemen (tanpa merender tag HTML seperti innerHTML).", "code": "<div id=\"out\"><\/div>\n<script>\n  document.getElementById('out').textContent = 'Ini teks murni, tag <b> tidak akan dirender';\n<\/script>", "output": null}, {"id": "js-17", "no": 17, "name": "element.style.color", "desc": "Mengubah properti CSS sebuah elemen secara langsung melalui JavaScript.", "code": "<p id=\"out\">Ubah warna saya<\/p>\n<script>\n  document.getElementById('out').style.color = '#f59e0b';\n  document.getElementById('out').style.fontWeight = 'bold';\n<\/script>", "output": null}, {"id": "js-18", "no": 18, "name": "element.classList.add() & .remove()", "desc": "Menambah atau menghapus sebuah kelas CSS pada elemen secara dinamis.", "code": "<style>.aktif{ color:#f59e0b; font-weight:bold; }<\/style>\n<p id=\"out\">Teks Biasa<\/p>\n<script>\n  document.getElementById('out').classList.add('aktif');\n<\/script>", "output": null}, {"id": "js-19", "no": 19, "name": "document.createElement()", "desc": "Membuat sebuah elemen HTML baru dari JavaScript (belum tampil sebelum ditempelkan ke halaman).", "code": "<div id=\"container\"><\/div>\n<script>\n  const p = document.createElement('p');\n  p.textContent = 'Saya dibuat via createElement!';\n  document.getElementById('container').appendChild(p);\n<\/script>", "output": null}, {"id": "js-20", "no": 20, "name": "appendChild()", "desc": "Menempelkan/menambahkan sebuah elemen baru sebagai anak dari elemen lain di halaman.", "code": "<ul id=\"list\"><li>Item Awal<\/li><\/ul>\n<script>\n  const li = document.createElement('li');\n  li.textContent = 'Item Baru dari JS';\n  document.getElementById('list').appendChild(li);\n<\/script>", "output": null}, {"id": "js-21", "no": 21, "name": "console.log()", "desc": "Mencetak/menampilkan data ke Console (buka Inspect Element / F12 untuk melihatnya), berguna untuk debugging.", "code": "<div id=\"out\">Buka Console (F12) untuk lihat hasil console.log<\/div>\n<script>\n  console.log('Ini pesan debug dari console.log()');\n<\/script>", "output": null}, {"id": "js-22", "no": 22, "name": "alert()", "desc": "Menampilkan kotak dialog pop-up peringatan bawaan browser yang berisi pesan.", "code": "<button onclick=\"alert('Halo dari LifeHub AI!')\">Tampilkan Alert<\/button>", "output": null}, {"id": "js-23", "no": 23, "name": "prompt()", "desc": "Menampilkan kotak dialog pop-up yang meminta input teks dari pengguna, hasilnya dikembalikan sebagai String.", "code": "<button onclick=\"document.getElementById('out').textContent = 'Nama: ' + prompt('Siapa nama kamu?')\">Isi Nama<\/button>\n<p id=\"out\"><\/p>", "output": null}, {"id": "js-24", "no": 24, "name": "setTimeout()", "desc": "Menjalankan sebuah fungsi SEKALI setelah jeda waktu tertentu (dalam milidetik).", "code": "<div id=\"out\">Menunggu 2 detik...<\/div>\n<script>\n  setTimeout(function() {\n    document.getElementById('out').textContent = 'Pesan ini muncul setelah 2 detik!';\n  }, 2000);\n<\/script>", "output": null}, {"id": "js-25", "no": 25, "name": "setInterval()", "desc": "Menjalankan sebuah fungsi BERULANG-ULANG secara rutin setiap interval waktu tertentu.", "code": "<div id=\"out\">Detik ke: 0<\/div>\n<script>\n  let detik = 0;\n  setInterval(function() {\n    detik++;\n    document.getElementById('out').textContent = 'Detik ke: ' + detik;\n  }, 1000);\n<\/script>", "output": null}, {"id": "js-26", "no": 26, "name": "Math.random()", "desc": "Menghasilkan bilangan desimal acak antara 0 (inklusif) sampai 1 (eksklusif).", "code": "<div id=\"out\"><\/div>\n<script>\n  document.getElementById('out').textContent = 'Angka acak: ' + Math.random();\n<\/script>", "output": null}, {"id": "js-27", "no": 27, "name": "Math.floor()", "desc": "Membulatkan angka desimal ke bawah menjadi bilangan bulat terdekat.", "code": "<div id=\"out\"><\/div>\n<script>\n  let acak = Math.floor(Math.random() * 10) + 1; // angka acak 1-10\n  document.getElementById('out').textContent = 'Angka acak 1-10: ' + acak;\n<\/script>", "output": null}, {"id": "js-28", "no": 28, "name": "JSON.stringify()", "desc": "Mengubah sebuah Object/Array JavaScript menjadi teks berformat JSON (String).", "code": "<div id=\"out\"><\/div>\n<script>\n  const siswa = { nama: 'Reski', kelas: 'XII' };\n  document.getElementById('out').textContent = JSON.stringify(siswa);\n<\/script>", "output": null}, {"id": "js-29", "no": 29, "name": "JSON.parse()", "desc": "Mengubah teks berformat JSON (String) kembali menjadi Object JavaScript yang bisa diakses propertinya.", "code": "<div id=\"out\"><\/div>\n<script>\n  const teksJSON = '{\"nama\":\"Reski\",\"kelas\":\"XII\"}';\n  const obj = JSON.parse(teksJSON);\n  document.getElementById('out').textContent = 'Nama hasil parse: ' + obj.nama;\n<\/script>", "output": null}, {"id": "js-30", "no": 30, "name": "fetch()", "desc": "Mengambil/meminta data dari server atau API eksternal secara asynchronous.", "code": "<div id=\"out\">Memuat data...<\/div>\n<script>\n  fetch('https://jsonplaceholder.typicode.com/todos/1')\n    .then(res => res.json())\n    .then(data => {\n      document.getElementById('out').textContent = 'Judul todo: ' + data.title;\n    })\n    .catch(() => {\n      document.getElementById('out').textContent = 'Gagal fetch (butuh koneksi internet).';\n    });\n<\/script>", "output": null}], "php": [{"id": "php-1", "no": 1, "name": "<?php ... ?>", "desc": "Tag pembuka dan penutup wajib yang menandai awal dan akhir blok kode PHP di dalam file.", "code": "<?php\necho \"Halo, ini kode di dalam tag PHP!\";\n?>", "output": "Halo, ini kode di dalam tag PHP!"}, {"id": "php-2", "no": 2, "name": "echo", "desc": "Perintah paling dasar di PHP untuk mencetak/menampilkan teks atau HTML ke layar.", "code": "<?php\necho \"Selamat datang di LifeHub AI\";\n?>", "output": "Selamat datang di LifeHub AI"}, {"id": "php-3", "no": 3, "name": "$variabel", "desc": "Aturan penulisan variabel di PHP wajib diawali tanda dolar ($), tanpa perlu deklarasi tipe data.", "code": "<?php\n$nama = \"Reski Setiawan\";\necho $nama;\n?>", "output": "Reski Setiawan"}, {"id": "php-4", "no": 4, "name": "Komentar (// dan /* */)", "desc": "// untuk komentar satu baris, /* */ untuk komentar banyak baris. Komentar tidak dieksekusi/ditampilkan.", "code": "<?php\n// Ini komentar satu baris\n/* Ini komentar\n   banyak baris */\necho \"Baris ini tetap tampil\";\n?>", "output": "Baris ini tetap tampil"}, {"id": "php-5", "no": 5, "name": "String, Integer, Float, Boolean", "desc": "Empat tipe data dasar PHP: String (teks), Integer (bilangan bulat), Float (desimal), Boolean (true/false).", "code": "<?php\n$nama = \"Ya\";      // String\n$umur = 17;        // Integer\n$tinggi = 165.5;    // Float\n$aktif = true;      // Boolean\necho \"$nama, $umur tahun, $tinggi cm\";\n?>", "output": "Ya, 17 tahun, 165.5 cm"}, {"id": "php-6", "no": 6, "name": "Array Indexed & Asosiatif", "desc": "Array Indexed diakses lewat angka (0,1,2...), Array Asosiatif diakses lewat kunci/'key' bertipe teks.", "code": "<?php\n$buah = [\"Apel\", \"Jeruk\"];\n$siswa = [\"nama\" => \"Reski\", \"kelas\" => \"XII\"];\necho $buah[0] . \" - \" . $siswa[\"nama\"];\n?>", "output": "Apel - Reski"}, {"id": "php-7", "no": 7, "name": "define()", "desc": "Membuat konstanta, yaitu 'variabel' yang nilainya tetap dan tidak boleh diubah sepanjang program berjalan.", "code": "<?php\ndefine(\"NAMA_SEKOLAH\", \"SMKN 1 Talaga\");\necho NAMA_SEKOLAH;\n?>", "output": "SMKN 1 Talaga"}, {"id": "php-8", "no": 8, "name": "strlen()", "desc": "Menghitung jumlah karakter (termasuk spasi) dalam sebuah string.", "code": "<?php\necho strlen(\"LifeHub AI\");\n?>", "output": "10"}, {"id": "php-9", "no": 9, "name": "str_word_count()", "desc": "Menghitung jumlah kata di dalam sebuah kalimat/string.", "code": "<?php\necho str_word_count(\"Belajar coding itu menyenangkan\");\n?>", "output": "4"}, {"id": "php-10", "no": 10, "name": "strrev()", "desc": "Membalik urutan huruf dalam sebuah string (dari belakang ke depan).", "code": "<?php\necho strrev(\"LifeHub\");\n?>", "output": "buHefiL"}, {"id": "php-11", "no": 11, "name": "str_replace()", "desc": "Mengganti sebagian teks tertentu di dalam string dengan teks lain.", "code": "<?php\necho str_replace(\"lambat\", \"cepat\", \"Kodingnya jadi lambat\");\n?>", "output": "Kodingnya jadi cepat"}, {"id": "php-12", "no": 12, "name": "strtolower() & strtoupper()", "desc": "strtolower() mengubah semua huruf jadi kecil, strtoupper() mengubah semua huruf jadi besar.", "code": "<?php\necho strtoupper(\"lifehub\") . \" - \" . strtolower(\"AI\");\n?>", "output": "LIFEHUB - ai"}, {"id": "php-13", "no": 13, "name": "trim()", "desc": "Menghapus spasi kosong (whitespace) yang ada di awal dan akhir sebuah string.", "code": "<?php\n$teks = \"   Halo Dunia   \";\necho \"[\" . trim($teks) . \"]\";\n?>", "output": "[Halo Dunia]"}, {"id": "php-14", "no": 14, "name": "abs(), round(), rand(), pow()", "desc": "Fungsi matematika: abs (nilai mutlak), round (pembulatan), rand (angka acak), pow (pangkat).", "code": "<?php\necho abs(-5) . \", \" . round(4.6) . \", \" . pow(2, 3);\n?>", "output": "5, 5, 8"}, {"id": "php-15", "no": 15, "name": "if, else, elseif", "desc": "Struktur percabangan untuk menjalankan kode berbeda berdasarkan kondisi tertentu.", "code": "<?php\n$nilai = 80;\nif ($nilai >= 90) {\n  echo \"A\";\n} elseif ($nilai >= 75) {\n  echo \"B\";\n} else {\n  echo \"C\";\n}\n?>", "output": "B"}, {"id": "php-16", "no": 16, "name": "for, while, foreach", "desc": "Tiga jenis perulangan di PHP: for (jumlah pasti), while (berbasis kondisi), foreach (khusus melintasi array).", "code": "<?php\n$buah = [\"Apel\", \"Jeruk\", \"Mangga\"];\nforeach ($buah as $b) {\n  echo $b . \" \";\n}\n?>", "output": "Apel Jeruk Mangga "}, {"id": "php-17", "no": 17, "name": "function kustom", "desc": "Cara membuat fungsi buatan sendiri di PHP menggunakan kata kunci function.", "code": "<?php\nfunction sapa($nama) {\n  return \"Halo, \" . $nama . \"!\";\n}\necho sapa(\"PPLG\");\n?>", "output": "Halo, PPLG!"}, {"id": "php-18", "no": 18, "name": "count()", "desc": "Menghitung jumlah total item/elemen yang ada di dalam sebuah array.", "code": "<?php\n$siswa = [\"Ali\", \"Budi\", \"Citra\"];\necho count($siswa);\n?>", "output": "3"}, {"id": "php-19", "no": 19, "name": "$_GET", "desc": "Superglobal untuk mengambil data yang dikirim lewat parameter URL (contoh: ?nama=Reski).", "code": "<?php\n// Contoh jika URL: page.php?nama=Reski\necho \"Nama dari URL: \" . ($_GET['nama'] ?? 'Reski');\n?>", "output": "Nama dari URL: Reski"}, {"id": "php-20", "no": 20, "name": "$_POST", "desc": "Superglobal untuk mengambil data yang dikirim secara rahasia dari sebuah <form method=\"POST\">.", "code": "<?php\n// Contoh jika form mengirim field 'username'\necho \"Username dikirim: \" . ($_POST['username'] ?? 'Ya');\n?>", "output": "Username dikirim: Ya"}, {"id": "php-21", "no": 21, "name": "isset()", "desc": "Mengecek apakah sebuah variabel sudah didefinisikan/diisi (bukan null).", "code": "<?php\n$nama = \"Reski\";\nif (isset($nama)) {\n  echo \"Variabel nama sudah diisi\";\n} else {\n  echo \"Variabel belum ada\";\n}\n?>", "output": "Variabel nama sudah diisi"}, {"id": "php-22", "no": 22, "name": "empty()", "desc": "Mengecek apakah sebuah variabel kosong (nilainya '', 0, null, atau belum diset).", "code": "<?php\n$data = \"\";\nif (empty($data)) {\n  echo \"Data masih kosong\";\n} else {\n  echo \"Data sudah terisi\";\n}\n?>", "output": "Data masih kosong"}, {"id": "php-23", "no": 23, "name": "include & require", "desc": "Memanggil/menyisipkan isi file PHP lain ke dalam file saat ini agar kode bisa dipakai ulang.", "code": "<?php\n// include \"header.php\";\necho \"Baris ini mewakili konten setelah header di-include\";\n?>", "output": "Baris ini mewakili konten setelah header di-include"}, {"id": "php-24", "no": 24, "name": "date()", "desc": "Menampilkan tanggal dan/atau waktu saat ini sesuai format yang ditentukan.", "code": "<?php\necho date(\"d-m-Y\");\n?>", "output": "30-07-2026"}, {"id": "php-25", "no": 25, "name": "header()", "desc": "Mengirim header HTTP mentah ke browser, paling sering dipakai untuk redirect otomatis ke halaman lain.", "code": "<?php\n// header(\"Location: dashboard.php\");\necho \"Simulasi: user akan dialihkan ke dashboard.php\";\n?>", "output": "Simulasi: user akan dialihkan ke dashboard.php"}, {"id": "php-26", "no": 26, "name": "session_start()", "desc": "Memulai/melanjutkan sesi PHP, wajib dipanggil sebelum menggunakan $_SESSION untuk sistem login.", "code": "<?php\nsession_start();\necho \"Sesi berhasil dimulai\";\n?>", "output": "Sesi berhasil dimulai"}, {"id": "php-27", "no": 27, "name": "$_SESSION", "desc": "Superglobal untuk menyimpan data pengguna (misalnya status login) yang tetap ada selama sesi browser aktif.", "code": "<?php\nsession_start();\n$_SESSION['user'] = \"Reski\";\necho \"User login: \" . $_SESSION['user'];\n?>", "output": "User login: Reski"}, {"id": "php-28", "no": 28, "name": "array_push()", "desc": "Menambahkan satu atau lebih item baru ke bagian akhir sebuah array.", "code": "<?php\n$tugas = [\"Belajar HTML\"];\narray_push($tugas, \"Belajar CSS\");\necho implode(\", \", $tugas);\n?>", "output": "Belajar HTML, Belajar CSS"}, {"id": "php-29", "no": 29, "name": "explode()", "desc": "Memecah sebuah string menjadi array berdasarkan karakter pemisah tertentu.", "code": "<?php\n$data = \"HTML,CSS,JavaScript\";\n$arr = explode(\",\", $data);\necho $arr[1];\n?>", "output": "CSS"}, {"id": "php-30", "no": 30, "name": "implode()", "desc": "Menggabungkan seluruh item array menjadi satu string, dipisahkan oleh karakter penghubung tertentu.", "code": "<?php\n$bahasa = [\"HTML\", \"CSS\", \"JS\"];\necho implode(\" - \", $bahasa);\n?>", "output": "HTML - CSS - JS"}], "python": [{"id": "python-1", "no": 1, "name": "print()", "desc": "Fungsi paling dasar Python untuk mencetak/menampilkan teks atau data ke layar terminal.", "code": "print(\"Halo, LifeHub AI!\")", "output": "Halo, LifeHub AI!"}, {"id": "python-2", "no": 2, "name": "input()", "desc": "Menerima masukan/ketikan dari pengguna lewat terminal, hasilnya selalu bertipe String.", "code": "nama = input(\"Siapa nama kamu? \")\nprint(\"Halo, \" + nama)", "output": "Siapa nama kamu? Ya\nHalo, Ya"}, {"id": "python-3", "no": 3, "name": "Variabel Python", "desc": "Menyimpan data ke dalam sebuah nama variabel. Python tidak memakai tanda $ seperti PHP.", "code": "nama_sekolah = \"SMKN 1 Talaga\"\nprint(nama_sekolah)", "output": "SMKN 1 Talaga"}, {"id": "python-4", "no": 4, "name": "int(), float(), str()", "desc": "Fungsi untuk mengonversi/mengubah tipe data suatu nilai ke Integer, Float, atau String.", "code": "angka = \"17\"\nangka_int = int(angka)\nprint(angka_int + 3)", "output": "20"}, {"id": "python-5", "no": 5, "name": "List []", "desc": "Struktur data untuk menyimpan kumpulan item yang urutannya terjaga dan BISA diubah (mutable).", "code": "bahasa = [\"HTML\", \"CSS\", \"Python\"]\nprint(bahasa[2])", "output": "Python"}, {"id": "python-6", "no": 6, "name": "Tuple ()", "desc": "Mirip List, tapi setelah dibuat isinya TIDAK BISA diubah lagi (immutable).", "code": "koordinat = (10, 20)\nprint(koordinat)", "output": "(10, 20)"}, {"id": "python-7", "no": 7, "name": "Dictionary {}", "desc": "Struktur data untuk menyimpan pasangan key-value, mirip Object di JavaScript.", "code": "siswa = {\"nama\": \"Reski\", \"kelas\": \"XII PPLG\"}\nprint(siswa[\"nama\"])", "output": "Reski"}, {"id": "python-8", "no": 8, "name": "len()", "desc": "Menghitung panjang sebuah string, atau jumlah item dalam list/tuple/dictionary.", "code": "kata = \"LifeHub\"\nprint(len(kata))", "output": "7"}, {"id": "python-9", "no": 9, "name": "type()", "desc": "Mengecek dan menampilkan jenis tipe data dari sebuah variabel.", "code": "umur = 17\nprint(type(umur))", "output": "<class 'int'>"}, {"id": "python-10", "no": 10, "name": "if, elif, else", "desc": "Struktur percabangan logika di Python untuk mengambil keputusan berdasarkan kondisi.", "code": "nilai = 88\nif nilai >= 90:\n    print(\"A\")\nelif nilai >= 75:\n    print(\"B\")\nelse:\n    print(\"C\")", "output": "B"}, {"id": "python-11", "no": 11, "name": "for item in list:", "desc": "Perulangan yang membongkar/melintasi setiap item di dalam sebuah list satu per satu.", "code": "buah = [\"Apel\", \"Jeruk\", \"Mangga\"]\nfor b in buah:\n    print(b)", "output": "Apel\nJeruk\nMangga"}, {"id": "python-12", "no": 12, "name": "while", "desc": "Perulangan yang terus berjalan selama kondisi boolean yang diberikan masih bernilai True.", "code": "i = 1\nwhile i <= 3:\n    print(\"Perulangan ke-\" + str(i))\n    i += 1", "output": "Perulangan ke-1\nPerulangan ke-2\nPerulangan ke-3"}, {"id": "python-13", "no": 13, "name": "range()", "desc": "Menghasilkan deret/urutan angka, paling sering dipakai bersama perulangan for.", "code": "for i in range(1, 4):\n    print(i)", "output": "1\n2\n3"}, {"id": "python-14", "no": 14, "name": "def nama_fungsi():", "desc": "Kata kunci untuk mendefinisikan sebuah fungsi kustom di Python.", "code": "def sapa(nama):\n    return \"Halo, \" + nama + \"!\"\n\nprint(sapa(\"PPLG\"))", "output": "Halo, PPLG!"}, {"id": "python-15", "no": 15, "name": "return", "desc": "Mengembalikan sebuah nilai dari dalam fungsi ke tempat fungsi tersebut dipanggil.", "code": "def tambah(a, b):\n    return a + b\n\nhasil = tambah(4, 6)\nprint(hasil)", "output": "10"}, {"id": "python-16", "no": 16, "name": ".append()", "desc": "Method untuk menambahkan satu item baru ke bagian akhir sebuah List.", "code": "tugas = [\"Belajar HTML\"]\ntugas.append(\"Belajar Python\")\nprint(tugas)", "output": "['Belajar HTML', 'Belajar Python']"}, {"id": "python-17", "no": 17, "name": ".pop()", "desc": "Method untuk menghapus dan mengembalikan item terakhir (atau berdasarkan index) dari sebuah List.", "code": "angka = [1, 2, 3]\nterakhir = angka.pop()\nprint(terakhir)\nprint(angka)", "output": "3\n[1, 2]"}, {"id": "python-18", "no": 18, "name": ".split()", "desc": "Method String untuk memotong/memecah sebuah string menjadi List berdasarkan pemisah tertentu.", "code": "data = \"HTML,CSS,Python\"\nhasil = data.split(\",\")\nprint(hasil)", "output": "['HTML', 'CSS', 'Python']"}, {"id": "python-19", "no": 19, "name": ".join()", "desc": "Method String untuk menggabungkan seluruh item List menjadi satu string, dengan pemisah tertentu.", "code": "bahasa = [\"HTML\", \"CSS\", \"Python\"]\nprint(\" - \".join(bahasa))", "output": "HTML - CSS - Python"}, {"id": "python-20", "no": 20, "name": ".lower() & .upper()", "desc": "Method String untuk mengubah semua huruf menjadi kecil (.lower()) atau besar (.upper()).", "code": "teks = \"LifeHub AI\"\nprint(teks.upper())\nprint(teks.lower())", "output": "LIFEHUB AI\nlifehub ai"}, {"id": "python-21", "no": 21, "name": ".replace()", "desc": "Method String untuk mengganti bagian teks tertentu dengan teks lain.", "code": "kalimat = \"Python itu sulit\"\nprint(kalimat.replace(\"sulit\", \"seru\"))", "output": "Python itu seru"}, {"id": "python-22", "no": 22, "name": "f-Strings f\"Halo {nama}\"", "desc": "Cara modern memformat string agar bisa menyisipkan nilai variabel langsung di dalam teks.", "code": "nama = \"Ya\"\nskor = 95\nprint(f\"Halo {nama}, skor kamu {skor}\")", "output": "Halo Ya, skor kamu 95"}, {"id": "python-23", "no": 23, "name": "try: & except:", "desc": "Struktur penanganan error/exception agar program tidak langsung crash saat terjadi kesalahan.", "code": "try:\n    hasil = 10 / 0\nexcept ZeroDivisionError:\n    print(\"Error: tidak bisa membagi dengan nol\")", "output": "Error: tidak bisa membagi dengan nol"}, {"id": "python-24", "no": 24, "name": "import math / import random", "desc": "Memanggil/mengaktifkan modul bawaan Python agar fungsi-fungsi di dalamnya bisa dipakai.", "code": "import math\nprint(math.sqrt(16))", "output": "4.0"}, {"id": "python-25", "no": 25, "name": "random.randint()", "desc": "Fungsi dari modul random untuk menghasilkan bilangan bulat acak dalam rentang tertentu (inklusif).", "code": "import random\nprint(random.randint(1, 10))", "output": "7  (angka acak setiap dijalankan, contoh hasil)"}, {"id": "python-26", "no": 26, "name": "open()", "desc": "Fungsi untuk membuka sebuah file, sehingga isinya bisa dibaca atau ditulis oleh program.", "code": "# contoh membaca file catatan.txt\nwith open(\"catatan.txt\", \"r\") as f:\n    isi = f.read()\n    print(isi)", "output": "(Simulasi) Isi dari catatan.txt akan tercetak di sini"}, {"id": "python-27", "no": 27, "name": "#", "desc": "Karakter pagar dipakai untuk menulis komentar satu baris, tidak akan dieksekusi oleh Python.", "code": "# Ini komentar, baris ini diabaikan\nprint(\"Baris ini yang dieksekusi\")", "output": "Baris ini yang dieksekusi"}, {"id": "python-28", "no": 28, "name": "and, or, not", "desc": "Operator logika Python untuk menggabungkan atau membalik nilai kondisi boolean.", "code": "umur = 17\nsudah_daftar = True\nprint(umur >= 17 and sudah_daftar)", "output": "True"}, {"id": "python-29", "no": 29, "name": "is & in", "desc": "'is' mengecek kesamaan identitas objek, 'in' mengecek keanggotaan suatu nilai dalam koleksi data.", "code": "bahasa = [\"HTML\", \"CSS\", \"Python\"]\nprint(\"Python\" in bahasa)", "output": "True"}, {"id": "python-30", "no": 30, "name": "break & continue", "desc": "'break' menghentikan perulangan sepenuhnya, 'continue' melompati satu iterasi dan lanjut ke iterasi berikutnya.", "code": "for i in range(1, 6):\n    if i == 3:\n        continue\n    if i == 5:\n        break\n    print(i)", "output": "1\n2\n4"}]};
+
+const LANG_META = {
+  html:   { label:'HTML',   emoji:'\ud83c\udf10', title:'HTML (30 Tag)',        file:'contoh.html', mode:'web' },
+  css:    { label:'CSS',    emoji:'\ud83c\udfa8', title:'CSS (30 Properti)',    file:'contoh.html', mode:'web' },
+  js:     { label:'JavaScript', emoji:'\u26a1',    title:'JavaScript (30 Konsep)', file:'contoh.html', mode:'web' },
+  php:    { label:'PHP',    emoji:'\ud83d\udc18', title:'PHP (30 Fungsi)',      file:'contoh.php',  mode:'terminal' },
+  python: { label:'Python', emoji:'\ud83d\udc0d', title:'Python (30 Fungsi)',   file:'contoh.py',   mode:'terminal' },
+};
+const LANG_ORDER = ['html','css','js','php','python'];
+
+let state = {
+  lang: 'html',
+  activeId: MATERI.html[0].id,
+};
+
+/* ---------- Render Lang Tabs ---------- */
+const langTabsEl = document.getElementById('langTabs');
+LANG_ORDER.forEach(key => {
+  const meta = LANG_META[key];
+  const btn = document.createElement('button');
+  btn.className = 'lang-tab' + (key === state.lang ? ' active' : '');
+  btn.dataset.lang = key;
+  btn.innerHTML = `${meta.emoji} ${meta.label} <span class="count">${MATERI[key].length}</span>`;
+  btn.addEventListener('click', () => selectLang(key));
+  langTabsEl.appendChild(btn);
+});
+
+function selectLang(key){
+  state.lang = key;
+  state.activeId = MATERI[key][0].id;
+  document.querySelectorAll('.lang-tab').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === key);
+  });
+  document.getElementById('panelTitle').textContent = `${LANG_META[key].emoji} ${LANG_META[key].title}`;
+  document.getElementById('materiSearch').value = '';
+  renderMateriList();
+  loadConcept(state.activeId);
+}
+
+/* ---------- Render Materi List ---------- */
+function renderMateriList(filter){
+  const listEl = document.getElementById('materiList');
+  listEl.innerHTML = '';
+  const items = MATERI[state.lang].filter(item => {
+    if (!filter) return true;
+    const f = filter.toLowerCase();
+    return item.name.toLowerCase().includes(f) || item.desc.toLowerCase().includes(f);
+  });
+  if (items.length === 0){
+    listEl.innerHTML = '<p style="padding:14px; font-size:12px; color:var(--text-low);">Materi tidak ditemukan.</p>';
+    return;
+  }
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'materi-item' + (item.id === state.activeId ? ' active' : '');
+    div.dataset.id = item.id;
+    div.innerHTML = `<span class="no">${String(item.no).padStart(2,'0')}</span><span class="label">${escapeHtml(item.name)}</span>`;
+    div.addEventListener('click', () => {
+      state.activeId = item.id;
+      renderMateriList(document.getElementById('materiSearch').value);
+      loadConcept(item.id);
+    });
+    listEl.appendChild(div);
+  });
+}
+
+document.getElementById('materiSearch').addEventListener('input', (e) => {
+  renderMateriList(e.target.value);
+});
+
+/* ---------- Load a Concept into Editor ---------- */
+function findConcept(id){
+  return MATERI[state.lang].find(x => x.id === id);
+}
+
+function loadConcept(id){
+  const item = findConcept(id);
+  if (!item) return;
+  document.getElementById('conceptEyebrow').textContent =
+    `${LANG_META[state.lang].label} \u00b7 ${String(item.no).padStart(2,'0')} / 30`;
+  document.getElementById('conceptName').textContent = item.name;
+  document.getElementById('conceptDesc').textContent = item.desc;
+  document.getElementById('ideFilename').textContent = LANG_META[state.lang].file;
+  document.getElementById('langPill').textContent = LANG_META[state.lang].label;
+
+  const editor = document.getElementById('codeEditor');
+  editor.value = item.code;
+  editor.dataset.defaultCode = item.code;
+  updateStatusBar();
+
+  const modeTag = document.getElementById('outputModeTag');
+  modeTag.textContent = LANG_META[state.lang].mode === 'web' ? 'Live Preview' : 'Simulasi Terminal';
+
+  runCode();
+}
+
+/* ---------- Editor: Auto-close tag + Tab indent + status bar ---------- */
+const editor = document.getElementById('codeEditor');
+const VOID_TAGS = new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr','doctype','!doctype']);
+
+editor.addEventListener('keydown', function(e){
+  if (e.key === 'Tab'){
+    e.preventDefault();
+    const start = this.selectionStart;
+    const end = this.selectionEnd;
+    this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
+    this.selectionStart = this.selectionEnd = start + 2;
+    updateStatusBar();
+  }
+});
+
+editor.addEventListener('input', function(e){
+  updateStatusBar();
+  if (e.inputType !== 'insertText' || e.data !== '>') return;
+
+  const pos = this.selectionStart;
+  const textBefore = this.value.substring(0, pos);
+  const match = textBefore.match(/<([a-zA-Z][a-zA-Z0-9]*)([^<>]*)>$/);
+  if (!match) return;
+
+  const tagName = match[1].toLowerCase();
+  const attrPart = match[2] || '';
+  if (VOID_TAGS.has(tagName)) return;
+  if (attrPart.trim().endsWith('/')) return;
+
+  const closing = `</${tagName}>`;
+  const after = this.value.substring(pos);
+  this.value = textBefore + closing + after;
+  this.selectionStart = this.selectionEnd = pos;
+  updateStatusBar();
+});
+
+function updateStatusBar(){
+  const val = editor.value;
+  const pos = editor.selectionStart;
+  const before = val.substring(0, pos);
+  const lines = before.split('\n');
+  const lineNo = lines.length;
+  const colNo = lines[lines.length - 1].length + 1;
+  document.getElementById('lineNo').textContent = lineNo;
+  document.getElementById('colNo').textContent = colNo;
+}
+editor.addEventListener('click', updateStatusBar);
+editor.addEventListener('keyup', updateStatusBar);
+
+/* ---------- Run / Reset ---------- */
+document.getElementById('runBtn').addEventListener('click', runCode);
+document.getElementById('resetBtn').addEventListener('click', function(){
+  editor.value = editor.dataset.defaultCode || '';
+  updateStatusBar();
+  runCode();
+});
+
+function runCode(){
+  const meta = LANG_META[state.lang];
+  const frame = document.getElementById('outputFrame');
+  const term = document.getElementById('terminalOutput');
+
+  if (meta.mode === 'web'){
+    frame.style.display = 'block';
+    term.style.display = 'none';
+    const doc = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+      <style>
+        body{ font-family:'Inter',sans-serif; background:#fff; color:#18181b; padding:16px; margin:0; }
+        button{ font-family:inherit; }
+      </style>
+    </head><body>${editor.value}</body></html>`;
+    frame.srcdoc = doc;
+  } else {
+    frame.style.display = 'none';
+    term.style.display = 'block';
+    const item = findConcept(state.activeId);
+    const isEdited = item && editor.value.trim() !== item.code.trim();
+    let output = item ? item.output : '';
+    let html = '';
+    html += `<span class="term-line-prompt">$</span> ${meta.label.toLowerCase() === 'php' ? 'php contoh.php' : 'python contoh.py'}\n`;
+    html += escapeHtml(output || '');
+    if (isEdited){
+      html += `\n\n<span class="term-note">// Catatan: kode telah diedit. Output di atas adalah simulasi untuk kode contoh asli,\n// karena ${meta.label} tidak benar-benar dieksekusi langsung di browser.</span>`;
+    }
+    term.innerHTML = html;
+  }
+}
+
+function escapeHtml(str){
+  return String(str)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;');
+}
+
+/* ---------- Init ---------- */
+renderMateriList();
+loadConcept(state.activeId);
+</script>
+</body>
+</html>

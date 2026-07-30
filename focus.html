@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus Space - LifeHub</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-base: #09090b;
+      --bg-surface: #18181b;
+      --bg-elevated: #27272a;
+      --border-base: rgba(255, 255, 255, 0.1);
+      --accent-main: #f59e0b;
+      --accent-hover: #d97706;
+      --accent-dim: rgba(245, 158, 11, 0.15);
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --radius-lg: 20px;
+      --radius-md: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* Top Back Bar */
+    .nav-back {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-md);
+      transition: all 0.2s;
+    }
+
+    .nav-back:hover {
+      color: var(--text-primary);
+      border-color: var(--accent-main);
+    }
+
+    /* Main Container */
+    .focus-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .focus-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .focus-subtitle {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      margin-bottom: 24px;
+    }
+
+    /* Mode Selector */
+    .mode-switch {
+      display: flex;
+      background: var(--bg-elevated);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      margin-bottom: 30px;
+      gap: 4px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 8px 0;
+      border: none;
+      background: none;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mode-btn.active {
+      background: var(--accent-main);
+      color: var(--bg-base);
+    }
+
+    /* Timer Display */
+    .timer-display {
+      font-size: 72px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      color: var(--text-primary);
+      margin-bottom: 30px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Controls */
+    .timer-controls {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .btn-main {
+      padding: 14px 36px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: var(--radius-md);
+      border: none;
+      background: var(--accent-main);
+      color: var(--bg-base);
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .btn-main:hover {
+      background: var(--accent-hover);
+      transform: scale(1.02);
+    }
+
+    .btn-sec {
+      padding: 14px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-base);
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-sec:hover {
+      color: var(--text-primary);
+      border-color: var(--text-tertiary);
+    }
+
+    /* Focus Goal Input */
+    .goal-box {
+      border-top: 1px solid var(--border-base);
+      padding-top: 20px;
+      text-align: left;
+    }
+
+    .goal-label {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .goal-input {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-base);
+      padding: 12px;
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .goal-input:focus {
+      border-color: var(--accent-main);
+    }
+
+    /* Footer Credits */
+    .app-footer {
+      margin-top: 30px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .app-footer span {
+      color: var(--accent-main);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="dashboard.html" class="nav-back">
+    ← Dashboard
+  </a>
+
+  <div class="focus-card">
+    <h1 class="focus-title">Focus Space</h1>
+    <p class="focus-subtitle">Masuk ke zona bebas gangguan & tuntaskan tugasmu.</p>
+
+    <div class="mode-switch">
+      <button class="mode-btn active" id="btnFocus">Focus (25m)</button>
+      <button class="mode-btn" id="btnShort">Rest (5m)</button>
+      <button class="mode-btn" id="btnLong">Break (15m)</button>
+    </div>
+
+    <div class="timer-display" id="timer">25:00</div>
+
+    <div class="timer-controls">
+      <button class="btn-main" id="btnStart">START</button>
+      <button class="btn-sec" id="btnReset">RESET</button>
+    </div>
+
+    <div class="goal-box">
+      <label class="goal-label">Target Sesi Ini:</label>
+      <input type="text" class="goal-input" placeholder="Misal: Selesaikan Bab 3 Fisika..." id="goalInput">
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    © 2026 <span>LifeHub AI</span>. Developed with  by Reski X Legacyy403
+  </footer>
+
+  <script>
+    let timeLeft = 25 * 60;
+    let timerId = null;
+    let isRunning = false;
+
+    const timerDisplay = document.getElementById('timer');
+    const btnStart = document.getElementById('btnStart');
+    const btnReset = document.getElementById('btnReset');
+    const btnFocus = document.getElementById('btnFocus');
+    const btnShort = document.getElementById('btnShort');
+    const btnLong = document.getElementById('btnLong');
+
+    function updateDisplay() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      document.title = `(${timerDisplay.textContent}) Focus Space - LifeHub`;
+    }
+
+    function startTimer() {
+      if (isRunning) {
+        clearInterval(timerId);
+        btnStart.textContent = 'START';
+        isRunning = false;
+      } else {
+        isRunning = true;
+        btnStart.textContent = 'PAUSE';
+        timerId = setInterval(() => {
+          if (timeLeft > 0) {
+            timeLeft--;
+            updateDisplay();
+          } else {
+            clearInterval(timerId);
+            alert("Sesi Selesai! Saatnya Istirahat 🎉");
+            resetTimer();
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerId);
+      isRunning = false;
+      btnStart.textContent = 'START';
+      if (btnFocus.classList.contains('active')) timeLeft = 25 * 60;
+      if (btnShort.classList.contains('active')) timeLeft = 5 * 60;
+      if (btnLong.classList.contains('active')) timeLeft = 15 * 60;
+      updateDisplay();
+    }
+
+    function setMode(duration, activeBtn) {
+      [btnFocus, btnShort, btnLong].forEach(btn => btn.classList.remove('active'));
+      activeBtn.classList.add('active');
+      timeLeft = duration * 60;
+      resetTimer();
+    }
+
+    btnStart.addEventListener('click', startTimer);
+    btnReset.addEventListener('click', resetTimer);
+
+    btnFocus.addEventListener('click', () => setMode(25, btnFocus));
+    btnShort.addEventListener('click', () => setMode(5, btnShort));
+    btnLong.addEventListener('click', () => setMode(15, btnLong));
+
+    updateDisplay();
+  </script>
+</body>
+</html>

@@ -24,13 +24,13 @@
       --border-base: rgba(255, 255, 255, 0.1);
       --border-strong: rgba(255, 255, 255, 0.2);
       
-      /* Brand Accents based on Nocturne/Movies */
+      /* Brand Accents */
       --accent-main: #f59e0b;    /* Amber 500 - Primary Gold */
       --accent-hover: #d97706;   /* Amber 600 */
       --accent-dim: rgba(245, 158, 11, 0.15);
       --accent-glow: rgba(245, 158, 11, 0.3);
       
-      /* Secondary Accents for Charts/Badges */
+      /* Secondary Accents */
       --color-success: #10b981;
       --color-danger: #ef4444;
       --color-info: #3b82f6;
@@ -85,7 +85,6 @@
       min-height: 100vh;
     }
 
-    /* Scrollbar Engineering */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -104,7 +103,6 @@
       background: var(--text-tertiary);
     }
 
-    /* Base Typographic utilities */
     h1,
     h2,
     h3,
@@ -139,7 +137,6 @@
       outline: none;
     }
 
-    /* Custom SVG Icon Sizing */
     .icon-svg {
       width: 24px;
       height: 24px;
@@ -150,7 +147,6 @@
       stroke-linejoin: round;
     }
 
-    /* Background Canvas */
     #ambientCanvas {
       position: fixed;
       top: 0;
@@ -172,9 +168,6 @@
       z-index: 1;
     }
 
-    /* --------------------------------------------------------------------------
-       SIDEBAR COMPONENT
-       -------------------------------------------------------------------------- */
     .sidebar {
       width: var(--sidebar-width);
       background: rgba(9, 9, 11, 0.85);
@@ -282,7 +275,6 @@
       background: rgba(239, 68, 68, 0.1);
     }
 
-    /* Mobile Sidebar Overlay */
     .sidebar-overlay {
       position: fixed;
       inset: 0;
@@ -299,9 +291,6 @@
       visibility: visible;
     }
 
-    /* --------------------------------------------------------------------------
-       MAIN CONTENT AREA
-       -------------------------------------------------------------------------- */
     .main-content {
       flex: 1;
       margin-left: var(--sidebar-width);
@@ -311,7 +300,6 @@
       transition: margin var(--transition-smooth);
     }
 
-    /* Top Header */
     .top-header {
       height: var(--header-height);
       display: flex;
@@ -341,7 +329,6 @@
       margin-left: -8px;
     }
 
-    /* Search Bar */
     .search-wrapper {
       position: relative;
       width: 400px;
@@ -376,7 +363,6 @@
       color: var(--text-tertiary);
     }
 
-    /* Quick Actions */
     .action-btn {
       width: 40px;
       height: 40px;
@@ -401,14 +387,14 @@
       position: absolute;
       top: -2px;
       right: -2px;
-      width: 10px;
+      width: 100px;
       height: 10px;
+      width: 10px;
       background: var(--color-danger);
       border: 2px solid var(--bg-base);
       border-radius: 50%;
     }
 
-    /* User Profile */
     .user-profile {
       display: flex;
       align-items: center;
@@ -454,9 +440,6 @@
       color: var(--text-tertiary);
     }
 
-    /* --------------------------------------------------------------------------
-       DASHBOARD WORKSPACE (BENTO GRID & WIDGETS)
-       -------------------------------------------------------------------------- */
     .workspace {
       padding: 40px;
       max-width: 1600px;
@@ -467,7 +450,6 @@
       gap: 40px;
     }
 
-    /* Hero Greeting Section */
     .hero-section {
       display: flex;
       justify-content: space-between;
@@ -539,14 +521,12 @@
       font-weight: 600;
     }
 
-    /* Bento Layout Grid */
     .bento-layout {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 24px;
     }
 
-    /* Generic Card Base */
     .card {
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
@@ -596,7 +576,6 @@
       text-decoration: underline;
     }
 
-    /* Stats Row (Spans 3 cols each) */
     .stat-card {
       grid-column: span 3;
       display: flex;
@@ -653,7 +632,6 @@
       color: var(--text-secondary);
     }
 
-    /* Main Modules (Spans 8 cols) */
     .modules-section {
       grid-column: span 8;
     }
@@ -726,7 +704,6 @@
       color: var(--text-secondary);
     }
 
-    /* Agenda / Tasks (Spans 4 cols) */
     .agenda-section {
       grid-column: span 4;
       display: flex;
@@ -820,7 +797,6 @@
       color: var(--color-danger);
     }
 
-    /* Add Task Input */
     .add-task-form {
       display: flex;
       margin-top: 16px;
@@ -847,7 +823,6 @@
       cursor: pointer;
     }
 
-    /* Now Playing Music Sync (Spans 6 cols) */
     .music-section {
       grid-column: span 6;
     }
@@ -952,7 +927,7 @@
 
     .progress-fill {
       height: 100%;
-      width: 30%; /* Simulated */
+      width: 0%;
       background: var(--accent-main);
       border-radius: 2px;
       transition: width 1s linear;
@@ -967,7 +942,6 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* Weather & Environment (Spans 6 cols) */
     .weather-section {
       grid-column: span 6;
     }
@@ -1015,11 +989,6 @@
       font-weight: 600;
     }
 
-    .location-text {
-      font-size: 12px;
-      color: var(--text-tertiary);
-    }
-
     .weather-details {
       display: flex;
       gap: 16px;
@@ -1055,9 +1024,6 @@
       font-weight: 600;
     }
 
-    /* --------------------------------------------------------------------------
-       4. FLOATING AI CHAT (FAB & MODAL)
-       -------------------------------------------------------------------------- */
     .fab-container {
       position: fixed;
       bottom: 40px;
@@ -1089,7 +1055,6 @@
       height: 28px;
     }
 
-    /* AI Modal Backdrop */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -1220,9 +1185,40 @@
       background: var(--accent-hover);
     }
 
-    /* ==========================================================================
-       5. RESPONSIVE DESIGN BREAKPOINTS
-       ========================================================================== */
+    .app-footer {
+      margin-top: 40px;
+      padding: 24px 0;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+
+    .footer-copyright span {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .footer-dev .heart {
+      color: #ef4444;
+      display: inline-block;
+      margin: 0 2px;
+    }
+
+    .footer-dev .dev-name {
+      color: var(--accent-main);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .footer-dev .dev-name:hover {
+      text-decoration: underline;
+      color: var(--accent-hover);
+    }
+
+    /* Breakpoints */
     @media (max-width: 1400px) {
       .stat-card {
         grid-column: span 6;
@@ -1245,7 +1241,6 @@
     }
 
     @media (max-width: 860px) {
-      /* Enable Mobile Sidebar */
       :root {
         --sidebar-width: 280px;
       }
@@ -1261,7 +1256,6 @@
       .mobile-trigger {
         display: block;
       }
-      /* Layout adjustments */
       .top-header {
         padding: 0 20px;
       }
@@ -1289,6 +1283,14 @@
         flex-direction: column;
       }
     }
+
+    @media (max-width: 768px) {
+      .app-footer {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1302,12 +1304,8 @@
       <div class="sidebar-header">
         <div class="brand-combo">
           <div class="brand-icon">
-            <svg 
-              viewBox="0 0 24 24"
-            >
-              <path 
-                d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-              />
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
             </svg>
           </div>
           <div class="brand-text">LifeHub</div>
@@ -1318,10 +1316,7 @@
         <div class="nav-label">Main Menu</div>
         
         <a href="dashboard.html" class="nav-item active">
-          <svg 
-            class="icon-svg" 
-            viewBox="0 0 24 24"
-          >
+          <svg class="icon-svg" viewBox="0 0 24 24">
             <rect x="3" y="3" width="7" height="9" rx="1"/>
             <rect x="14" y="3" width="7" height="5" rx="1"/>
             <rect x="14" y="12" width="7" height="9" rx="1"/>
@@ -1331,10 +1326,7 @@
         </a>
         
         <a href="ai.html" class="nav-item">
-          <svg 
-            class="icon-svg" 
-            viewBox="0 0 24 24"
-          >
+          <svg class="icon-svg" viewBox="0 0 24 24">
             <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
             <circle cx="12" cy="12" r="4"/>
           </svg>
@@ -1342,10 +1334,7 @@
         </a>
         
         <a href="music.html" class="nav-item">
-          <svg 
-            class="icon-svg" 
-            viewBox="0 0 24 24"
-          >
+          <svg class="icon-svg" viewBox="0 0 24 24">
             <path d="M9 18V5l12-2v13"/>
             <circle cx="6" cy="18" r="3"/>
             <circle cx="18" cy="16" r="3"/>
@@ -1354,10 +1343,7 @@
         </a>
         
         <a href="movies.html" class="nav-item">
-          <svg 
-            class="icon-svg" 
-            viewBox="0 0 24 24"
-          >
+          <svg class="icon-svg" viewBox="0 0 24 24">
             <rect x="2" y="4" width="20" height="16" rx="2"/>
             <path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/>
           </svg>
@@ -1367,20 +1353,14 @@
         <div class="nav-label" style="margin-top:24px;">Tools & Space</div>
         
         <a href="downloader.html" class="nav-item">
-          <svg 
-            class="icon-svg" 
-            viewBox="0 0 24 24"
-          >
+          <svg class="icon-svg" viewBox="0 0 24 24">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
           </svg>
           Downloader
         </a>
         
         <a href="notes.html" class="nav-item">
-          <svg 
-            class="icon-svg" 
-            viewBox="0 0 24 24"
-          >
+          <svg class="icon-svg" viewBox="0 0 24 24">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
           </svg>
@@ -1388,24 +1368,23 @@
         </a>
         
         <a href="focus.html" class="nav-item">
-          <svg 
-            class="icon-svg" 
-            viewBox="0 0 24 24"
-          >
+          <svg class="icon-svg" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="10"/>
-            <circle cx="12" cy="12" r="4"/>
-            <line x1="21.17" y1="8" x2="12" y2="8"/>
-            <line x1="3.95" y1="6.06" x2="8.54" y2="14"/>
-            <line x1="10.88" y1="21.94" x2="15.46" y2="14"/>
+            <polyline points="12 6 12 12 16 14"/>
           </svg>
           Focus Space
         </a>
-        
+
+        <a href="mastery.html" class="nav-item">
+          <svg class="icon-svg" viewBox="0 0 24 24">
+            <polyline points="16 18 22 12 16 6"/>
+            <polyline points="8 6 2 12 8 18"/>
+          </svg>
+          Code Mastery
+        </a>
+
         <a href="qr-tools.html" class="nav-item">
-          <svg 
-            class="icon-svg" 
-            viewBox="0 0 24 24"
-          >
+          <svg class="icon-svg" viewBox="0 0 24 24">
             <rect x="3" y="3" width="7" height="7"/>
             <rect x="14" y="3" width="7" height="7"/>
             <rect x="14" y="14" width="7" height="7"/>
@@ -1415,10 +1394,7 @@
         </a>
 
         <a href="#" class="nav-item logout" id="logoutBtn">
-          <svg 
-            class="icon-svg" 
-            viewBox="0 0 24 24"
-          >
+          <svg class="icon-svg" viewBox="0 0 24 24">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
           </svg>
           Logout Session
@@ -1430,10 +1406,7 @@
       <header class="top-header">
         <div class="header-left">
           <button class="mobile-trigger" id="mobileMenuTrigger">
-            <svg 
-              class="icon-svg" 
-              viewBox="0 0 24 24"
-            >
+            <svg class="icon-svg" viewBox="0 0 24 24">
               <line x1="3" y1="12" x2="21" y2="12"/>
               <line x1="3" y1="6" x2="21" y2="6"/>
               <line x1="3" y1="18" x2="21" y2="18"/>
@@ -1441,27 +1414,17 @@
           </button>
           
           <div class="search-wrapper">
-            <svg 
-              class="icon-svg search-icon" 
-              viewBox="0 0 24 24"
-            >
+            <svg class="icon-svg search-icon" viewBox="0 0 24 24">
               <circle cx="11" cy="11" r="8"/>
               <line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
-            <input 
-              type="text" 
-              class="search-input" 
-              placeholder="Search across LifeHub..."
-            >
+            <input type="text" class="search-input" placeholder="Search across LifeHub...">
           </div>
         </div>
         
         <div class="header-right">
           <button class="action-btn" title="Notifications">
-            <svg 
-              class="icon-svg" 
-              viewBox="0 0 24 24"
-            >
+            <svg class="icon-svg" viewBox="0 0 24 24">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
             </svg>
@@ -1469,16 +1432,10 @@
           </button>
           
           <div class="user-profile">
-            <div class="user-avatar" id="headerAvatarInitials">
-              AR
-            </div>
+            <div class="user-avatar" id="headerAvatarInitials">--</div>
             <div class="user-details">
-              <span class="user-name" id="headerUserName">
-                Alex Rivera
-              </span>
-              <span class="user-role">
-                PRO PLAN
-              </span>
+              <span class="user-name" id="headerUserName">Loading...</span>
+              <span class="user-role">PRO PLAN</span>
             </div>
           </div>
         </div>
@@ -1488,7 +1445,7 @@
         <section class="hero-section">
           <div>
             <h1 class="greeting-title">
-              Good <span>Evening</span>, Alex.
+              Good <span>Evening</span>, User.
             </h1>
             <div class="greeting-subtitle">
               <div class="status-indicator"></div> 
@@ -1497,36 +1454,22 @@
           </div>
           
           <div class="clock-widget">
-            <div class="clock-time" id="realTimeClock">
-              00:00
-            </div>
-            <div class="clock-date" id="realTimeDate">
-              LOADING...
-            </div>
+            <div class="clock-time" id="realTimeClock">00:00</div>
+            <div class="clock-date" id="realTimeDate">LOADING...</div>
           </div>
         </section>
 
         <div class="bento-layout">
           <div class="card stat-card">
             <div class="stat-icon-wrap">
-              <svg 
-                class="icon-svg" 
-                viewBox="0 0 24 24"
-              >
+              <svg class="icon-svg" viewBox="0 0 24 24">
                 <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
               </svg>
             </div>
             <div class="stat-value">1,248</div>
             <div class="stat-label">AI Interactions</div>
             <div class="stat-trend trend-up">
-              <svg 
-                width="14" 
-                height="14" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                stroke-width="2"
-              >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
                 <polyline points="17 6 23 6 23 12"/>
               </svg> 
@@ -1536,10 +1479,7 @@
 
           <div class="card stat-card">
             <div class="stat-icon-wrap">
-              <svg 
-                class="icon-svg" 
-                viewBox="0 0 24 24"
-              >
+              <svg class="icon-svg" viewBox="0 0 24 24">
                 <ellipse cx="12" cy="5" rx="9" ry="3"/>
                 <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
                 <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
@@ -1548,14 +1488,7 @@
             <div class="stat-value">45.2k</div>
             <div class="stat-label">Tokens Used</div>
             <div class="stat-trend trend-down">
-              <svg 
-                width="14" 
-                height="14" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                stroke-width="2"
-              >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/>
                 <polyline points="17 18 23 18 23 12"/>
               </svg> 
@@ -1565,10 +1498,7 @@
 
           <div class="card stat-card">
             <div class="stat-icon-wrap">
-              <svg 
-                class="icon-svg" 
-                viewBox="0 0 24 24"
-              >
+              <svg class="icon-svg" viewBox="0 0 24 24">
                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
               </svg>
             </div>
@@ -1577,14 +1507,7 @@
             </div>
             <div class="stat-label">Productivity Score</div>
             <div class="stat-trend trend-up">
-              <svg 
-                width="14" 
-                height="14" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                stroke-width="2"
-              >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
                 <polyline points="17 6 23 6 23 12"/>
               </svg> 
@@ -1594,10 +1517,7 @@
 
           <div class="card stat-card">
             <div class="stat-icon-wrap">
-              <svg 
-                class="icon-svg" 
-                viewBox="0 0 24 24"
-              >
+              <svg class="icon-svg" viewBox="0 0 24 24">
                 <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
                 <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
                 <line x1="6" y1="6" x2="6.01" y2="6"/>
@@ -1609,14 +1529,7 @@
             </div>
             <div class="stat-label">Storage Active (2.4GB)</div>
             <div class="stat-trend trend-neutral">
-              <svg 
-                width="14" 
-                height="14" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                stroke-width="2"
-              >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="5" y1="12" x2="19" y2="12"/>
               </svg> 
               Stable
@@ -1638,11 +1551,7 @@
                 <a href="ai.html" class="card-action">View All</a>
               </div>
               <div class="module-grid">
-                <div 
-                  class="module-card" 
-                  onclick="location.href='ai.html'" 
-                  style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100%\' height=\'100%\'><rect width=\'100%\' height=\'100%\' fill=\'%2318181b\'/><circle cx=\'80\' cy=\'80\' r=\'60\' fill=\'none\' stroke=\'%2327272a\' stroke-width=\'2\'/></svg>'); background-size: cover;"
-                >
+                <div class="module-card" onclick="location.href='ai.html'">
                   <div class="module-card-icon">
                     <svg class="icon-svg">
                       <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
@@ -1655,11 +1564,7 @@
                   </div>
                 </div>
                 
-                <div 
-                  class="module-card" 
-                  onclick="location.href='music.html'" 
-                  style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100%\' height=\'100%\'><rect width=\'100%\' height=\'100%\' fill=\'%2318181b\'/><path d=\'M0 100 Q 50 50 100 100 T 200 100\' fill=\'none\' stroke=\'%2327272a\' stroke-width=\'4\'/></svg>'); background-size: cover;"
-                >
+                <div class="module-card" onclick="location.href='music.html'">
                   <div class="module-card-icon">
                     <svg class="icon-svg">
                       <path d="M9 18V5l12-2v13"/>
@@ -1673,11 +1578,7 @@
                   </div>
                 </div>
                 
-                <div 
-                  class="module-card" 
-                  onclick="location.href='movies.html'" 
-                  style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100%\' height=\'100%\'><rect width=\'100%\' height=\'100%\' fill=\'%2318181b\'/><rect x=\'20\' y=\'20\' width=\'60\' height=\'40\' fill=\'none\' stroke=\'%2327272a\' stroke-width=\'2\'/></svg>'); background-size: cover;"
-                >
+                <div class="module-card" onclick="location.href='movies.html'">
                   <div class="module-card-icon">
                     <svg class="icon-svg">
                       <rect x="2" y="4" width="20" height="16" rx="2"/>
@@ -1709,13 +1610,7 @@
               </div>
               <div class="agenda-list" id="agendaContainer"></div>
               <form class="add-task-form" id="addTaskForm">
-                <input 
-                  type="text" 
-                  class="task-input" 
-                  id="newTaskInput" 
-                  placeholder="Add new task..." 
-                  required
-                >
+                <input type="text" class="task-input" id="newTaskInput" placeholder="Add new task..." required>
                 <button type="submit" class="task-submit">+</button>
               </form>
             </div>
@@ -1742,16 +1637,12 @@
                   </svg>
                 </div>
                 <div class="player-info">
-                  <div class="track-title" id="dashTrackTitle">
-                    Nocturne Standby
-                  </div>
-                  <div class="track-artist" id="dashTrackArtist">
-                    Awaiting signal
-                  </div>
+                  <div class="track-title" id="dashTrackTitle">Nocturne Standby</div>
+                  <div class="track-artist" id="dashTrackArtist">Awaiting signal</div>
                   
                   <div class="progress-container">
                     <div class="progress-bar">
-                      <div class="progress-fill" id="dashProgressFill" style="width: 0%;"></div>
+                      <div class="progress-fill" id="dashProgressFill"></div>
                     </div>
                     <div class="progress-times">
                       <span id="dashTimeCurrent">0:00</span>
@@ -1802,9 +1693,7 @@
                   </svg> 
                   Environment
                 </h2>
-                <span class="card-action" style="color:var(--text-tertiary)">
-                  Jakarta, ID
-                </span>
+                <span class="card-action" style="color:var(--text-tertiary)">Jakarta, ID</span>
               </div>
               
               <div class="weather-main">
@@ -1843,22 +1732,23 @@
               </div>
             </div>
           </div>
+        </div> 
 
-        </div>
-      </div>
+        <footer class="app-footer">
+          <div class="footer-copyright">
+            © 2026 <span>LifeHub AI</span>. All rights reserved.
+          </div>
+          <div class="footer-dev">
+            Developed with <span class="heart">♥</span> by <a href="https://github.com/reskisetiawan301210-ai" target="_blank" class="dev-name">Reski X legacyy403</a>
+          </div>
+        </footer>
+      </div> 
     </main>
   </div>
 
   <div class="fab-container">
     <button class="fab-btn" id="fabBtn" aria-label="Ask AI">
-      <svg 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        stroke-width="2" 
-        stroke-linecap="round" 
-        stroke-linejoin="round"
-      >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
         <circle cx="12" cy="12" r="4"/>
       </svg>
@@ -1889,12 +1779,7 @@
       </div>
       
       <div class="chat-input-area">
-        <input 
-          type="text" 
-          id="aiInput" 
-          placeholder="Command or question..." 
-          autocomplete="off"
-        >
+        <input type="text" id="aiInput" placeholder="Command or question..." autocomplete="off">
         <button class="send-btn" id="aiSendBtn">
           <svg class="icon-svg" viewBox="0 0 24 24">
             <line x1="22" y1="2" x2="11" y2="13"/>
@@ -1905,12 +1790,9 @@
     </div>
   </div>
 
-  <script>
-    /**
-     * LifeHub Core Dashboard Script
-     * Implements Obsidian & Amber theme mechanics, local storage syncing,
-     * and ambient canvas animations.
-     */
+  <script type="module">
+    import { supabase } from './supabase.js';
+
     document.addEventListener('DOMContentLoaded', () => {
 
       // --- 1. CORE UTILITIES ---
@@ -1954,6 +1836,7 @@
       class AmbientEngine {
         constructor(canvasId) {
           this.canvas = document.getElementById(canvasId);
+          if (!this.canvas) return;
           this.ctx = this.canvas.getContext('2d');
           this.particles = [];
           this.resize();
@@ -1990,13 +1873,11 @@
             p.x += p.vx;
             p.y += p.vy;
 
-            // Wrap around
             if (p.x < 0) p.x = this.width;
             if (p.x > this.width) p.x = 0;
             if (p.y < 0) p.y = this.height;
             if (p.y > this.height) p.y = 0;
 
-            // Draw (Amber/Gold hue)
             this.ctx.beginPath();
             this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
             this.ctx.fillStyle = `rgba(245, 158, 11, ${p.alpha})`;
@@ -2019,106 +1900,81 @@
         update() {
           const now = new Date();
           
-          // Format Time (e.g., 14:30)
-          DOM.clockTime.textContent = now.toLocaleTimeString('en-US', { 
-            hour12: false, 
-            hour: '2-digit', 
-            minute: '2-digit' 
-          });
+          if (DOM.clockTime) {
+            DOM.clockTime.textContent = now.toLocaleTimeString('en-US', { 
+              hour12: false, hour: '2-digit', minute: '2-digit' 
+            });
+          }
           
-          // Format Date (e.g., MON, OCT 24)
-          DOM.clockDate.textContent = now.toLocaleDateString('en-US', { 
-            weekday: 'short', 
-            month: 'short', 
-            day: 'numeric' 
-          }).toUpperCase();
+          if (DOM.clockDate) {
+            DOM.clockDate.textContent = now.toLocaleDateString('en-US', { 
+              weekday: 'short', month: 'short', day: 'numeric' 
+            }).toUpperCase();
+          }
           
-          // Segment Greeting
           const hour = now.getHours();
           let segment = "Night";
           
-          if (hour >= 5 && hour < 12) {
-            segment = "Morning";
-          } else if (hour >= 12 && hour < 17) {
-            segment = "Afternoon";
-          } else if (hour >= 17 && hour < 21) {
-            segment = "Evening";
-          }
+          if (hour >= 5 && hour < 12) segment = "Morning";
+          else if (hour >= 12 && hour < 17) segment = "Afternoon";
+          else if (hour >= 17 && hour < 21) segment = "Evening";
           
-          DOM.greetingTitle.textContent = segment;
+          if (DOM.greetingTitle) DOM.greetingTitle.textContent = segment;
         }
       }
       
       new SystemClock();
 
-      // --- 4. NOCTURNE MUSIC SYNC ---
+      // --- 4. NOCTURNE MUSIC PLAYER (AUDIO MP3 ASLI) ---
       class MusicSyncManager {
         constructor() {
-          this.isPlaying = false;
-          this.progressInterval = null;
-          this.progress = 0;
-          this.duration = 180; // Default simulated 3 mins
+          // Menggunakan Audio Player Bawaan HTML5 dengan sampel MP3 Lofi
+          this.audio = new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3');
+          this.audio.crossOrigin = "anonymous";
           
-          this.loadFromStorage();
-          this.setupControls();
-        }
+          if (DOM.dashTrackTitle) DOM.dashTrackTitle.textContent = 'Lofi Study Chill';
+          if (DOM.dashTrackArtist) DOM.dashTrackArtist.textContent = 'Nocturne Audio Stream';
 
-        loadFromStorage() {
-          try {
-            // Read from Nocturne's local storage key
-            const history = JSON.parse(localStorage.getItem('noct_history') || '[]');
-            
-            if (history.length > 0) {
-              const track = history[0];
-              
-              DOM.dashTrackTitle.textContent = track.title || 'Unknown Track';
-              DOM.dashTrackArtist.textContent = track.artist || 'Unknown Artist';
-              
-              if (track.cover) {
-                DOM.dashAlbumArt.style.backgroundImage = `url("${track.cover}")`;
-                DOM.dashAlbumArt.innerHTML = ''; // Remove fallback icon
-              }
-              
-              // Reset simulation
-              this.progress = 0;
-              this.updateUI();
-            }
-          } catch (error) {
-            console.error("Music sync error:", error);
-          }
+          this.setupControls();
+          this.setupAudioEvents();
         }
 
         setupControls() {
+          if (!DOM.dashPlayPauseBtn) return;
           DOM.dashPlayPauseBtn.addEventListener('click', () => {
-            this.isPlaying = !this.isPlaying;
-            this.updatePlayBtnIcon();
-            
-            if (this.isPlaying) {
-              this.startSimulation();
+            if (this.audio.paused) {
+              this.audio.play().then(() => this.updatePlayBtnIcon(true)).catch(e => console.error(e));
             } else {
-              clearInterval(this.progressInterval);
+              this.audio.pause();
+              this.updatePlayBtnIcon(false);
             }
           });
         }
 
-        updatePlayBtnIcon() {
-          const icon = this.isPlaying 
-            ? `<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>` // Pause
-            : `<polygon points="5 3 19 12 5 21 5 3"/>`; // Play
-            
-          DOM.dashPlayPauseBtn.innerHTML = `<svg class="icon-svg" viewBox="0 0 24 24" style="fill:currentColor; stroke:none;">${icon}</svg>`;
+        setupAudioEvents() {
+          // Update progress bar & durasi waktu secara realtime dari audio asli
+          this.audio.addEventListener('timeupdate', () => {
+            if (this.audio.duration) {
+              const pct = (this.audio.currentTime / this.audio.duration) * 100;
+              if (DOM.dashProgressFill) DOM.dashProgressFill.style.width = `${pct}%`;
+              if (DOM.dashTimeCurrent) DOM.dashTimeCurrent.textContent = this.formatTime(this.audio.currentTime);
+              if (DOM.dashTimeTotal) DOM.dashTimeTotal.textContent = this.formatTime(this.audio.duration);
+            }
+          });
+
+          this.audio.addEventListener('ended', () => {
+            this.updatePlayBtnIcon(false);
+            if (DOM.dashProgressFill) DOM.dashProgressFill.style.width = '0%';
+          });
         }
 
-        startSimulation() {
-          clearInterval(this.progressInterval);
-          
-          this.progressInterval = setInterval(() => {
-            this.progress++;
-            if (this.progress > this.duration) {
-              this.progress = 0;
-            }
-            this.updateUI();
-          }, 1000);
+        updatePlayBtnIcon(isPlaying) {
+          if (!DOM.dashPlayPauseBtn) return;
+          const icon = isPlaying 
+            ? `<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>`
+            : `<polygon points="5 3 19 12 5 21 5 3"/>`;
+            
+          DOM.dashPlayPauseBtn.innerHTML = `<svg class="icon-svg" viewBox="0 0 24 24" style="fill:currentColor; stroke:none;">${icon}</svg>`;
         }
 
         formatTime(seconds) {
@@ -2126,22 +1982,57 @@
           const s = Math.floor(seconds % 60).toString().padStart(2, '0');
           return `${m}:${s}`;
         }
-
-        updateUI() {
-          const pct = (this.progress / this.duration) * 100;
-          DOM.dashProgressFill.style.width = `${pct}%`;
-          DOM.dashTimeCurrent.textContent = this.formatTime(this.progress);
-          DOM.dashTimeTotal.textContent = this.formatTime(this.duration);
-        }
       }
       
       new MusicSyncManager();
 
-      // --- 5. SMART AGENDA SYSTEM ---
+      // --- 5. ENVIRONMENT / WEATHER (LIVE WEATHER API ASLI) ---
+      class WeatherManager {
+        constructor() {
+          this.tempEl = document.getElementById('simTemp');
+          this.fetchLiveWeather();
+        }
+
+        async fetchLiveWeather() {
+          try {
+            // Mengambil cuaca realtime wilayah Jakarta (Latitude: -6.2, Longitude: 106.81) via Open-Meteo API
+            const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-6.2088&longitude=106.8456&current_weather=true&hourly=relativehumidity_2m');
+            const data = await res.json();
+            
+            if (data && data.current_weather) {
+              const temp = Math.round(data.current_weather.temperature);
+              const wind = data.current_weather.windspeed;
+              
+              if (this.tempEl) this.tempEl.textContent = temp;
+              
+              // Keterangan cuaca sederhana berdasarkan weathercode Open-Meteo
+              const condEl = document.querySelector('.condition-text');
+              if (condEl) {
+                const code = data.current_weather.weathercode;
+                if (code === 0) condEl.textContent = 'Clear Sky';
+                else if (code <= 3) condEl.textContent = 'Partly Cloudy';
+                else if (code <= 67) condEl.textContent = 'Rainy';
+                else condEl.textContent = 'Thunderstorm';
+              }
+
+              // Update Wind Force
+              const wVals = document.querySelectorAll('.w-val');
+              if (wVals.length >= 2) {
+                wVals[1].textContent = `${wind} km/h`;
+              }
+            }
+          } catch (err) {
+            console.error("Gagal mengambil data cuaca live:", err);
+          }
+        }
+      }
+
+      new WeatherManager();
+
+      // --- 6. SMART AGENDA SYSTEM ---
       class AgendaManager {
         constructor() {
           this.storageKey = 'lifehub_agenda';
-          
           this.tasks = JSON.parse(localStorage.getItem(this.storageKey)) || [
             { id: 1, text: "Review Neural Chat API integration", completed: false, time: "10:00 AM" },
             { id: 2, text: "Compile Vision Media assets", completed: true, time: "02:30 PM" }
@@ -2157,6 +2048,7 @@
         }
 
         setupEvents() {
+          if (!DOM.addTaskForm) return;
           DOM.addTaskForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const val = DOM.newTaskInput.value.trim();
@@ -2174,32 +2066,32 @@
             }
           });
 
-          // Event delegation for clicks
-          DOM.agendaContainer.addEventListener('click', (e) => {
-            const item = e.target.closest('.agenda-item');
-            if (!item) return;
-            
-            const id = parseInt(item.dataset.id);
+          if (DOM.agendaContainer) {
+            DOM.agendaContainer.addEventListener('click', (e) => {
+              const item = e.target.closest('.agenda-item');
+              if (!item) return;
+              
+              const id = parseInt(item.dataset.id);
 
-            // Handle Delete
-            if (e.target.closest('.agenda-delete')) {
-              this.tasks = this.tasks.filter(t => t.id !== id);
-              this.save();
-              return;
-            }
-
-            // Handle Check/Uncheck
-            if (e.target.closest('.agenda-checkbox') || e.target.closest('.agenda-content')) {
-              const task = this.tasks.find(t => t.id === id);
-              if (task) {
-                task.completed = !task.completed;
+              if (e.target.closest('.agenda-delete')) {
+                this.tasks = this.tasks.filter(t => t.id !== id);
                 this.save();
+                return;
               }
-            }
-          });
+
+              if (e.target.closest('.agenda-checkbox') || e.target.closest('.agenda-content')) {
+                const task = this.tasks.find(t => t.id === id);
+                if (task) {
+                  task.completed = !task.completed;
+                  this.save();
+                }
+              }
+            });
+          }
         }
 
         render() {
+          if (!DOM.agendaContainer) return;
           DOM.agendaContainer.innerHTML = '';
           
           if (this.tasks.length === 0) {
@@ -2233,41 +2125,39 @@
       
       new AgendaManager();
 
-      // --- 6. AI MODAL INTERFACE ---
+      // --- 7. AI MODAL INTERFACE ---
       class AiModal {
         constructor() {
+          if (!DOM.fabBtn) return;
           DOM.fabBtn.addEventListener('click', () => this.open());
-          DOM.closeAiModal.addEventListener('click', () => this.close());
-          DOM.aiSendBtn.addEventListener('click', () => this.handleSend());
+          if (DOM.closeAiModal) DOM.closeAiModal.addEventListener('click', () => this.close());
+          if (DOM.aiSendBtn) DOM.aiSendBtn.addEventListener('click', () => this.handleSend());
           
-          DOM.aiInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-              this.handleSend();
-            }
-          });
+          if (DOM.aiInput) {
+            DOM.aiInput.addEventListener('keypress', (e) => {
+              if (e.key === 'Enter') this.handleSend();
+            });
+          }
         }
 
         open() {
-          DOM.aiModalBackdrop.classList.add('is-active');
-          setTimeout(() => DOM.aiInput.focus(), 100);
+          if (DOM.aiModalBackdrop) DOM.aiModalBackdrop.classList.add('is-active');
+          setTimeout(() => { if (DOM.aiInput) DOM.aiInput.focus(); }, 100);
         }
 
         close() {
-          DOM.aiModalBackdrop.classList.remove('is-active');
+          if (DOM.aiModalBackdrop) DOM.aiModalBackdrop.classList.remove('is-active');
         }
 
         handleSend() {
           const val = DOM.aiInput.value.trim();
           if (!val) return;
 
-          // Add user bubble
           this.appendBubble(val, 'user');
           DOM.aiInput.value = '';
 
-          // Simulate AI processing & redirect
           setTimeout(() => {
             this.appendBubble(`Redirecting query "${val}" to main Neural Chat module...`, 'ai');
-            
             setTimeout(() => {
               window.location.href = `ai.html?q=${encodeURIComponent(val)}`;
             }, 1200);
@@ -2275,6 +2165,7 @@
         }
 
         appendBubble(text, type) {
+          if (!DOM.chatWindow) return;
           const bubble = document.createElement('div');
           bubble.className = `chat-bubble ${type}`;
           bubble.textContent = text;
@@ -2286,39 +2177,64 @@
       
       new AiModal();
 
-      // --- 7. MOBILE SIDEBAR TOGGLE ---
+      // --- 8. MOBILE SIDEBAR TOGGLE ---
       class MobileNav {
         constructor() {
+          if (!DOM.mobileTrigger) return;
           DOM.mobileTrigger.addEventListener('click', () => this.toggle(true));
-          DOM.sidebarOverlay.addEventListener('click', () => this.toggle(false));
+          if (DOM.sidebarOverlay) DOM.sidebarOverlay.addEventListener('click', () => this.toggle(false));
         }
 
         toggle(show) {
           if (show) {
-            DOM.sidebar.style.transform = 'translateX(0)';
-            DOM.sidebarOverlay.classList.add('is-active');
+            if (DOM.sidebar) DOM.sidebar.style.transform = 'translateX(0)';
+            if (DOM.sidebarOverlay) DOM.sidebarOverlay.classList.add('is-active');
           } else {
-            DOM.sidebar.style.transform = ''; // resets to css default (-100%)
-            DOM.sidebarOverlay.classList.remove('is-active');
+            if (DOM.sidebar) DOM.sidebar.style.transform = '';
+            if (DOM.sidebarOverlay) DOM.sidebarOverlay.classList.remove('is-active');
           }
         }
       }
       
       new MobileNav();
 
-      // --- 8. USER PROFILE SYNC & LOGOUT ---
-      const userName = localStorage.getItem('lifehub_user_name') || 'Alex Rivera';
-      DOM.headerUserName.textContent = userName;
-      DOM.headerAvatarInitials.textContent = userName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+      // --- 9. USER PROFILE SYNC & SUPABASE LOGOUT ---
+      async function syncUserWithSupabase() {
+        const { data: { user }, error } = await supabase.auth.getUser();
 
-      DOM.logoutBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        if (confirm("Logout from LifeHub Secure Workspace?")) {
-          localStorage.removeItem('lifehub_user_name');
-          location.reload();
+        if (error || !user) {
+          window.location.href = 'index.html';
+          return;
         }
-      });
+
+        const userEmail = user.email || 'User';
+
+        if (DOM.headerUserName) {
+          DOM.headerUserName.textContent = userEmail;
+        }
+
+        if (DOM.headerAvatarInitials) {
+          DOM.headerAvatarInitials.textContent = userEmail.substring(0, 2).toUpperCase();
+        }
+      }
+
+      syncUserWithSupabase();
+
+      if (DOM.logoutBtn) {
+        DOM.logoutBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          
+          if (confirm("Logout from LifeHub Secure Workspace?")) {
+            const { error } = await supabase.auth.signOut();
+
+            if (error) {
+              alert("Gagal Logout: " + error.message);
+            } else {
+              window.location.href = 'index.html';
+            }
+          }
+        });
+      }
 
     });
   </script>
