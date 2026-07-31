@@ -20,7 +20,7 @@
   --ink-1:#b9bcc4;
   --ink-2:#787c86;
   --gold:#f39108;
-  --gold-dim:#d18519;
+  --gold-dim:#f69003;
   --teal:#2dd4bf;
   --danger:#dd4f35;
   --radius-l:22px;
@@ -244,18 +244,15 @@ input{font-family:inherit;}
   .topbar{padding:6px 0 12px; gap:10px;}
   .status-pill{display:none;}
   
-  /* Grid & Cards di HP */
   .grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px;}
   .card{width:100%; padding:10px;}
   .card .playhit{opacity:0.85; background:rgba(0,0,0,0.25);}
   
-  /* Rows di HP */
   .list-row{grid-template-columns:20px 36px 1fr auto; gap:8px; padding:8px 8px;}
   .list-row .dur{display:none;}
   .list-row .row-actions{opacity:1;}
   .list-row .meta .t{max-width:180px; font-size:13px;}
   
-  /* Floating Player Bar di HP */
   .playerbar{
     position:fixed; bottom:0; left:0; right:0; grid-column:auto;
     grid-template-columns:1fr; grid-template-rows:auto auto auto; gap:10px;
@@ -389,12 +386,9 @@ input{font-family:inherit;}
 
 <script>
 /* ================================================================
-   NOCTURNE — MODULAR MUSIC ENGINE
+   NOCTURNE — MODULAR MUSIC ENGINE (WITH DASHBOARD REALTIME SYNC)
    ================================================================ */
 
-/* ---------------------------------------------------------------
-   1. CONFIG
-   --------------------------------------------------------------- */
 const CONFIG = {
   PROVIDERS: ["youtube", "audius", "itunes", "deezer", "jamendo", "lastfm"],
   API_KEYS: {
@@ -411,9 +405,6 @@ const CONFIG = {
   LANGUAGES: ["English","Indonesian","Japanese","Korean","Mandarin","Spanish","French","German","Arabic","Portuguese","Hindi","Thai"]
 };
 
-/* ---------------------------------------------------------------
-   2. UTILS
-   --------------------------------------------------------------- */
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 const store = {
@@ -446,9 +437,6 @@ async function fetchWithProxyFallback(url){
   }
 }
 
-/* ---------------------------------------------------------------
-   3. PROVIDER ADAPTERS
-   --------------------------------------------------------------- */
 const Providers = {};
 
 Providers.youtube = {
@@ -588,9 +576,6 @@ Providers.lastfm = {
   }
 };
 
-/* ---------------------------------------------------------------
-   4. SEARCH ENGINE
-   --------------------------------------------------------------- */
 const SearchEngine = {
   async search(query, {merge=true} = {}){
     if(!query || !query.trim()) return [];
@@ -632,9 +617,6 @@ function setProviderStatus(name, ok){
   pill.lastChild.textContent = " " + name + (ok ? " ok" : " skipped");
 }
 
-/* ---------------------------------------------------------------
-   5. LIBRARY
-   --------------------------------------------------------------- */
 const Library = {
   liked: store.get("liked", []),
   history: store.get("history", []),
@@ -672,9 +654,6 @@ const Library = {
   }
 };
 
-/* ---------------------------------------------------------------
-   6. PLAYER ENGINE (100% UNLOCKED FOR MOBILE & LAPTOP)
-   --------------------------------------------------------------- */
 const audio = $("#audio");
 
 const YT_ENGINE = {
@@ -692,9 +671,21 @@ const YT_ENGINE = {
       events: {
         onReady: () => { this.ready = true; if(this.pendingVideoId){ this.player.loadVideoById(this.pendingVideoId); this.pendingVideoId=null; } },
         onStateChange: (e) => {
-          if(e.data === YT.PlayerState.PLAYING){ $("#playIcon").innerHTML='<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'; $("#npBlock").classList.add("playing"); this._startTick(); }
-          else if(e.data === YT.PlayerState.PAUSED){ $("#playIcon").innerHTML='<path d="M8 5v14l11-7z"/>'; $("#npBlock").classList.remove("playing"); }
-          else if(e.data === YT.PlayerState.ENDED){ Player.next(); }
+          if(e.data === YT.PlayerState.PLAYING){ 
+            $("#playIcon").innerHTML='<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'; 
+            $("#npBlock").classList.add("playing"); 
+            store.set("is_playing", true);
+            this._startTick(); 
+          }
+          else if(e.data === YT.PlayerState.PAUSED){ 
+            $("#playIcon").innerHTML='<path d="M8 5v14l11-7z"/>'; 
+            $("#npBlock").classList.remove("playing"); 
+            store.set("is_playing", false);
+          }
+          else if(e.data === YT.PlayerState.ENDED){ 
+            store.set("is_playing", false);
+            Player.next(); 
+          }
         }
       }
     });
@@ -733,6 +724,10 @@ const Player = {
   async _loadAndPlay(track){
     renderNP(); 
     renderQueueDrawer();
+
+    // SINKRONISASI KE DASHBOARD.HTML
+    store.set("active_track", track);
+    store.set("is_playing", true);
 
     if(track.provider === "youtube"){
       this.activeEngine = "youtube";
@@ -791,9 +786,9 @@ const Player = {
   }
 };
 
-audio.addEventListener("ended", ()=>Player.next());
-audio.addEventListener("play", ()=>{ $("#playIcon").innerHTML='<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'; $("#npBlock").classList.add("playing"); });
-audio.addEventListener("pause", ()=>{ $("#playIcon").innerHTML='<path d="M8 5v14l11-7z"/>'; $("#npBlock").classList.remove("playing"); });
+audio.addEventListener("ended", ()=>{ store.set("is_playing", false); Player.next(); });
+audio.addEventListener("play", ()=>{ $("#playIcon").innerHTML='<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'; $("#npBlock").classList.add("playing"); store.set("is_playing", true); });
+audio.addEventListener("pause", ()=>{ $("#playIcon").innerHTML='<path d="M8 5v14l11-7z"/>'; $("#npBlock").classList.remove("playing"); store.set("is_playing", false); });
 audio.addEventListener("timeupdate", ()=>{
   if(Player.activeEngine !== "audio") return;
   const p = audio.duration ? (audio.currentTime/audio.duration)*100 : 0;
@@ -802,9 +797,6 @@ audio.addEventListener("timeupdate", ()=>{
 });
 audio.addEventListener("loadedmetadata", ()=>{ if(Player.activeEngine==="audio") $("#durTime").textContent = fmtTime(audio.duration); });
 
-/* ---------------------------------------------------------------
-   7. VISUALIZER
-   --------------------------------------------------------------- */
 let audioCtx, analyser, sourceNode;
 function initVisualizer(){
   if(!audioCtx){
@@ -859,9 +851,6 @@ function drawVis(){
   })();
 })();
 
-/* ---------------------------------------------------------------
-   8. LYRICS
-   --------------------------------------------------------------- */
 async function loadLyrics(track){
   $("#drawerTitle").textContent = "Lyrics";
   $("#drawerBody").innerHTML = `<div class="lyrics-body">Loading lyrics…</div>`;
@@ -874,9 +863,6 @@ async function loadLyrics(track){
   }
 }
 
-/* ---------------------------------------------------------------
-   9. UI RENDER
-   --------------------------------------------------------------- */
 function trackCardHTML(t){
   return `<div class="card" data-id="${t.id}">
     <div class="art"><img loading="lazy" src="${t.cover||''}" onerror="this.style.opacity=0">
@@ -975,7 +961,6 @@ function renderPlaylistNav(){
   $$("[data-open-pl]").forEach(el=>el.addEventListener("click", ()=>{ setActiveView(null); renderPlaylistDetail(el.dataset.openPl); closeSidebarMobile(); }));
 }
 
-/* FIX SINGLE CLICK/TAP UNTUK MEMUTAR LAGU ANGKAT DARI DBLCLICK */
 function bindTrackClicks(root, contextList){
   $$(".card, .list-row", root).forEach(el=>{
     const id = el.dataset.id;
@@ -984,9 +969,8 @@ function bindTrackClicks(root, contextList){
     if(!track) return;
 
     const playHandler = (e)=>{
-      if(e.target.closest(".row-actions")) return; // Jangan putar jika klik tombol aksi
+      if(e.target.closest(".row-actions")) return;
       
-      // Unlock AudioContext secara sinkron saat klik pengguna
       audio.play().then(()=>{}).catch(()=>{});
       if(window.audioCtx && audioCtx.state === "suspended") audioCtx.resume();
 
@@ -994,8 +978,6 @@ function bindTrackClicks(root, contextList){
     };
 
     el.querySelector(".cardPlay")?.addEventListener("click", (e)=>{ e.stopPropagation(); playHandler(e); });
-    
-    // Single-click listener untuk memutar lagu langsung di Laptop maupun HP
     el.addEventListener("click", playHandler);
 
     el.querySelector(".rowLike")?.addEventListener("click", (e)=>{ e.stopPropagation(); Library.toggleLike(track); renderCurrentView(); });
@@ -1058,9 +1040,6 @@ function closeSidebarMobile(){
   }
 }
 
-/* ---------------------------------------------------------------
-   10. EVENTS
-   --------------------------------------------------------------- */
 $$(".nav-item[data-view]").forEach(el=>{
   el.addEventListener("click", ()=>{
     setActiveView(el.dataset.view);
@@ -1100,7 +1079,6 @@ $("#suggestPanel").addEventListener("click", (e)=>{
 $("#searchInput").addEventListener("focus", ()=>renderSuggestions($("#searchInput").value));
 document.addEventListener("click", (e)=>{ if(!e.target.closest(".search-wrap")) $("#suggestPanel").classList.remove("open"); });
 
-// Voice search
 $("#micBtn").addEventListener("click", ()=>{
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if(!SR){ toast("Voice search not supported in this browser", "err"); return; }
@@ -1112,7 +1090,6 @@ $("#micBtn").addEventListener("click", ()=>{
   rec.start();
 });
 
-// Transport controls
 $("#playBtn").addEventListener("click", ()=>{
   if(window.audioCtx && audioCtx.state === "suspended") audioCtx.resume();
   Player.toggle();
@@ -1170,7 +1147,6 @@ $("#sidebarToggle").addEventListener("click", ()=>{
 });
 $("#sidebarOverlay").addEventListener("click", closeSidebarMobile);
 
-// Keyboard shortcuts
 document.addEventListener("keydown", (e)=>{
   if(document.activeElement.tagName==="INPUT") return;
   if(e.code==="Space"){ e.preventDefault(); Player.toggle(); }
@@ -1181,9 +1157,6 @@ document.addEventListener("keydown", (e)=>{
   else if(e.key.toLowerCase()==="l") { const t=Player.current(); if(t) Library.toggleLike(t); }
 });
 
-/* ---------------------------------------------------------------
-   11. INIT
-   --------------------------------------------------------------- */
 function populateFilters(){
   $("#filterCountry").innerHTML += CONFIG.COUNTRIES.map(c=>`<option>${c}</option>`).join('');
   $("#filterGenre").innerHTML += CONFIG.GENRES.map(g=>`<option>${g}</option>`).join('');
