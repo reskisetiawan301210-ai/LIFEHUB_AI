@@ -1291,6 +1291,77 @@
         text-align: center;
       }
     }
+
+    /* */
+    .admin-only {
+      display: none !important;
+    }
+
+    body.is-admin .admin-only {
+      display: flex !important;
+    }
+
+    body.is-admin button.admin-only,
+    body.is-admin a.admin-only {
+      display: inline-flex !important;
+    }
+
+    .announcement-banner {
+      background: linear-gradient(90deg, var(--accent-hover), var(--accent-main));
+      color: #09090b;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .store-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      width: 100%;
+    }
+
+    .store-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all var(--transition-snappy);
+    }
+
+    .store-card:hover {
+      border-color: var(--accent-main);
+      transform: translateY(-2px);
+    }
+
+    .store-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+    }
+
+    .color-picker-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .color-picker-btn:hover {
+      transform: scale(1.1);
+    }
   </style>
 </head>
 <body>
@@ -1303,10 +1374,8 @@
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="brand-combo">
-          <div class="brand-icon">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
+          <div class="brand-icon" style="background: transparent; padding: 0;">
+        <img src="https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png" alt="LifeHub Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-sm);">
           </div>
           <div class="brand-text">LifeHub</div>
         </div>
@@ -1322,7 +1391,7 @@
             <rect x="14" y="12" width="7" height="9" rx="1"/>
             <rect x="3" y="16" width="7" height="5" rx="1"/>
           </svg>
-          Dashboard
+          <span class="nav-text">Dashboard</span>
         </a>
         
         <a href="ai.html" class="nav-item">
@@ -1330,7 +1399,7 @@
             <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
             <circle cx="12" cy="12" r="4"/>
           </svg>
-          AI Assistant
+          <span class="nav-text">AI Assistant</span>
         </a>
         
         <a href="music.html" class="nav-item">
@@ -1339,7 +1408,7 @@
             <circle cx="6" cy="18" r="3"/>
             <circle cx="18" cy="16" r="3"/>
           </svg>
-          Music (Nocturne)
+          <span class="nav-text">Music (Nocturne)</span>
         </a>
         
         <a href="movies.html" class="nav-item">
@@ -1347,7 +1416,7 @@
             <rect x="2" y="4" width="20" height="16" rx="2"/>
             <path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/>
           </svg>
-          Movies
+          <span class="nav-text">Movies</span>
         </a>
 
         <div class="nav-label" style="margin-top:24px;">Tools & Space</div>
@@ -1356,7 +1425,7 @@
           <svg class="icon-svg" viewBox="0 0 24 24">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
           </svg>
-          Downloader
+          <span class="nav-text">Downloader</span>
         </a>
         
         <a href="notes.html" class="nav-item">
@@ -1364,7 +1433,7 @@
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
           </svg>
-          Notes
+          <span class="nav-text">Notes</span>
         </a>
         
         <a href="focus.html" class="nav-item">
@@ -1372,7 +1441,7 @@
             <circle cx="12" cy="12" r="10"/>
             <polyline points="12 6 12 12 16 14"/>
           </svg>
-          Focus Space
+          <span class="nav-text">Focus Space</span>
         </a>
 
         <a href="mastery.html" class="nav-item">
@@ -1380,7 +1449,7 @@
             <polyline points="16 18 22 12 16 6"/>
             <polyline points="8 6 2 12 8 18"/>
           </svg>
-          Code Mastery
+          <span class="nav-text">Code Mastery</span>
         </a>
 
         <a href="qr-tools.html" class="nav-item">
@@ -1390,8 +1459,10 @@
             <rect x="14" y="14" width="7" height="7"/>
             <path d="M3 14h7v7H3z"/>
           </svg>
-          QR Tools
+          <span class="nav-text">QR Tools</span>
         </a>
+
+        <div id="customNavContainer"></div>
 
         <a href="#" class="nav-item logout" id="logoutBtn">
           <svg class="icon-svg" viewBox="0 0 24 24">
@@ -1423,6 +1494,11 @@
         </div>
         
         <div class="header-right">
+          -->
+          <button class="action-btn admin-only" id="openAdminPanelBtn" title="Admin Settings" style="border-color: var(--accent-main);">
+            ⚙️
+          </button>
+
           <button class="action-btn" title="Notifications">
             <svg class="icon-svg" viewBox="0 0 24 24">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -1431,8 +1507,8 @@
             <span class="badge-indicator"></span>
           </button>
           
-          <div class="user-profile">
-            <div class="user-avatar" id="headerAvatarInitials">--</div>
+          <div class="user-profile" id="userProfileBtn" title="Klik untuk Edit Profil">
+            <div class="user-avatar" id="headerAvatarInitials" style="overflow: hidden; background-size: cover; background-position: center;">--</div>
             <div class="user-details">
               <span class="user-name" id="headerUserName">Loading...</span>
               <span class="user-role">PRO PLAN</span>
@@ -1442,6 +1518,12 @@
       </header>
 
       <div class="workspace">
+        -->
+        <div class="announcement-banner" id="announcementBanner">
+          <span>📢 <span id="announcementText">Welcome to LifeHub Workspace! Marketplace & Workspace Active.</span></span>
+          <span style="font-size: 11px; opacity: 0.8; font-weight: 800;">OFFICIAL BANNER</span>
+        </div>
+
         <section class="hero-section">
           <div>
             <h1 class="greeting-title">
@@ -1460,6 +1542,25 @@
         </section>
 
         <div class="bento-layout">
+          -->
+          <div class="card" style="grid-column: span 12;" id="jubelSection">
+            <div class="card-header">
+              <h2 class="card-title">
+                <svg class="icon-svg" viewBox="0 0 24 24">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                <span id="jubelTitleText">Jubel Hub — Digital Account Store</span>
+              </h2>
+              <button class="task-submit admin-only" id="openAddProductBtn" style="padding: 8px 16px; font-size: 12px; height: auto;">
+                + Tambah Produk / Akun
+              </button>
+            </div>
+            <div id="productGrid" class="store-grid">
+              </div>
+          </div>
+
           <div class="card stat-card">
             <div class="stat-icon-wrap">
               <svg class="icon-svg" viewBox="0 0 24 24">
@@ -1786,6 +1887,128 @@
             <polygon points="22 2 15 22 11 13 2 9 22 2"/>
           </svg>
         </button>
+      </div>
+    </div>
+  </div>
+
+  -->
+  <div class="modal-backdrop" id="adminModalBackdrop">
+    <div class="ai-modal" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          ⚙️ Admin Control Panel
+        </h3>
+        <button class="modal-close" id="closeAdminModal">
+          <svg class="icon-svg" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="chat-window" style="height: auto; max-height: 480px; gap: 16px;">
+        <div>
+          <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">Warna Aksent Utama Dashboard:</label>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="color-picker-btn" data-color="#f59e0b" style="background:#f59e0b;" title="Amber"></button>
+            <button class="color-picker-btn" data-color="#06b6d4" style="background:#06b6d4;" title="Cyan"></button>
+            <button class="color-picker-btn" data-color="#10b981" style="background:#10b981;" title="Emerald"></button>
+            <button class="color-picker-btn" data-color="#8b5cf6" style="background:#8b5cf6;" title="Purple"></button>
+            <button class="color-picker-btn" data-color="#ef4444" style="background:#ef4444;" title="Red"></button>
+            <button class="color-picker-btn" data-color="#f43f5e" style="background:#f43f5e;" title="Rose Pink"></button>
+            <button class="color-picker-btn" data-color="#f97316" style="background:#f97316;" title="Sunset Orange"></button>
+            <button class="color-picker-btn" data-color="#3b82f6" style="background:#3b82f6;" title="Electric Blue"></button>
+            <button class="color-picker-btn" data-color="#84cc16" style="background:#84cc16;" title="Lime Green"></button>
+            <button class="color-picker-btn" data-color="#14b8a6" style="background:#14b8a6;" title="Teal"></button>
+            <button class="color-picker-btn" data-color="#e2e8f0" style="background:#e2e8f0;" title="Silver White"></button>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">Ubah Teks Pengumuman Global:</label>
+          <input type="text" id="adminAnnounceInput" class="task-input" placeholder="Tulis pengumuman..." style="width: 100%;">
+        </div>
+
+        <div>
+          <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">Ubah Nama Fitur Sidebar Default:</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <input type="text" id="adminAiTitleInput" class="task-input" placeholder="Nama AI Assistant">
+            <input type="text" id="adminMusicTitleInput" class="task-input" placeholder="Nama Music">
+            <input type="text" id="adminMoviesTitleInput" class="task-input" placeholder="Nama Movies">
+            <input type="text" id="adminDownloaderTitleInput" class="task-input" placeholder="Nama Downloader">
+            <input type="text" id="adminNotesTitleInput" class="task-input" placeholder="Nama Notes">
+            <input type="text" id="adminFocusTitleInput" class="task-input" placeholder="Nama Focus Space">
+            <input type="text" id="adminMasteryTitleInput" class="task-input" placeholder="Nama Code Mastery">
+            <input type="text" id="adminQrTitleInput" class="task-input" placeholder="Nama QR Tools">
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-base); padding-top: 12px;">
+          <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">➕ Tambah Fitur / Menu Sidebar Baru:</label>
+          <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+            <input type="text" id="newFeatureName" class="task-input" placeholder="Nama Fitur (Misal: Live Chat)">
+            <input type="text" id="newFeatureUrl" class="task-input" placeholder="URL/Link (Misal: chat.html)">
+          </div>
+          <button type="button" id="addNewFeatureBtn" class="task-submit" style="width: 100%; padding: 8px;">+ Tambahkan Menu</button>
+          
+          <div id="adminCustomMenuList" style="margin-top: 10px; display: flex; flex-direction: column; gap: 6px;"></div>
+        </div>
+      </div>
+
+      <div class="chat-input-area" style="justify-content: flex-end;">
+        <button class="task-submit" id="saveAdminSettingsBtn" style="padding: 10px 20px;">Simpan Perubahan</button>
+      </div>
+    </div>
+  </div>
+
+  -->
+  <div class="modal-backdrop" id="productModalBackdrop">
+    <div class="ai-modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 class="modal-title">📦 Tambah Akun / Produk Jual Beli</h3>
+        <button class="modal-close" id="closeProductModal">
+          <svg class="icon-svg" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="chat-window" style="height: auto; max-height: 450px; gap: 12px;">
+        <input type="text" id="prodTitle" class="task-input" placeholder="Judul Akun (Misal: Akun MLBB Mythic Glory 50★)">
+        <select id="prodCategory" class="task-input" style="background: var(--bg-elevated); color: var(--text-primary);">
+          <option value="Mobile Legends">Mobile Legends</option>
+          <option value="Free Fire">Free Fire</option>
+          <option value="TikTok">TikTok</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+        <input type="text" id="prodPrice" class="task-input" placeholder="Harga (Misal: Rp 250.000)">
+        <input type="text" id="prodImage" class="task-input" placeholder="URL Foto Produk (https://...)">
+        <textarea id="prodDesc" class="task-input" rows="3" placeholder="Deskripsi & Spesifikasi Akun..." style="resize: vertical;"></textarea>
+      </div>
+      <div class="chat-input-area" style="justify-content: flex-end;">
+        <button class="task-submit" id="saveProductBtn" style="padding: 10px 20px;">Simpan ke Store</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="profileModalBackdrop">
+    <div class="ai-modal" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 class="modal-title">👤 Edit Profil & Foto Profil</h3>
+        <button class="modal-close" id="closeProfileModal">✕</button>
+      </div>
+      <div class="chat-window" style="height: auto; max-height: 300px; gap: 14px;">
+        <div>
+          <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">Nama Pengguna:</label>
+          <input type="text" id="profileNameInput" class="task-input" placeholder="Masukkan Nama Baru" style="width: 100%;">
+        </div>
+        <div>
+          <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">URL Link Foto Profil (PP):</label>
+          <input type="text" id="profileImgUrlInput" class="task-input" placeholder="https://example.com/foto.jpg" style="width: 100%;">
+        </div>
+      </div>
+      <div class="chat-input-area" style="justify-content: flex-end;">
+        <button class="task-submit" id="saveProfileImgBtn" style="padding: 10px 20px;">Simpan Profil</button>
       </div>
     </div>
   </div>
@@ -2210,11 +2433,23 @@
         const userEmail = user.email || 'User';
 
         if (DOM.headerUserName) {
-          DOM.headerUserName.textContent = userEmail;
+          const savedName = localStorage.getItem('lifehub_profile_name');
+          DOM.headerUserName.textContent = savedName ? savedName : userEmail;
         }
 
         if (DOM.headerAvatarInitials) {
           DOM.headerAvatarInitials.textContent = userEmail.substring(0, 2).toUpperCase();
+        }
+
+        // // NEW CODE: ADMIN ROLE CHECK
+        if (userEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+          document.body.classList.add('is-admin');
+          const roleEl = document.querySelector('.user-role');
+          if (roleEl) {
+            roleEl.textContent = 'ADMINISTRATOR';
+            roleEl.style.color = 'var(--accent-main)';
+            roleEl.style.fontWeight = '700';
+          }
         }
       }
 
@@ -2235,6 +2470,331 @@
           }
         });
       }
+
+      // // NEW CODE: ADMIN & JUBEL STORE SYSTEM
+      const ADMIN_EMAIL = "reskisetiawan301210@gmail.com"; // Ganti dengan Email Supabase Kamu
+      const WA_NUMBER = "6281234567890"; // Ganti dengan Nomor WhatsApp Kamu
+
+      // NEW CODE: SCRIPT UBAH NAMA FITUR & TAMBAH FITUR SIDEBAR DARI ADMIN
+      const navMap = {
+        'ai.html': 'lifehub_nav_ai',
+        'music.html': 'lifehub_nav_music',
+        'movies.html': 'lifehub_movies_title',
+        'downloader.html': 'lifehub_nav_downloader',
+        'notes.html': 'lifehub_nav_notes',
+        'focus.html': 'lifehub_nav_focus',
+        'mastery.html': 'lifehub_nav_mastery',
+        'qr-tools.html': 'lifehub_nav_qr'
+      };
+
+      // Check and apply custom settings from localStorage
+      function applySavedSettings() {
+        const savedColor = localStorage.getItem('lifehub_theme_color');
+        const savedAnnounce = localStorage.getItem('lifehub_announcement');
+
+        if (savedColor) {
+          document.documentElement.style.setProperty('--accent-main', savedColor);
+          document.documentElement.style.setProperty('--accent-glow', savedColor + '4D');
+        }
+
+        if (savedAnnounce && document.getElementById('announcementText')) {
+          document.getElementById('announcementText').textContent = savedAnnounce;
+        }
+
+        // Apply dynamic titles for standard sidebar links
+        Object.keys(navMap).forEach(href => {
+          const savedTitle = localStorage.getItem(navMap[href]);
+          if (savedTitle) {
+            const link = document.querySelector(`a[href="${href}"]`);
+            if (link) {
+              const textSpan = link.querySelector('.nav-text');
+              if (textSpan) textSpan.textContent = savedTitle;
+              else {
+                link.childNodes.forEach(node => {
+                  if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) {
+                    node.textContent = '\n          ' + savedTitle + '\n        ';
+                  }
+                });
+              }
+            }
+          }
+        });
+
+        // NEW CODE: RENDER CUSTOM ADDED SIDEBAR FEATURES
+        renderCustomSidebarNav();
+      }
+
+      let customSidebarMenus = JSON.parse(localStorage.getItem('lifehub_custom_menus')) || [];
+
+      function renderCustomSidebarNav() {
+        const container = document.getElementById('customNavContainer');
+        if (!container) return;
+        container.innerHTML = '';
+
+        customSidebarMenus.forEach(menu => {
+          const item = document.createElement('a');
+          item.href = menu.url;
+          item.className = 'nav-item';
+          item.innerHTML = `
+            <svg class="icon-svg" viewBox="0 0 24 24">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <span class="nav-text">${menu.name}</span>
+          `;
+          container.appendChild(item);
+        });
+
+        // Admin list view in admin modal
+        const adminList = document.getElementById('adminCustomMenuList');
+        if (adminList) {
+          adminList.innerHTML = '';
+          customSidebarMenus.forEach((menu, index) => {
+            const row = document.createElement('div');
+            row.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:var(--bg-elevated); padding:6px 10px; border-radius:6px; font-size:12px;";
+            row.innerHTML = `
+              <span>⭐ ${menu.name} (${menu.url})</span>
+              <button onclick="window.deleteCustomMenu(${index})" style="color:var(--color-danger); font-weight:bold;">🗑️</button>
+            `;
+            adminList.appendChild(row);
+          });
+        }
+      }
+
+      window.deleteCustomMenu = function(index) {
+        customSidebarMenus.splice(index, 1);
+        localStorage.setItem('lifehub_custom_menus', JSON.stringify(customSidebarMenus));
+        renderCustomSidebarNav();
+      };
+
+      // Handle Adding New Feature from Admin Panel
+      const addFeatureBtn = document.getElementById('addNewFeatureBtn');
+      if (addFeatureBtn) {
+        addFeatureBtn.addEventListener('click', () => {
+          const nameInput = document.getElementById('newFeatureName');
+          const urlInput = document.getElementById('newFeatureUrl');
+          
+          if (!nameInput.value.trim() || !urlInput.value.trim()) {
+            alert("Harap isi Nama Fitur dan URL Link!");
+            return;
+          }
+
+          customSidebarMenus.push({
+            name: nameInput.value.trim(),
+            url: urlInput.value.trim()
+          });
+
+          localStorage.setItem('lifehub_custom_menus', JSON.stringify(customSidebarMenus));
+          renderCustomSidebarNav();
+
+          nameInput.value = '';
+          urlInput.value = '';
+          alert("Menu fitur baru berhasil ditambahkan!");
+        });
+      }
+
+      applySavedSettings();
+
+      // Admin Modal Event Listeners
+      const adminModal = document.getElementById('adminModalBackdrop');
+      const openAdminBtn = document.getElementById('openAdminPanelBtn');
+      const closeAdminBtn = document.getElementById('closeAdminModal');
+      const saveAdminBtn = document.getElementById('saveAdminSettingsBtn');
+
+      if (openAdminBtn && adminModal) {
+        openAdminBtn.addEventListener('click', () => adminModal.classList.add('is-active'));
+      }
+
+      if (closeAdminBtn && adminModal) {
+        closeAdminBtn.addEventListener('click', () => adminModal.classList.remove('is-active'));
+      }
+
+      if (saveAdminBtn) {
+        saveAdminBtn.addEventListener('click', () => {
+          const annInput = document.getElementById('adminAnnounceInput');
+          if (annInput && annInput.value.trim()) {
+            localStorage.setItem('lifehub_announcement', annInput.value.trim());
+          }
+
+          // NEW CODE: SAVE ALL SIDEBAR DEFAULT TITLES
+          const aiInput = document.getElementById('adminAiTitleInput');
+          const musicInput = document.getElementById('adminMusicTitleInput');
+          const movInput = document.getElementById('adminMoviesTitleInput');
+          const dlInput = document.getElementById('adminDownloaderTitleInput');
+          const notesInput = document.getElementById('adminNotesTitleInput');
+          const focusInput = document.getElementById('adminFocusTitleInput');
+          const masteryInput = document.getElementById('adminMasteryTitleInput');
+          const qrInput = document.getElementById('adminQrTitleInput');
+
+          if (aiInput && aiInput.value.trim()) localStorage.setItem('lifehub_nav_ai', aiInput.value.trim());
+          if (musicInput && musicInput.value.trim()) localStorage.setItem('lifehub_nav_music', musicInput.value.trim());
+          if (movInput && movInput.value.trim()) localStorage.setItem('lifehub_movies_title', movInput.value.trim());
+          if (dlInput && dlInput.value.trim()) localStorage.setItem('lifehub_nav_downloader', dlInput.value.trim());
+          if (notesInput && notesInput.value.trim()) localStorage.setItem('lifehub_nav_notes', notesInput.value.trim());
+          if (focusInput && focusInput.value.trim()) localStorage.setItem('lifehub_nav_focus', focusInput.value.trim());
+          if (masteryInput && masteryInput.value.trim()) localStorage.setItem('lifehub_nav_mastery', masteryInput.value.trim());
+          if (qrInput && qrInput.value.trim()) localStorage.setItem('lifehub_nav_qr', qrInput.value.trim());
+
+          applySavedSettings();
+          if (adminModal) adminModal.classList.remove('is-active');
+          alert("Pengaturan Admin Berhasil Disimpan!");
+        });
+      }
+
+      document.querySelectorAll('.color-picker-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const color = e.target.dataset.color;
+          if (color) {
+            localStorage.setItem('lifehub_theme_color', color);
+            applySavedSettings();
+          }
+        });
+      });
+
+      // Jubel Store Logic (CRUD)
+      let storeProducts = JSON.parse(localStorage.getItem('lifehub_products')) || [
+        {
+          id: 1,
+          title: "Akun MLBB Mythic Glory 50★",
+          category: "Mobile Legends",
+          price: "Rp 250.000",
+          image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500",
+          desc: "Skin Collector + Monsep lengkap email first."
+        }
+      ];
+
+      function renderJubelStore() {
+        const grid = document.getElementById('productGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+
+        storeProducts.forEach(p => {
+          const card = document.createElement('div');
+          card.className = 'store-card';
+
+          const waText = encodeURIComponent(`Halo Admin, saya berminat membeli: ${p.title} (${p.price})`);
+          const waUrl = `https://wa.me/${WA_NUMBER}?text=${waText}`;
+
+          card.innerHTML = `
+            <img src="${p.image}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/300x140?text=No+Image'">
+            <div style="font-size:10px; font-weight:700; color:var(--accent-main); text-transform:uppercase;">${p.category}</div>
+            <div style="font-size:15px; font-weight:700; color:var(--text-primary);">${p.title}</div>
+            <div style="font-size:16px; font-weight:800; color:var(--color-success);">${p.price}</div>
+            <div style="font-size:12px; color:var(--text-secondary); flex:1;">${p.desc}</div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <a href="${waUrl}" target="_blank" class="task-submit" style="flex:1; text-align:center; text-decoration:none; padding:8px 12px; font-size:12px; display:inline-block;">Beli via WA</a>
+              <button onclick="window.deleteJubelProduct(${p.id})" class="admin-only task-submit" style="background:var(--color-danger); color:#fff; padding:8px 12px;">🗑️</button>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+
+      renderJubelStore();
+
+      // Delete product global function
+      window.deleteJubelProduct = function(id) {
+        if (confirm("Hapus produk ini dari etalase?")) {
+          storeProducts = storeProducts.filter(p => p.id !== id);
+          localStorage.setItem('lifehub_products', JSON.stringify(storeProducts));
+          renderJubelStore();
+        }
+      };
+
+      // Add Product Modal Listeners
+      const prodModal = document.getElementById('productModalBackdrop');
+      const openProdBtn = document.getElementById('openAddProductBtn');
+      const closeProdBtn = document.getElementById('closeProductModal');
+      const saveProdBtn = document.getElementById('saveProductBtn');
+
+      if (openProdBtn && prodModal) {
+        openProdBtn.addEventListener('click', () => prodModal.classList.add('is-active'));
+      }
+
+      if (closeProdBtn && prodModal) {
+        closeProdBtn.addEventListener('click', () => prodModal.classList.remove('is-active'));
+      }
+
+      if (saveProdBtn) {
+        saveProdBtn.addEventListener('click', () => {
+          const title = document.getElementById('prodTitle').value.trim();
+          const category = document.getElementById('prodCategory').value;
+          const price = document.getElementById('prodPrice').value.trim();
+          const image = document.getElementById('prodImage').value.trim() || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500';
+          const desc = document.getElementById('prodDesc').value.trim();
+
+          if (!title || !price) {
+            alert("Judul dan Harga wajib diisi!");
+            return;
+          }
+
+          const newProduct = {
+            id: Date.now(),
+            title: title,
+            category: category,
+            price: price,
+            image: image,
+            desc: desc
+          };
+
+          storeProducts.push(newProduct);
+          localStorage.setItem('lifehub_products', JSON.stringify(storeProducts));
+          renderJubelStore();
+
+          if (prodModal) prodModal.classList.remove('is-active');
+          document.getElementById('prodTitle').value = '';
+          document.getElementById('prodPrice').value = '';
+          document.getElementById('prodImage').value = '';
+          document.getElementById('prodDesc').value = '';
+        });
+      }
+
+      // NEW CODE: PROFILE PICTURE & NAME CUSTOMIZER SYSTEM
+      const profileModal = document.getElementById('profileModalBackdrop');
+      const userProfileBtn = document.getElementById('userProfileBtn');
+      const closeProfileModal = document.getElementById('closeProfileModal');
+      const saveProfileImgBtn = document.getElementById('saveProfileImgBtn');
+      const avatarEl = document.getElementById('headerAvatarInitials');
+      const userNameEl = document.getElementById('headerUserName');
+
+      userProfileBtn?.addEventListener('click', () => {
+        profileModal.classList.add('is-active');
+      });
+
+      closeProfileModal?.addEventListener('click', () => {
+        profileModal.classList.remove('is-active');
+      });
+
+      function loadSavedProfile() {
+        const savedImg = localStorage.getItem('lifehub_profile_img');
+        const savedName = localStorage.getItem('lifehub_profile_name');
+
+        if (savedImg && avatarEl) {
+          avatarEl.textContent = ''; 
+          avatarEl.style.backgroundImage = `url('${savedImg}')`;
+        }
+
+        if (savedName && userNameEl) {
+          userNameEl.textContent = savedName;
+        }
+      }
+      loadSavedProfile();
+
+      saveProfileImgBtn?.addEventListener('click', () => {
+        const nameInput = document.getElementById('profileNameInput').value.trim();
+        const imgUrlInput = document.getElementById('profileImgUrlInput').value.trim();
+
+        if (nameInput) {
+          localStorage.setItem('lifehub_profile_name', nameInput);
+        }
+
+        if (imgUrlInput) {
+          localStorage.setItem('lifehub_profile_img', imgUrlInput);
+        }
+
+        loadSavedProfile();
+        profileModal.classList.remove('is-active');
+        alert("Profil berhasil diperbarui! 🚀");
+      });
 
     });
   </script>
