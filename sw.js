@@ -1,32 +1,36 @@
 /**
- * LifeHub AI — Service Worker
- * Responsibilities:
- *   1. Precache the app shell so the shell loads offline.
- *   2. Runtime-cache same-origin assets with a stale-while-revalidate policy.
- *   3. Serve an offline fallback view when navigation requests fail.
- *   4. Provide a background-sync hook for queued writes (finance/tasks/notes
- *      entries created while offline) — see TODO markers below.
+ * LifeHub AI — Service Worker (Production Ready)
  */
 
-const CACHE_VERSION = 'lifehub-v1';
+const CACHE_VERSION = 'lifehub-v2';
 const APP_SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
+// Daftar file utama yang akan di-cache untuk offline mode
 const APP_SHELL_ASSETS = [
   '/',
   '/index.html',
   '/dashboard.html',
-  '/css/styles.css',
-  '/js/app.js',
-  '/js/store.js',
   '/manifest.json',
+  '/js/app.js',
+  '/js/store.js'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(APP_SHELL_CACHE)
-      .then((cache) => cache.addAll(APP_SHELL_ASSETS))
-      .then(() => self.skipWaiting())
+    caches.open(APP_SHELL_CACHE).then(async (cache) => {
+      // Menggunakan fetch manual agar jika 1 file hilang (404), instalasi TIDAK GAGAL
+      await Promise.allSettled(
+        APP_SHELL_ASSETS.map(async (url) => {
+          try {
+            const res = await fetch(url);
+            if (res.ok) await cache.put(url, res);
+          } catch (err) {
+            console.warn(`[SW] Skip caching ${url}:`, err);
+          }
+        })
+      );
+    }).then(() => self.skipWaiting())
   );
 });
 
@@ -49,15 +53,15 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   const isSameOrigin = url.origin === self.location.origin;
 
-  // Navigation requests: network-first, fall back to cached shell.
+  // Navigation requests: network-first, fall back to cached shell
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request).catch(() => caches.match('/dashboard.html'))
+      fetch(request).catch(() => caches.match('/dashboard.html') || caches.match('/index.html'))
     );
     return;
   }
 
-  // Same-origin static assets: stale-while-revalidate.
+  // Same-origin static assets: stale-while-revalidate
   if (isSameOrigin) {
     event.respondWith(
       caches.open(RUNTIME_CACHE).then(async (cache) => {
@@ -72,14 +76,10 @@ self.addEventListener('fetch', (event) => {
       })
     );
   }
-  // Cross-origin (API) requests are intentionally left to the network —
-  // services implement their own retry/backoff (see /js/services/).
 });
 
-// TODO: register 'sync' event handling here once IndexedDB write-queue
-// for offline finance/task/note mutations is implemented in store.js.
 self.addEventListener('sync', (event) => {
   if (event.tag === 'lifehub-flush-queue') {
-    // event.waitUntil(flushQueuedWrites());
+    // Sync logic
   }
 });

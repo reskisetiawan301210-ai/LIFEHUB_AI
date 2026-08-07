@@ -2,21 +2,24 @@
   "name": "LifeHub AI",
   "short_name": "LifeHub",
   "description": "Unified productivity, finance, AI assistance, and entertainment workspace.",
-  "start_url": "/index.html",
+  "start_url": "/dashboard.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#0B0F19",
-  "theme_color": "#0B0F19",
+  "background_color": "#09090b",
+  "theme_color": "#f59e0b",
   "icons": [
-    { "src": "/assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/assets/icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "/assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
-  ],
-  "shortcuts": [
-    { "name": "AI Assistant", "url": "/dashboard.html#ai" },
-    { "name": "Finance", "url": "/dashboard.html#finance" },
-    { "name": "Tasks", "url": "/dashboard.html#productivity" }
+    {
+      "src": "https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }
