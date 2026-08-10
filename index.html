@@ -122,19 +122,29 @@
   <script type="module">
     import { supabase } from './supabase.js';
 
+    // ⚡ 0. CEK OTOMATIS SESI LOGIN (Jika sudah login, langsung ke dashboard)
+    async function checkExistingSession() {
+      const { data: { session } } = await supabase.auth.getSession();
+      const isLocalLoggedIn = localStorage.getItem('lifehub_logged_in') === 'true';
+
+      if (session || isLocalLoggedIn) {
+        window.location.href = 'dashboard.html';
+      }
+    }
+
+    checkExistingSession();
+
     // 1. NAVIGASI PINDAH TAMPILAN (Login <-> Signup <-> Reset Password)
     document.querySelectorAll('[data-goto]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         const targetView = btn.getAttribute('data-goto');
         
-        // Sembunyikan semua section
         document.querySelectorAll('[data-card]').forEach(card => {
           card.classList.add('hidden');
           card.setAttribute('aria-hidden', 'true');
         });
 
-        // Tampilkan section yang dituju
         const activeCard = document.querySelector(`[data-card="${targetView}"]`);
         if (activeCard) {
           activeCard.classList.remove('hidden');
@@ -162,7 +172,7 @@
         if (error) {
           alert("Login Gagal: " + error.message);
         } else {
-          alert("Login Berhasil!");
+          localStorage.setItem('lifehub_logged_in', 'true');
           window.location.href = 'dashboard.html';
         }
       });
@@ -187,7 +197,8 @@
         if (error) {
           alert("Gagal Daftar: " + error.message);
         } else {
-          alert("Pendaftaran Berhasil! Silakan cek email kamu atau langsung login.");
+          localStorage.setItem('lifehub_logged_in', 'true');
+          alert("Pendaftaran Berhasil!");
           window.location.href = 'dashboard.html';
         }
       });

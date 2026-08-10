@@ -1,25 +1,3 @@
-/* ==========================================================================
-   LifeHub AI™ — AI Service Layer
-   File: aiservis.js
-   --------------------------------------------------------------------------
-   This file owns ALL communication with real AI provider APIs.
-   ai.html never talks to a provider directly — it only calls the functions
-   exposed here (window.LifeHubAI.*).
-
-   Supported providers (official API formats):
-     - DeepSeek  (OpenAI-compatible Chat Completions API)
-     - Groq      (OpenAI-compatible Chat Completions API)
-     - Gemini    (Google Generative Language API)
-
-   ⚠️ FRONTEND API KEY SECURITY NOTICE ⚠️
-   ----------------------------------------------------------------------
-   This is a frontend-only project. Keep your API keys safe!
-   ========================================================================== */
-
-/* ==========================================================================
-   1. CONFIGURATION
-   ========================================================================== */
-
 const AI_CONFIG = {
   deepseek: {
     enabled: true,
@@ -49,7 +27,7 @@ const AI_CONFIG = {
 
   gemini: {
     enabled: true,
-    apiKey: "AQ.Ab8RN6KCOUVHFkaNmCE7Ar3byiGeQc4KSQyh4eSH4bbdGNZoxw", // <-- PASANG API KEY GEMINI DI SINI (https://aistudio.google.com/apikey)
+    apiKey: "AQ.Ab8RN6LIK9KpwfzWB4QJ39eDkPTbzXgJZL3rVlDqFnZYrG6dlw", // <-- PASANG API KEY GEMINI DI SINI (https://aistudio.google.com/apikey)
     baseURL: "https://generativelanguage.googleapis.com/v1beta/models",
     models: [
       { id: "gemini-3.6-flash", label: "Gemini 3.6 Flash", vision: true, context: 1000000 },

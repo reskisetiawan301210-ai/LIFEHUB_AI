@@ -2476,7 +2476,7 @@
 
       // // NEW CODE: ADMIN & JUBEL STORE SYSTEM
       const ADMIN_EMAIL = "reskisetiawan301210@gmail.com"; // Ganti dengan Email Supabase Kamu
-      const WA_NUMBER = "6281234567890"; // Ganti dengan Nomor WhatsApp Kamu
+      const WA_NUMBER = "6281220835748"; // Ganti dengan Nomor WhatsApp Kamu
 
       // NEW CODE: SCRIPT UBAH NAMA FITUR & TAMBAH FITUR SIDEBAR DARI ADMIN
       const navMap = {
@@ -2491,322 +2491,355 @@
       };
 
       // Check and apply custom settings from localStorage
-      function applySavedSettings() {
-        const savedColor = localStorage.getItem('lifehub_theme_color');
-        const savedAnnounce = localStorage.getItem('lifehub_announcement');
+      //*dieee nya
+      // Fungsi gabungan: Baca Supabase + Tetap simpan pengaturan judul sidebar
+// --- 1. FUNGSI GABUNGAN (SUPABASE ADMIN SETTINGS + SIDEBAR) ---
+    async function applySavedSettings() {
+      try {
+        // Ambil warna & pengumuman global dari Supabase
+        const { data, error } = await supabase
+          .from('admin_settings')
+          .select('*')
+          .eq('id', 1)
+          .single();
 
-        if (savedColor) {
-          document.documentElement.style.setProperty('--accent-main', savedColor);
-          document.documentElement.style.setProperty('--accent-glow', savedColor + '4D');
+        if (data) {
+          if (data.theme_color) {
+            document.documentElement.style.setProperty('--accent-main', data.theme_color);
+            document.documentElement.style.setProperty('--accent-glow', data.theme_color + '4D');
+          }
+          if (data.announcement && document.getElementById('announcementText')) {
+            document.getElementById('announcementText').textContent = data.announcement;
+          }
         }
+      } catch (err) {
+        console.error("Gagal mengambil data dari Supabase:", err);
+      }
 
-        if (savedAnnounce && document.getElementById('announcementText')) {
-          document.getElementById('announcementText').textContent = savedAnnounce;
-        }
-
-        // Apply dynamic titles for standard sidebar links
-        Object.keys(navMap).forEach(href => {
-          const savedTitle = localStorage.getItem(navMap[href]);
-          if (savedTitle) {
-            const link = document.querySelector(`a[href="${href}"]`);
-            if (link) {
-              const textSpan = link.querySelector('.nav-text');
-              if (textSpan) textSpan.textContent = savedTitle;
-              else {
-                link.childNodes.forEach(node => {
-                  if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) {
-                    node.textContent = '\n          ' + savedTitle + '\n        ';
-                  }
-                });
-              }
+      // Terapkan judul menu sidebar dari LocalStorage
+      Object.keys(navMap).forEach(href => {
+        const savedTitle = localStorage.getItem(navMap[href]);
+        if (savedTitle) {
+          const link = document.querySelector(`a[href="${href}"]`);
+          if (link) {
+            const textSpan = link.querySelector('.nav-text');
+            if (textSpan) textSpan.textContent = savedTitle;
+            else {
+              link.childNodes.forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) {
+                  node.textContent = '\n          ' + savedTitle + '\n        ';
+                }
+              });
             }
           }
-        });
-
-        // NEW CODE: RENDER CUSTOM ADDED SIDEBAR FEATURES
-        renderCustomSidebarNav();
-      }
-
-      let customSidebarMenus = JSON.parse(localStorage.getItem('lifehub_custom_menus')) || [];
-
-      function renderCustomSidebarNav() {
-        const container = document.getElementById('customNavContainer');
-        if (!container) return;
-        container.innerHTML = '';
-
-        customSidebarMenus.forEach(menu => {
-          const item = document.createElement('a');
-          item.href = menu.url;
-          item.className = 'nav-item';
-          item.innerHTML = `
-            <svg class="icon-svg" viewBox="0 0 24 24">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-            </svg>
-            <span class="nav-text">${menu.name}</span>
-          `;
-          container.appendChild(item);
-        });
-
-        // Admin list view in admin modal
-        const adminList = document.getElementById('adminCustomMenuList');
-        if (adminList) {
-          adminList.innerHTML = '';
-          customSidebarMenus.forEach((menu, index) => {
-            const row = document.createElement('div');
-            row.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:var(--bg-elevated); padding:6px 10px; border-radius:6px; font-size:12px;";
-            row.innerHTML = `
-              <span>⭐ ${menu.name} (${menu.url})</span>
-              <button onclick="window.deleteCustomMenu(${index})" style="color:var(--color-danger); font-weight:bold;">🗑️</button>
-            `;
-            adminList.appendChild(row);
-          });
         }
-      }
+      });
 
-      window.deleteCustomMenu = function(index) {
-        customSidebarMenus.splice(index, 1);
+      // Render menu tambahan
+      renderCustomSidebarNav();
+    }
+
+    // --- 2. CUSTOM SIDEBAR LOGIC ---
+    let customSidebarMenus = JSON.parse(localStorage.getItem('lifehub_custom_menus')) || [];
+
+    function renderCustomSidebarNav() {
+      const container = document.getElementById('customNavContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      customSidebarMenus.forEach(menu => {
+        const item = document.createElement('a');
+        item.href = menu.url;
+        item.className = 'nav-item';
+        item.innerHTML = `
+          <svg class="icon-svg" viewBox="0 0 24 24">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          <span class="nav-text">${menu.name}</span>
+        `;
+        container.appendChild(item);
+      });
+
+      // Tampilkan daftar menu tambahan di modal admin
+      const adminList = document.getElementById('adminCustomMenuList');
+      if (adminList) {
+        adminList.innerHTML = '';
+        customSidebarMenus.forEach((menu, index) => {
+          const row = document.createElement('div');
+          row.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:var(--bg-elevated); padding:6px 10px; border-radius:6px; font-size:12px;";
+          row.innerHTML = `
+            <span>⭐ ${menu.name} (${menu.url})</span>
+            <button onclick="window.deleteCustomMenu(${index})" style="color:var(--color-danger); font-weight:bold;">🗑️</button>
+          `;
+          adminList.appendChild(row);
+        });
+      }
+    }
+
+    window.deleteCustomMenu = function(index) {
+      customSidebarMenus.splice(index, 1);
+      localStorage.setItem('lifehub_custom_menus', JSON.stringify(customSidebarMenus));
+      renderCustomSidebarNav();
+    };
+
+    // Tambahkan Fitur Baru dari Admin Panel
+    const addFeatureBtn = document.getElementById('addNewFeatureBtn');
+    if (addFeatureBtn) {
+      addFeatureBtn.addEventListener('click', () => {
+        const nameInput = document.getElementById('newFeatureName');
+        const urlInput = document.getElementById('newFeatureUrl');
+        
+        if (!nameInput.value.trim() || !urlInput.value.trim()) {
+          alert("Harap isi Nama Fitur dan URL Link!");
+          return;
+        }
+
+        customSidebarMenus.push({
+          name: nameInput.value.trim(),
+          url: urlInput.value.trim()
+        });
+
         localStorage.setItem('lifehub_custom_menus', JSON.stringify(customSidebarMenus));
         renderCustomSidebarNav();
-      };
 
-      // Handle Adding New Feature from Admin Panel
-      const addFeatureBtn = document.getElementById('addNewFeatureBtn');
-      if (addFeatureBtn) {
-        addFeatureBtn.addEventListener('click', () => {
-          const nameInput = document.getElementById('newFeatureName');
-          const urlInput = document.getElementById('newFeatureUrl');
-          
-          if (!nameInput.value.trim() || !urlInput.value.trim()) {
-            alert("Harap isi Nama Fitur dan URL Link!");
-            return;
-          }
+        nameInput.value = '';
+        urlInput.value = '';
+        alert("Menu fitur baru berhasil ditambahkan!");
+      });
+    }
 
-          customSidebarMenus.push({
-            name: nameInput.value.trim(),
-            url: urlInput.value.trim()
-          });
+    // Jalankan fungsi pengaturan saat halaman dimuat
+    applySavedSettings();
 
-          localStorage.setItem('lifehub_custom_menus', JSON.stringify(customSidebarMenus));
-          renderCustomSidebarNav();
+    // --- 3. ADMIN PANEL LISTENERS & SUPABASE SAVE ---
+    const adminModal = document.getElementById('adminModalBackdrop');
+    const openAdminBtn = document.getElementById('openAdminPanelBtn');
+    const closeAdminBtn = document.getElementById('closeAdminModal');
+    const saveAdminBtn = document.getElementById('saveAdminSettingsBtn');
 
-          nameInput.value = '';
-          urlInput.value = '';
-          alert("Menu fitur baru berhasil ditambahkan!");
-        });
-      }
+    if (openAdminBtn && adminModal) {
+      openAdminBtn.addEventListener('click', () => adminModal.classList.add('is-active'));
+    }
 
-      applySavedSettings();
+    if (closeAdminBtn && adminModal) {
+      closeAdminBtn.addEventListener('click', () => adminModal.classList.remove('is-active'));
+    }
 
-      // Admin Modal Event Listeners
-      const adminModal = document.getElementById('adminModalBackdrop');
-      const openAdminBtn = document.getElementById('openAdminPanelBtn');
-      const closeAdminBtn = document.getElementById('closeAdminModal');
-      const saveAdminBtn = document.getElementById('saveAdminSettingsBtn');
+    if (saveAdminBtn) {
+      saveAdminBtn.addEventListener('click', async () => {
+        const annInput = document.getElementById('adminAnnounceInput');
+        if (annInput && annInput.value.trim()) {
+          localStorage.setItem('lifehub_announcement', annInput.value.trim());
+        }
 
-      if (openAdminBtn && adminModal) {
-        openAdminBtn.addEventListener('click', () => adminModal.classList.add('is-active'));
-      }
+        // Simpan judul-judul sidebar default
+        const aiInput = document.getElementById('adminAiTitleInput');
+        const musicInput = document.getElementById('adminMusicTitleInput');
+        const movInput = document.getElementById('adminMoviesTitleInput');
+        const dlInput = document.getElementById('adminDownloaderTitleInput');
+        const notesInput = document.getElementById('adminNotesTitleInput');
+        const focusInput = document.getElementById('adminFocusTitleInput');
+        const masteryInput = document.getElementById('adminMasteryTitleInput');
+        const qrInput = document.getElementById('adminQrTitleInput');
 
-      if (closeAdminBtn && adminModal) {
-        closeAdminBtn.addEventListener('click', () => adminModal.classList.remove('is-active'));
-      }
+        if (aiInput && aiInput.value.trim()) localStorage.setItem('lifehub_nav_ai', aiInput.value.trim());
+        if (musicInput && musicInput.value.trim()) localStorage.setItem('lifehub_nav_music', musicInput.value.trim());
+        if (movInput && movInput.value.trim()) localStorage.setItem('lifehub_movies_title', movInput.value.trim());
+        if (dlInput && dlInput.value.trim()) localStorage.setItem('lifehub_nav_downloader', dlInput.value.trim());
+        if (notesInput && notesInput.value.trim()) localStorage.setItem('lifehub_nav_notes', notesInput.value.trim());
+        if (focusInput && focusInput.value.trim()) localStorage.setItem('lifehub_nav_focus', focusInput.value.trim());
+        if (masteryInput && masteryInput.value.trim()) localStorage.setItem('lifehub_nav_mastery', masteryInput.value.trim());
+        if (qrInput && qrInput.value.trim()) localStorage.setItem('lifehub_nav_qr', qrInput.value.trim());
 
-      if (saveAdminBtn) {
-        saveAdminBtn.addEventListener('click', () => {
-          const annInput = document.getElementById('adminAnnounceInput');
-          if (annInput && annInput.value.trim()) {
-            localStorage.setItem('lifehub_announcement', annInput.value.trim());
-          }
+        // Simpan Warna & Pengumuman ke Supabase
+        const selectedColor = localStorage.getItem('lifehub_theme_color') || '#f59e0b';
+        const announceText = annInput ? annInput.value.trim() : 'Welcome to LifeHub Workspace!';
 
-          // NEW CODE: SAVE ALL SIDEBAR DEFAULT TITLES
-          const aiInput = document.getElementById('adminAiTitleInput');
-          const musicInput = document.getElementById('adminMusicTitleInput');
-          const movInput = document.getElementById('adminMoviesTitleInput');
-          const dlInput = document.getElementById('adminDownloaderTitleInput');
-          const notesInput = document.getElementById('adminNotesTitleInput');
-          const focusInput = document.getElementById('adminFocusTitleInput');
-          const masteryInput = document.getElementById('adminMasteryTitleInput');
-          const qrInput = document.getElementById('adminQrTitleInput');
+        const { error } = await supabase
+          .from('admin_settings')
+          .update({ 
+            theme_color: selectedColor,
+            announcement: announceText
+          })
+          .eq('id', 1);
 
-          if (aiInput && aiInput.value.trim()) localStorage.setItem('lifehub_nav_ai', aiInput.value.trim());
-          if (musicInput && musicInput.value.trim()) localStorage.setItem('lifehub_nav_music', musicInput.value.trim());
-          if (movInput && movInput.value.trim()) localStorage.setItem('lifehub_movies_title', movInput.value.trim());
-          if (dlInput && dlInput.value.trim()) localStorage.setItem('lifehub_nav_downloader', dlInput.value.trim());
-          if (notesInput && notesInput.value.trim()) localStorage.setItem('lifehub_nav_notes', notesInput.value.trim());
-          if (focusInput && focusInput.value.trim()) localStorage.setItem('lifehub_nav_focus', focusInput.value.trim());
-          if (masteryInput && masteryInput.value.trim()) localStorage.setItem('lifehub_nav_mastery', masteryInput.value.trim());
-          if (qrInput && qrInput.value.trim()) localStorage.setItem('lifehub_nav_qr', qrInput.value.trim());
-
-          applySavedSettings();
+        if (error) {
+          alert("Gagal menyimpan ke Supabase: " + error.message);
+        } else {
+          await applySavedSettings();
           if (adminModal) adminModal.classList.remove('is-active');
-          alert("Pengaturan Admin Berhasil Disimpan!");
-        });
-      }
-
-      document.querySelectorAll('.color-picker-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const color = e.target.dataset.color;
-          if (color) {
-            localStorage.setItem('lifehub_theme_color', color);
-            applySavedSettings();
-          }
-        });
+          alert("Pengaturan Admin Berhasil Disimpan & Disinkronkan!");
+        }
       });
+    }
 
-      // Jubel Store Logic (CRUD)
-      let storeProducts = JSON.parse(localStorage.getItem('lifehub_products')) || [
-        {
-          id: 1,
-          title: "Akun MLBB Mythic Glory 50★",
-          category: "Mobile Legends",
-          price: "Rp 250.000",
-          image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500",
-          desc: "Skin Collector + Monsep lengkap email first."
+    // Color Picker Buttons
+    document.querySelectorAll('.color-picker-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const color = e.target.dataset.color;
+        if (color) {
+          localStorage.setItem('lifehub_theme_color', color);
+          document.documentElement.style.setProperty('--accent-main', color);
+          document.documentElement.style.setProperty('--accent-glow', color + '4D');
         }
-      ];
-
-      function renderJubelStore() {
-        const grid = document.getElementById('productGrid');
-        if (!grid) return;
-        grid.innerHTML = '';
-
-        storeProducts.forEach(p => {
-          const card = document.createElement('div');
-          card.className = 'store-card';
-
-          const waText = encodeURIComponent(`Halo Admin, saya berminat membeli: ${p.title} (${p.price})`);
-          const waUrl = `https://wa.me/${WA_NUMBER}?text=${waText}`;
-
-          card.innerHTML = `
-            <img src="${p.image}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/300x140?text=No+Image'">
-            <div style="font-size:10px; font-weight:700; color:var(--accent-main); text-transform:uppercase;">${p.category}</div>
-            <div style="font-size:15px; font-weight:700; color:var(--text-primary);">${p.title}</div>
-            <div style="font-size:16px; font-weight:800; color:var(--color-success);">${p.price}</div>
-            <div style="font-size:12px; color:var(--text-secondary); flex:1;">${p.desc}</div>
-            <div style="display:flex; gap:8px; margin-top:8px;">
-              <a href="${waUrl}" target="_blank" class="task-submit" style="flex:1; text-align:center; text-decoration:none; padding:8px 12px; font-size:12px; display:inline-block;">Beli via WA</a>
-              <button onclick="window.deleteJubelProduct(${p.id})" class="admin-only task-submit" style="background:var(--color-danger); color:#fff; padding:8px 12px;">🗑️</button>
-            </div>
-          `;
-          grid.appendChild(card);
-        });
-      }
-
-      renderJubelStore();
-
-      // Delete product global function
-      window.deleteJubelProduct = function(id) {
-        if (confirm("Hapus produk ini dari etalase?")) {
-          storeProducts = storeProducts.filter(p => p.id !== id);
-          localStorage.setItem('lifehub_products', JSON.stringify(storeProducts));
-          renderJubelStore();
-        }
-      };
-
-      // Add Product Modal Listeners
-      const prodModal = document.getElementById('productModalBackdrop');
-      const openProdBtn = document.getElementById('openAddProductBtn');
-      const closeProdBtn = document.getElementById('closeProductModal');
-      const saveProdBtn = document.getElementById('saveProductBtn');
-
-      if (openProdBtn && prodModal) {
-        openProdBtn.addEventListener('click', () => prodModal.classList.add('is-active'));
-      }
-
-      if (closeProdBtn && prodModal) {
-        closeProdBtn.addEventListener('click', () => prodModal.classList.remove('is-active'));
-      }
-
-      if (saveProdBtn) {
-        saveProdBtn.addEventListener('click', () => {
-          const title = document.getElementById('prodTitle').value.trim();
-          const category = document.getElementById('prodCategory').value;
-          const price = document.getElementById('prodPrice').value.trim();
-          const image = document.getElementById('prodImage').value.trim() || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500';
-          const desc = document.getElementById('prodDesc').value.trim();
-
-          if (!title || !price) {
-            alert("Judul dan Harga wajib diisi!");
-            return;
-          }
-
-          const newProduct = {
-            id: Date.now(),
-            title: title,
-            category: category,
-            price: price,
-            image: image,
-            desc: desc
-          };
-
-          storeProducts.push(newProduct);
-          localStorage.setItem('lifehub_products', JSON.stringify(storeProducts));
-          renderJubelStore();
-
-          if (prodModal) prodModal.classList.remove('is-active');
-          document.getElementById('prodTitle').value = '';
-          document.getElementById('prodPrice').value = '';
-          document.getElementById('prodImage').value = '';
-          document.getElementById('prodDesc').value = '';
-        });
-      }
-
-      // NEW CODE: PROFILE PICTURE & NAME CUSTOMIZER SYSTEM
-      const profileModal = document.getElementById('profileModalBackdrop');
-      const userProfileBtn = document.getElementById('userProfileBtn');
-      const closeProfileModal = document.getElementById('closeProfileModal');
-      const saveProfileImgBtn = document.getElementById('saveProfileImgBtn');
-      const avatarEl = document.getElementById('headerAvatarInitials');
-      const userNameEl = document.getElementById('headerUserName');
-
-      userProfileBtn?.addEventListener('click', () => {
-        profileModal.classList.add('is-active');
       });
-
-      closeProfileModal?.addEventListener('click', () => {
-        profileModal.classList.remove('is-active');
-      });
-
-      function loadSavedProfile() {
-        const savedImg = localStorage.getItem('lifehub_profile_img');
-        const savedName = localStorage.getItem('lifehub_profile_name');
-
-        if (savedImg && avatarEl) {
-          avatarEl.textContent = ''; 
-          avatarEl.style.backgroundImage = `url('${savedImg}')`;
-        }
-
-        if (savedName && userNameEl) {
-          userNameEl.textContent = savedName;
-        }
-      }
-      loadSavedProfile();
-
-      saveProfileImgBtn?.addEventListener('click', () => {
-        const nameInput = document.getElementById('profileNameInput').value.trim();
-        const imgUrlInput = document.getElementById('profileImgUrlInput').value.trim();
-
-        if (nameInput) {
-          localStorage.setItem('lifehub_profile_name', nameInput);
-        }
-
-        if (imgUrlInput) {
-          localStorage.setItem('lifehub_profile_img', imgUrlInput);
-        }
-
-        loadSavedProfile();
-        profileModal.classList.remove('is-active');
-        alert("Profil berhasil diperbarui! 🚀");
-      });
-   // REGISTER SERVICE WORKER (PWA)
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('Service Worker Registered:', reg))
-            .catch(err => console.error('Service Worker Error:', err));
-        });
-      }
     });
-  </script>
+
+    // --- 4. JUBEL STORE SYSTEM ---
+    let storeProducts = JSON.parse(localStorage.getItem('lifehub_products')) || [
+      {
+        id: 1,
+        title: "Akun MLBB Mythic Glory 50★",
+        category: "Mobile Legends",
+        price: "Rp 250.000",
+        image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500",
+        desc: "Skin Collector + Monsep lengkap email first."
+      }
+    ];
+
+    function renderJubelStore() {
+      const grid = document.getElementById('productGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      storeProducts.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'store-card';
+
+        const waText = encodeURIComponent(`Halo Admin, saya berminat membeli: ${p.title} (${p.price})`);
+        const waUrl = `https://wa.me/${WA_NUMBER}?text=${waText}`;
+
+        card.innerHTML = `
+          <img src="${p.image}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/300x140?text=No+Image'">
+          <div style="font-size:10px; font-weight:700; color:var(--accent-main); text-transform:uppercase;">${p.category}</div>
+          <div style="font-size:15px; font-weight:700; color:var(--text-primary);">${p.title}</div>
+          <div style="font-size:16px; font-weight:800; color:var(--color-success);">${p.price}</div>
+          <div style="font-size:12px; color:var(--text-secondary); flex:1;">${p.desc}</div>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <a href="${waUrl}" target="_blank" class="task-submit" style="flex:1; text-align:center; text-decoration:none; padding:8px 12px; font-size:12px; display:inline-block;">Beli via WA</a>
+            <button onclick="window.deleteJubelProduct(${p.id})" class="admin-only task-submit" style="background:var(--color-danger); color:#fff; padding:8px 12px;">🗑️</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    renderJubelStore();
+
+    window.deleteJubelProduct = function(id) {
+      if (confirm("Hapus produk ini dari etalase?")) {
+        storeProducts = storeProducts.filter(p => p.id !== id);
+        localStorage.setItem('lifehub_products', JSON.stringify(storeProducts));
+        renderJubelStore();
+      }
+    };
+
+    // Modal Tambah Produk
+    const prodModal = document.getElementById('productModalBackdrop');
+    const openProdBtn = document.getElementById('openAddProductBtn');
+    const closeProdBtn = document.getElementById('closeProductModal');
+    const saveProdBtn = document.getElementById('saveProductBtn');
+
+    if (openProdBtn && prodModal) {
+      openProdBtn.addEventListener('click', () => prodModal.classList.add('is-active'));
+    }
+
+    if (closeProdBtn && prodModal) {
+      closeProdBtn.addEventListener('click', () => prodModal.classList.remove('is-active'));
+    }
+
+    if (saveProdBtn) {
+      saveProdBtn.addEventListener('click', () => {
+        const title = document.getElementById('prodTitle').value.trim();
+        const category = document.getElementById('prodCategory').value;
+        const price = document.getElementById('prodPrice').value.trim();
+        const image = document.getElementById('prodImage').value.trim() || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500';
+        const desc = document.getElementById('prodDesc').value.trim();
+
+        if (!title || !price) {
+          alert("Judul dan Harga wajib diisi!");
+          return;
+        }
+
+        const newProduct = {
+          id: Date.now(),
+          title: title,
+          category: category,
+          price: price,
+          image: image,
+          desc: desc
+        };
+
+        storeProducts.push(newProduct);
+        localStorage.setItem('lifehub_products', JSON.stringify(storeProducts));
+        renderJubelStore();
+
+        if (prodModal) prodModal.classList.remove('is-active');
+        document.getElementById('prodTitle').value = '';
+        document.getElementById('prodPrice').value = '';
+        document.getElementById('prodImage').value = '';
+        document.getElementById('prodDesc').value = '';
+      });
+    }
+
+    // --- 5. PROFILE CUSTOMIZER ---
+    const profileModal = document.getElementById('profileModalBackdrop');
+    const userProfileBtn = document.getElementById('userProfileBtn');
+    const closeProfileModal = document.getElementById('closeProfileModal');
+    const saveProfileImgBtn = document.getElementById('saveProfileImgBtn');
+    const avatarEl = document.getElementById('headerAvatarInitials');
+    const userNameEl = document.getElementById('headerUserName');
+
+    userProfileBtn?.addEventListener('click', () => {
+      profileModal.classList.add('is-active');
+    });
+
+    closeProfileModal?.addEventListener('click', () => {
+      profileModal.classList.remove('is-active');
+    });
+
+    function loadSavedProfile() {
+      const savedImg = localStorage.getItem('lifehub_profile_img');
+      const savedName = localStorage.getItem('lifehub_profile_name');
+
+      if (savedImg && avatarEl) {
+        avatarEl.textContent = ''; 
+        avatarEl.style.backgroundImage = `url('${savedImg}')`;
+      }
+
+      if (savedName && userNameEl) {
+        userNameEl.textContent = savedName;
+      }
+    }
+    loadSavedProfile();
+
+    saveProfileImgBtn?.addEventListener('click', () => {
+      const nameInput = document.getElementById('profileNameInput').value.trim();
+      const imgUrlInput = document.getElementById('profileImgUrlInput').value.trim();
+
+      if (nameInput) {
+        localStorage.setItem('lifehub_profile_name', nameInput);
+      }
+
+      if (imgUrlInput) {
+        localStorage.setItem('lifehub_profile_img', imgUrlInput);
+      }
+
+      loadSavedProfile();
+      profileModal.classList.remove('is-active');
+      alert("Profil berhasil diperbarui! 🚀");
+    });
+
+    // --- 6. SERVICE WORKER REGISTER (PWA) ---
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('Service Worker Registered:', reg))
+          .catch(err => console.error('Service Worker Error:', err));
+      });
+    }
+
+  });
+</script>
 </body>
 </html>
