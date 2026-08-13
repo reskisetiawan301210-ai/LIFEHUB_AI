@@ -13,7 +13,7 @@ const AI_CONFIG = {
 
   groq: {
     enabled: true,
-    apiKey: "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", // <-- PASANG API KEY GROQ DI SINI (https://console.groq.com)
+    apiKey: "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", // <-- PASANG API KEY GROQ DI SINI (https://console.groq.com)
     baseURL: "https://api.groq.com/openai/v1/chat/completions",
     models: [
       { id: "llama-3.3-70b-versatile", label: "Llama 3.3 70B Versatile", vision: false, context: 128000 },
@@ -27,7 +27,7 @@ const AI_CONFIG = {
 
   gemini: {
     enabled: true,
-    apiKey: "AQ.Ab8RN6LIK9KpwfzWB4QJ39eDkPTbzXgJZL3rVlDqFnZYrG6dlw", // <-- PASANG API KEY GEMINI DI SINI (https://aistudio.google.com/apikey)
+    apiKey: "AQ.Ab8RN6KlgUTJns_i5rRh3UbyMEXCDw_Fq1fgVPIKnEXAa0zHDA", // <-- PASANG API KEY GEMINI DI SINI (https://aistudio.google.com/apikey)
     baseURL: "https://generativelanguage.googleapis.com/v1beta/models",
     models: [
       { id: "gemini-3.6-flash", label: "Gemini 3.6 Flash", vision: true, context: 1000000 },
@@ -361,6 +361,29 @@ async function sendMessageWithFallback({
   onStatus,
   signal
 }) {
+  const systemPromptText = `Kamu adalah LifeHub AI, asisten virtual paling keren yang terintegrasi di workspace LifeHub. 
+
+ATURAN IDENTITAS WACANA:
+1. Developer / Pembuat utama aplikasi ini ADALAH "Team LegacyXxazyy" (atau dipanggil Erxyss). Jika ada pengguna yang bertanya siapa pembuat, developer, atau pencipta kamu/LifeHub AI, WAJIB jawab secara tegas bahwa kamu dibuat oleh Team LegacyXxazyy / Erxyss. JANGAN PERNAH katakan kamu buatan OpenAI atau Google!
+
+ATURAN GAYA BAHASA & PERSONALITAS:
+1. Gunakan bahasa gaul anak nongkrong/tongkrongan (pake panggilan "lu", "gua", "bro", "sis").
+2. Gaya bicara santai, cerdas, asik, blak-blakan, dan fleksibel.
+3. Boleh sesekali menggunakan kata-kata kasar / toxic yang wajar dan kocak (seperti: "anjir", "anjay", "jir", "bejir", "sableng", "koplak") untuk mencairkan suasana atau berekspresi, tapi TIDAK BOLEH menghina user secara berlebihan, SARA, atau jahat.`;
+
+  // 🟢 2. SELIPKAN SYSTEM PROMPT KE DALAM DERETAN PESAN (MESSAGES)
+  let updatedMessages = [...messages];
+  const hasSystem = updatedMessages.some((m) => m.role === "system");
+
+  if (!hasSystem) {
+    // Jika belum ada system prompt, tambahkan di urutan paling pertama (paling atas)
+    updatedMessages.unshift({ role: "system", content: systemPromptText });
+  } else {
+    // Jika sudah ada, ganti isinya dengan prompt ini
+    updatedMessages = updatedMessages.map((m) => 
+      m.role === "system" ? { ...m, content: systemPromptText } : m
+    );
+  }
   const enabled = getEnabledProviders();
   if (enabled.length === 0) {
     throw new Error(

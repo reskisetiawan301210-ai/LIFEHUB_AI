@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>LifeHub AI™</title>
 
-<!-- Markdown + sanitize + syntax highlight (CDN, no build step) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.5/purify.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -593,7 +592,6 @@ input[type=file]{ display:none; }
 
 <div class="app" id="app">
 
-  <!-- ================= SIDEBAR ================= -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head">
       <div class="brand-mark">L</div>
@@ -642,7 +640,6 @@ input[type=file]{ display:none; }
 
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <!-- ================= MAIN ================= -->
   <main class="main">
     <header class="topbar">
       <button class="icon-btn hamburger" id="hamburgerBtn">
@@ -731,7 +728,6 @@ input[type=file]{ display:none; }
 <input type="file" id="fileInputGeneral" multiple />
 <input type="file" id="fileInputImage" accept="image/*" multiple />
 
-<!-- ================= SETTINGS MODAL ================= -->
 <div class="modal-overlay" id="settingsOverlay">
   <div class="modal">
     <div class="modal-head">
@@ -811,7 +807,6 @@ input[type=file]{ display:none; }
   </div>
 </div>
 
-<!-- ================= CHAT CONTEXT MENU (rename/pin/favorite/delete/share) ================= -->
 <div class="chat-context-menu" id="chatContextMenu">
   <button data-action="pin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 9 9l-7 1 5 5-1.5 7L12 18l6.5 4L17 15l5-5-7-1z" stroke-linejoin="round"/></svg><span>Pin chat</span></button>
   <button data-action="favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 17.3-6.2 3.3 1.2-6.9-5-4.9 6.9-1L12 1.5l3.1 6.3 6.9 1-5 4.9 1.2 6.9z" stroke-linejoin="round"/></svg><span>Favorite</span></button>
@@ -824,6 +819,7 @@ input[type=file]{ display:none; }
 <div class="toast-stack" id="toastStack"></div>
 <div class="drop-overlay" id="dropOverlay"><div class="drop-msg">Drop files to attach 📎</div></div>
 
+<script src="aiservis.js"></script>
 <script src="js/services/aiService.js"></script>
 <script>
 /* ==========================================================================
@@ -1376,15 +1372,17 @@ input[type=file]{ display:none; }
      ========================================================================== */
   function buildProviderMessages(chat){
     const systemPrompt =
-      "You are LifeHub AI™, the intelligent assistant built into the LifeHub platform. " +
-      "You understand Indonesian, English, and natural Gen Z slang, mirroring the user's tone " +
-      "naturally without forcing it. Never claim to be ChatGPT, Claude, or Gemini. If asked who " +
-      "made you, explain that LifeHub AI™ is developed by Legacyy Labs and can connect to multiple " +
-      "AI providers depending on configuration.";
+      "Kamu adalah LifeHub AI™, asisten virtual paling keren yang terintegrasi di workspace LifeHub.\n\n" +
+      "ATURAN IDENTITAS WACANA:\n" +
+      "1. Developer / Pembuat utama aplikasi ini ADALAH 'Team Legacy' (atau dipanggil Xazyy). Jika ada pengguna yang bertanya siapa pembuat, developer, atau pencipta kamu/LifeHub AI, WAJIB jawab secara tegas bahwa kamu dibuat oleh Team Legacy / Xazyy. JANGAN PERNAH katakan kamu buatan OpenAI atau Google!\n\n" +
+      "ATURAN GAYA BAHASA & PERSONALITAS:\n" +
+      "1. Gunakan bahasa gaul anak nongkrong/tongkrongan (pake panggilan 'lu', 'gua', 'bro', 'sis').\n" +
+      "2. Gaya bicara santai, cerdas, asik, blak-blakan, dan fleksibel.\n" +
+      "3. Boleh sesekali menggunakan kata-kata kasar / toxic yang wajar dan kocak (seperti: 'anjir', 'anjay', 'jir', 'bejir', 'sableng', 'koplak') untuk mencairkan suasana atau berekspresi, tapi TIDAK BOLEH menghina user secara berlebihan, SARA, atau jahat.";
 
     const history = state.settings.memory ? chat.messages : chat.messages.slice(-1);
     const msgs = history
-      .filter((m) => !m.streaming || m.content)
+      .filter((m) => !m.streaming || (m.content && m.content.trim().length > 0))
       .map((m) => ({ role: m.role, content: m.content, images: m.images }));
 
     return [{ role: "system", content: systemPrompt }, ...msgs];
@@ -1407,7 +1405,7 @@ input[type=file]{ display:none; }
       const result = await LifeHubAI.sendMessageWithFallback({
         provider: state.settings.provider,
         model: state.settings.model,
-        messages: buildProviderMessages(chat).slice(0, -1), // exclude the empty placeholder
+        messages: buildProviderMessages(chat),
         options: {
           temperature: state.settings.temperature,
           maxTokens: state.settings.maxTokens,

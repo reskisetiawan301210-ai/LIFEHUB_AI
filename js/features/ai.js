@@ -1,7 +1,12 @@
 // js/features/ai.js
-import { askGeminiAI } from '../services/aiService.js';
+
+// 🟢 1. BIKIN MEMORI GLOBAL BIAR CHAT GAK ILANG PAS GANTI MENU
+if (!window.globalLifeHubChatHistory) {
+    window.globalLifeHubChatHistory = [];
+}
 
 export function renderAI(container) {
+    // Render UI Utama
     container.innerHTML = `
         <div class="relative z-10 p-6 md:p-8 max-w-6xl mx-auto h-[calc(100vh-5rem)] flex flex-col">
             <header class="mb-4 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -24,12 +29,12 @@ export function renderAI(container) {
             <div class="flex-1 glass-panel rounded-2xl flex flex-col overflow-hidden border border-white/10 mb-6 relative">
                 
                 <div id="chat-box" class="flex-1 p-6 overflow-y-auto flex flex-col gap-4">
-                    <div class="flex gap-4">
+                    <div class="flex gap-4 mb-2">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-secondary-container to-primary-container flex items-center justify-center text-black font-bold shrink-0">
                             <span class="material-symbols-outlined text-sm">smart_toy</span>
                         </div>
                         <div class="bg-surface-container-low border border-white/5 p-4 rounded-2xl rounded-tl-none max-w-2xl">
-                            <p class="text-on-surface text-sm">Yo bro! Gua LifeHub AI buatan Reski Setiawan dari Team PixelForgeDev. Lu bisa ganti-ganti model AI di pojok kanan atas sesuai kebutuhan lu. Ada yang bisa gua bantu hari ini?</p>
+                            <p class="text-on-surface text-sm">Yo bro! Gua LifeHub AI buatan Team Legacy (Xazyy). Lu bisa ganti model AI di pojok kanan atas sesuai kebutuhan. Ada yang bisa gua bantu hari ini?</p>
                         </div>
                     </div>
                 </div>
@@ -50,7 +55,7 @@ export function renderAI(container) {
         </div>
     `;
 
-    // Inisialisasi Event Listener
+    // Jalankan sistem logika chat
     initAIChatLogic();
 }
 
@@ -62,14 +67,20 @@ function initAIChatLogic() {
 
     if (!chatBox || !inputMsg || !btnSend) return;
 
+    // Ambil memori chat yang tersimpan secara global
+    const chatHistory = window.globalLifeHubChatHistory;
+
+    // Fungsi otomatis scroll ke bawah
     const scrollToBottom = () => {
         chatBox.scrollTop = chatBox.scrollHeight;
     };
 
+    // Fungsi untuk bikin elemen bubble chat
     const appendBubble = (text, sender) => {
         const div = document.createElement('div');
         div.className = 'flex gap-4 mb-2';
 
+        // Format basic untuk bold dan enter
         const formatted = text
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\n/g, '<br>');
@@ -107,43 +118,84 @@ function initAIChatLogic() {
         scrollToBottom();
     };
 
+    // 🟢 2. RENDER ULANG HISTORY JIKA ADA (Biar pas pindah menu chat gak ilang)
+    if (chatHistory.length > 0) {
+        chatHistory.forEach(msg => {
+            // Abaikan system prompt kalau kebetulan masuk sini, cuma nampilin user & asisten
+            if (msg.role === 'user' || msg.role === 'assistant') {
+                appendBubble(msg.content, msg.role === 'user' ? 'user' : 'ai');
+            }
+        });
+    }
+
+    // 🟢 3. LOGIKA PENGIRIMAN PESAN
     const processSend = async () => {
         const text = inputMsg.value.trim();
         if (!text) return;
 
-        // Ambil model yang lagi dipilih di dropdown
-        const selectedModel = modelSelect ? modelSelect.value : 'groq-llama';
+        // Simpan pesan user ke dalam memori
+        chatHistory.push({ role: "user", content: text });
 
-        // 1. Tampilkan pesan user
-        appendBubble(text, 'user');
+        // Kunci input & tombol kirim
         inputMsg.value = '';
+        inputMsg.disabled = true;
         btnSend.disabled = true;
 
-        // 2. Tampilkan indikator loading
+        // Munculkan di layar
+        appendBubble(text, 'user');
         appendBubble('', 'loading');
 
-        try {
-            // 3. Panggil askGeminiAI dengan menyertakan pilihan model
-            const reply = await askGeminiAI(text, null, selectedModel);
+        // Cek model apa yang dipilih user
+        const selectedValue = modelSelect ? modelSelect.value : 'groq-llama';
+        let provider = 'groq';
+        let model = 'llama-3.3-70b-versatile';
 
-            // Hapus indikator loading
+        if (selectedValue === 'groq-deepseek') {
+            provider = 'groq';
+            model = 'deepseek-r1-distill-llama-70b';
+        } else if (selectedValue === 'gemini') {
+            provider = 'gemini';
+            model = 'gemini-1.5-flash';
+        }
+
+        try {
+            // Panggil file aiservis.js lu yang udah kita setup bareng
+            if (!window.LifeHubAI || !window.LifeHubAI.sendMessageWithFallback) {
+                throw new Error("File aiservis.js belum terhubung dengan benar di index.html lu.");
+            }
+
+            const res = await window.LifeHubAI.sendMessageWithFallback({
+                provider: provider,
+                model: model,
+                messages: chatHistory // 👈 Ngirim semua history ke engine
+            });
+
+            // Hapus loading
             const loader = document.getElementById('ai-loading-indicator');
             if (loader) loader.remove();
 
-            // 4. Tampilkan jawaban dari AI
-            appendBubble(reply, 'ai');
+            // Tampilkan hasil & simpan jawaban AI ke memori
+            appendBubble(res.text, 'ai');
+            chatHistory.push({ role: "assistant", content: res.text });
 
         } catch (err) {
+            // Hapus loading
             const loader = document.getElementById('ai-loading-indicator');
             if (loader) loader.remove();
 
-            appendBubble(`Aduh bro, ada kendala pas konek ke model AI: ${err.message}`, 'ai');
+            // Kalo gagal, buang pesan user tadi dari history biar gak rusak pas di-retry
+            chatHistory.pop();
+
+            appendBubble(`Aduh bro, ada error nih: ${err.message}`, 'ai');
         } finally {
+            // Buka kunci input lagi
+            inputMsg.disabled = false;
             btnSend.disabled = false;
             inputMsg.focus();
         }
     };
 
+    // Tombol Click & Enter
     btnSend.addEventListener('click', processSend);
     inputMsg.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') processSend();
