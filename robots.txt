@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lifehub-ai-nu.vercel.app/sitemap.xml
