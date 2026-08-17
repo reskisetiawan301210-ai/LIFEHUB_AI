@@ -40,4 +40,8 @@
     <loc>https://lifehub-ai-nu.vercel.app/notes.html</loc>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://lifehub-ai-nu.vercel.app/reski-setiawan.html</loc>
+    <priority>0.6</priority>
+  </url>
 </urlset>
