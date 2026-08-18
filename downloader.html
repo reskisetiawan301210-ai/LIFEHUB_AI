@@ -1,209 +1,1301 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>LifeHub AI - Media Downloader</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
-    <script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "primary-container": "#00e5ff",
-                      "surface": "#131315",
-                      "inverse-primary": "#006875",
-                      "secondary-container": "#5203d5",
-                      "surface-container-low": "#1c1b1d",
-                      "surface-container-high": "#2a2a2c",
-                      "on-surface": "#e5e1e4",
-                      "on-surface-variant": "#bac9cc",
-                      "secondary": "#cdbdff",
-                      "background": "#131315"
-              },
-              "spacing": {
-                      "margin-mobile": "16px",
-                      "margin-desktop": "48px",
-                      "stack-md": "16px",
-                      "stack-sm": "8px",
-                      "gutter": "24px",
-                      "container-max": "1280px",
-                      "stack-lg": "32px"
-              }
-            }
-          }
-        }
-    </script>
-    <style>
-        .glass-panel { background: rgba(32, 31, 34, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .premium-border { position: relative; }
-        .premium-border::before { content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; background: linear-gradient(135deg, #5203d5 0%, #00e5ff 100%); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude; opacity: 0.5; pointer-events: none; }
-        .abstract-glow { position: absolute; border-radius: 50%; filter: blur(80px); z-index: 0; opacity: 0.4; pointer-events: none; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>LifeHub AI — Media Downloader</title>
+
+  <link rel="icon" type="image/png" href="https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png">
+  <link rel="apple-touch-icon" href="https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f59e0b">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* ==========================================================================
+       OBSIDIAN & AMBER THEME (MATCHES LIFEHUB DASHBOARD)
+       ========================================================================== */
+    :root {
+      --bg-base: #0a0a0c;
+      --bg-sidebar: #101013;
+      --bg-surface: #141418;
+      --bg-elevated: #1a1a20;
+      --bg-highlight: #24242e;
+
+      --border-subtle: rgba(255, 255, 255, 0.05);
+      --border-base: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+
+      --accent-main: #f59e0b;
+      --accent-hover: #d97706;
+      --accent-dim: rgba(245, 158, 11, 0.12);
+      --accent-glow: rgba(245, 158, 11, 0.25);
+
+      --color-success: #10b981;
+      --color-danger: #ef4444;
+      --color-info: #06b6d4;
+
+      --text-primary: #f4f4f6;
+      --text-secondary: #9e9ea7;
+      --text-tertiary: #62626b;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+
+      --sidebar-width: 240px;
+      --header-height: 64px;
+      --mobile-nav-height: 64px;
+
+      --transition-snappy: 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+      --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--bg-highlight); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+    a { color: inherit; text-decoration: none; }
+    button { background: none; border: none; font-family: inherit; color: inherit; cursor: pointer; }
+
+    .icon-svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    #ambientCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.3;
+    }
+
+    /* ==========================================================================
+       LAYOUT STRUCTURE
+       ========================================================================== */
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Left Sidebar (Desktop) */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      left: 0;
+      top: 0;
+      z-index: 50;
+      transition: transform var(--transition-smooth);
+    }
+
+    .sidebar-header {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .brand-combo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-text {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 16px 0 6px 10px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 13px;
+      transition: all var(--transition-snappy);
+    }
+
+    .nav-item:hover {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      font-weight: 600;
+      border-left: 2px solid var(--accent-main);
+    }
+
+    .nav-item.active .icon-svg {
+      stroke: var(--accent-main);
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 40;
+      opacity: 0;
+      visibility: hidden;
+      transition: all var(--transition-smooth);
+    }
+
+    .sidebar-overlay.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    /* Top Navigation Header */
+    .top-header {
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      background: rgba(10, 10, 12, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      z-index: 30;
+    }
+
+    .header-left, .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
+
+    .breadcrumbs span.active {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .mobile-brand {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .mobile-trigger {
+      display: none;
+      color: var(--text-primary);
+      padding: 6px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 260px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      width: 16px;
+      height: 16px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-sm);
+      padding: 7px 12px 7px 36px;
+      color: var(--text-primary);
+      font-size: 12px;
+      transition: all var(--transition-snappy);
+    }
+
+    .search-input:focus {
+      background: var(--bg-elevated);
+      border-color: var(--border-strong);
+      outline: none;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 10px 4px 4px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent-main);
+      color: var(--bg-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 11px;
+    }
+
+    /* Container */
+    .workspace {
+      padding: 32px;
+      max-width: 1320px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Page Header */
+    .page-title {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+    }
+
+    .page-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Main Grid: Desktop Input Left + Result Right */
+    .downloader-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* Card Panels */
+    .downloader-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* URL Input Box */
+    .input-group {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-field {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-md);
+      padding: 14px 90px 14px 16px;
+      color: var(--text-primary);
+      font-size: 13px;
+      transition: border var(--transition-snappy);
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--accent-main);
+    }
+
+    .paste-btn {
+      position: absolute;
+      right: 10px;
+      background: var(--bg-highlight);
+      border: 1px solid var(--border-base);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all var(--transition-snappy);
+    }
+
+    .paste-btn:hover {
+      background: var(--border-strong);
+      color: #fff;
+    }
+
+    /* Main Action Button (Amber Gold) */
+    .btn-extract {
+      width: 100%;
+      background: var(--accent-main);
+      color: #000;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all var(--transition-snappy);
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    .btn-extract:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    /* Supported Platforms Badges */
+    .supports-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .support-tag {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .support-tag span {
+      color: var(--text-secondary);
+    }
+
+    /* Loading Spinner */
+    .spinner-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      gap: 14px;
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border-base);
+      border-top-color: var(--accent-main);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Result Card Layout (Stitch Desktop Ref) */
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-success);
+    }
+
+    .platform-pill {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-base);
+      border-radius: 4px;
+      color: var(--text-secondary);
+    }
+
+    .media-preview-box {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .media-cover {
+      width: 100px;
+      height: 100px;
+      border-radius: var(--radius-md);
+      object-fit: cover;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-base);
+      flex-shrink: 0;
+    }
+
+    .media-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .media-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .media-author {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+
+    /* Options & Actions */
+    .options-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .select-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      color: var(--text-primary);
+      font-size: 12px;
+      width: 100%;
+      outline: none;
+    }
+
+    .actions-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn-dl-primary {
+      flex: 2;
+      background: var(--accent-main);
+      color: #000;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all var(--transition-snappy);
+    }
+
+    .btn-dl-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-dl-secondary {
+      flex: 1;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-base);
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 12px;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all var(--transition-snappy);
+    }
+
+    .btn-dl-secondary:hover {
+      border-color: var(--border-strong);
+      background: var(--bg-highlight);
+    }
+
+    /* Error Alert */
+    .error-card {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      color: var(--color-danger);
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Recent Downloads Table (Desktop Ref) */
+    .recent-section {
+      margin-top: 12px;
+    }
+
+    .recent-header-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .recent-table-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .downloads-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .downloads-table th {
+      padding: 14px 20px;
+      background: var(--bg-elevated);
+      color: var(--text-tertiary);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .downloads-table td {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+
+    .downloads-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table-item-title {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .status-completed {
+      color: var(--color-success);
+      font-weight: 600;
+    }
+
+    .status-failed {
+      color: var(--color-danger);
+      font-weight: 600;
+    }
+
+    /* Mobile Card List View for Downloads (Stitch Mobile Ref) */
+    .mobile-recent-list {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .mobile-recent-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .mobile-recent-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .mobile-recent-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .mobile-recent-info {
+      min-width: 0;
+    }
+
+    .mobile-recent-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mobile-recent-sub {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+
+    .badge-done {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+    }
+
+    /* Helper Utilities */
+    .hidden { display: none !important; }
+
+    /* Footer */
+    .app-footer {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    /* ==========================================================================
+       MOBILE BOTTOM NAVIGATION (STITCH MOBILE REF)
+       ========================================================================== */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--mobile-nav-height);
+      background: var(--bg-sidebar);
+      border-top: 1px solid var(--border-base);
+      z-index: 60;
+      padding: 0 16px;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .mobile-nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-tertiary);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    .mobile-nav-link.active {
+      color: var(--accent-main);
+    }
+
+    .mobile-nav-link .icon-svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* RESPONSIVE MEDIA QUERIES */
+    @media (max-width: 900px) {
+      .downloader-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 860px) {
+      :root {
+        --sidebar-width: 0px;
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+        width: 240px;
+      }
+
+      .sidebar.is-active {
+        transform: translateX(0);
+      }
+
+      .mobile-trigger, .mobile-brand {
+        display: flex;
+      }
+
+      .breadcrumbs, .search-wrapper {
+        display: none;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding-bottom: calc(var(--mobile-nav-height) + 20px);
+      }
+
+      .top-header {
+        padding: 0 16px;
+      }
+
+      .workspace {
+        padding: 20px 16px;
+        gap: 16px;
+      }
+
+      .page-title {
+        font-size: 24px;
+      }
+
+      .mobile-bottom-nav {
+        display: flex;
+      }
+
+      .downloads-table-wrap {
+        display: none;
+      }
+
+      .mobile-recent-list {
+        display: flex;
+      }
+
+      .app-footer {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
-<body class="bg-background text-on-surface font-sans overflow-x-hidden selection:bg-primary-container selection:text-surface">
+<body>
 
-<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-    <div class="abstract-glow bg-secondary-container w-[600px] h-[600px] top-[-200px] left-[-100px]"></div>
-    <div class="abstract-glow bg-primary-container w-[400px] h-[400px] top-[20%] right-[-100px] opacity-20"></div>
-</div>
+  <canvas id="ambientCanvas"></canvas>
 
-<nav class="hidden md:flex flex-col h-full py-stack-lg bg-surface/70 backdrop-blur-xl h-screen w-64 fixed left-0 top-0 border-r border-white/10 z-50">
-    <div class="px-gutter mb-stack-lg">
-        <h1 class="text-2xl font-bold tracking-tighter text-primary-container">LifeHub AI</h1>
-        <p class="text-xs text-on-surface-variant uppercase mt-1">System Active</p>
-    </div>
-    <div class="flex-1 flex flex-col gap-1 px-2">
-        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="dashboard.html">
-            <span class="material-symbols-outlined">dashboard</span> Dashboard
-        </a>
-        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="ai.html">
-            <span class="material-symbols-outlined">smart_toy</span> AI Assistant
-        </a>
-        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="finance.html">
-            <span class="material-symbols-outlined">payments</span> Finance
-        </a>
-        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="music.html">
-            <span class="material-symbols-outlined">library_music</span> Music
-        </a>
-        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="movies.html">
-            <span class="material-symbols-outlined">movie</span> Movies
-        </a>
-        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all" href="notes.html">
-            <span class="material-symbols-outlined">edit_note</span> Notes & Tasks
-        </a>
-        <a class="flex items-center gap-2 px-4 py-3 rounded-lg text-primary-container bg-primary-container/10 border-r-2 border-primary-container font-bold transition-all" href="downloader.html">
-            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cloud_download</span> Downloader
-        </a>
-    </div>
-    <div class="mt-auto px-2 pb-2">
-        <button class="w-full py-3 rounded-lg bg-primary-container text-black font-bold hover:scale-105 transition-all shadow-[0_0_15px_rgba(0,229,255,0.3)]">
-            Premium Upgrade
-        </button>
-    </div>
-</nav>
+  <div class="app-layout">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<header class="hidden md:flex justify-between items-center px-margin-desktop bg-surface/70 backdrop-blur-md fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 border-b border-white/5">
-    <div class="relative w-64">
-        <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant">search</span>
-        <input class="w-full bg-surface-container-low border border-white/5 rounded-full py-2 pl-10 pr-4 text-sm focus:border-primary-container outline-none text-on-surface" placeholder="Cari di LifeHub..." type="text"/>
-    </div>
-    <div class="flex items-center gap-4">
-        <span class="material-symbols-outlined text-on-surface-variant cursor-pointer">notifications</span>
-        <div id="user-avatar" class="w-8 h-8 rounded-full bg-primary-container/20 text-primary-container flex items-center justify-center font-bold border border-primary-container">RS</div>
-    </div>
-</header>
+    <!-- Desktop Left Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-combo">
+          <div class="brand-icon">
+            <img src="https://cdn.phototourl.com/free/2026-08-10-e2258c8f-a8af-411b-9efc-aaed64b1e6c9.png" alt="LifeHub" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <div class="brand-text">LifeHub</div>
+        </div>
+      </div>
 
-<main class="relative z-10 md:ml-64 pt-24 px-margin-desktop pb-32 min-h-screen flex flex-col gap-8 max-w-container-max mx-auto">
-    
-    <header class="flex flex-col gap-2">
-        <h2 class="text-4xl font-bold text-on-surface tracking-tight">Universal Video Downloader</h2>
-        <p class="text-on-surface-variant text-base">Download video TikTok, Douyin, Instagram Reels, YouTube Shorts, & Twitter tanpa watermark.</p>
-    </header>
+      <nav class="sidebar-nav">
+        <div class="nav-label">WORKSPACE</div>
+        <a href="dashboard.html" class="nav-item">
+          <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="ai.html" class="nav-item">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
+          <span class="nav-text">AI Assistant</span>
+        </a>
+        <a href="notes.html" class="nav-item">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          <span class="nav-text">Notes</span>
+        </a>
+        <a href="focus.html" class="nav-item">
+          <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span class="nav-text">Focus Space</span>
+        </a>
 
-    <section class="flex flex-wrap items-center gap-3">
-        <span class="px-3 py-1.5 rounded-full bg-surface-container-high border border-white/10 text-xs font-semibold flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary-container text-sm">play_circle</span> TikTok / Douyin
-        </span>
-        <span class="px-3 py-1.5 rounded-full bg-surface-container-high border border-white/10 text-xs font-semibold flex items-center gap-2">
-            <span class="material-symbols-outlined text-pink-400 text-sm">photo_camera</span> Instagram Reels
-        </span>
-        <span class="px-3 py-1.5 rounded-full bg-surface-container-high border border-white/10 text-xs font-semibold flex items-center gap-2">
-            <span class="material-symbols-outlined text-red-500 text-sm">subscriptions</span> YouTube Shorts
-        </span>
-        <span class="px-3 py-1.5 rounded-full bg-surface-container-high border border-white/10 text-xs font-semibold flex items-center gap-2">
-            <span class="material-symbols-outlined text-sky-400 text-sm">flutter</span> Twitter / X
-        </span>
-    </section>
+        <div class="nav-label">MEDIA</div>
+        <a href="music.html" class="nav-item">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          <span class="nav-text">Music</span>
+        </a>
+        <a href="movies.html" class="nav-item">
+          <svg class="icon-svg" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/></svg>
+          <span class="nav-text">Movies</span>
+        </a>
+        <a href="downloader.html" class="nav-item active">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          <span class="nav-text">Downloader</span>
+        </a>
 
-    <section class="glass-panel p-6 sm:p-8 rounded-2xl border border-white/10 premium-border flex flex-col gap-6">
-        <form id="download-form" class="flex flex-col md:flex-row items-center gap-4">
-            <div class="relative flex-1 w-full">
-                <span class="material-symbols-outlined absolute left-4 top-4 text-on-surface-variant">link</span>
-                <input id="video-url" type="url" placeholder="Tempel tautan video (TikTok, Douyin, IG, Shorts, Twitter)..." required class="w-full bg-surface-container-low border border-white/10 rounded-xl py-3.5 pl-12 pr-12 text-sm outline-none focus:border-primary-container text-on-surface transition-all"/>
-                <button type="button" onclick="pasteFromClipboard()" class="absolute right-3 top-2.5 px-2.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-bold text-primary-container transition-all" title="Tempel dari Clipboard">
-                    Paste
+        <div class="nav-label">TOOLS</div>
+        <a href="mastery.html" class="nav-item">
+          <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span class="nav-text">Code Mastery</span>
+        </a>
+        <a href="qr-tools.html" class="nav-item">
+          <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><path d="M3 14h7v7H3z"/></svg>
+          <span class="nav-text">QR Tools</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Topbar Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-trigger" id="mobileMenuTrigger">
+            <svg class="icon-svg" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+
+          <div class="mobile-brand">
+            <img src="https://cdn.phototourl.com/free/2026-08-10-e2258c8f-a8af-411b-9efc-aaed64b1e6c9.png" alt="LifeHub" style="width:22px; height:22px; border-radius:4px;">
+            LifeHub AI
+          </div>
+
+          <div class="breadcrumbs">
+            <span>Media Tools</span>
+            <span>›</span>
+            <span class="active">Downloader</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="search-wrapper">
+            <svg class="icon-svg search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input" placeholder="Quick search...">
+          </div>
+
+          <div class="user-profile">
+            <div class="user-avatar" id="user-avatar">RS</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Workspace Container -->
+      <div class="workspace">
+        <section>
+          <h1 class="page-title">Media Downloader</h1>
+          <p class="page-subtitle">Save video and media from supported platforms directly to your local device or Hub.</p>
+        </section>
+
+        <!-- Main 2-Column Downloader Grid (Desktop Ref) -->
+        <div class="downloader-grid">
+          <!-- Left Column: Input Card -->
+          <div class="downloader-card">
+            <div class="card-label">PASTE URL</div>
+
+            <form id="download-form" style="display:flex; flex-direction:column; gap:16px;">
+              <div class="input-group">
+                <input id="video-url" type="url" class="input-field" placeholder="https://..." required />
+                <button type="button" onclick="pasteFromClipboard()" class="paste-btn" title="Tempel dari Clipboard">
+                  <span class="material-symbols-outlined" style="font-size:14px;">content_paste</span>
+                  Paste
                 </button>
+              </div>
+
+              <button type="submit" id="btn-process" class="btn-extract">
+                <span class="material-symbols-outlined" style="font-size:18px;">download</span>
+                EXTRACT MEDIA
+              </button>
+            </form>
+
+            <div style="border-top:1px solid var(--border-subtle); padding-top:14px;">
+              <div class="card-label" style="margin-bottom:8px;">SUPPORTS:</div>
+              <div class="supports-container">
+                <div class="support-tag">TikTok <span>•</span></div>
+                <div class="support-tag">Douyin <span>•</span></div>
+                <div class="support-tag">YouTube <span>•</span></div>
+                <div class="support-tag">Instagram <span>•</span></div>
+                <div class="support-tag">X (Twitter)</div>
+              </div>
             </div>
-            <button type="submit" id="btn-process" class="w-full md:w-auto px-8 py-3.5 bg-primary-container text-black font-bold rounded-xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2 cursor-pointer shrink-0">
-                <span class="material-symbols-outlined text-xl">download</span> Process Video
-            </button>
-        </form>
+          </div>
 
-        <div id="loading-spinner" class="hidden flex flex-col items-center justify-center py-10 gap-3">
-            <div class="w-10 h-10 border-4 border-primary-container border-t-transparent rounded-full animate-spin"></div>
-            <p class="text-sm font-semibold text-primary-container animate-pulse">Memproses tautan media, mohon tunggu...</p>
-        </div>
+          <!-- Right Column: Result Card / Output Container -->
+          <div class="downloader-card" style="justify-content: center;">
+            <!-- Initial Empty State -->
+            <div id="empty-state" style="text-align:center; padding:30px 10px; color:var(--text-tertiary);">
+              <span class="material-symbols-outlined" style="font-size:40px; margin-bottom:8px; opacity:0.5;">cloud_download</span>
+              <p style="font-size:13px; font-weight:500;">Enter a video link on the left to extract media.</p>
+            </div>
 
-        <div id="result-card" class="hidden border-t border-white/10 pt-6 flex flex-col md:flex-row gap-6 items-center">
-            <div class="w-full md:w-64 h-64 rounded-xl overflow-hidden bg-black/50 border border-white/10 relative shrink-0 flex items-center justify-center">
-                <img id="res-cover" src="" class="w-full h-full object-cover"/>
-                <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-4xl text-primary-container drop-shadow-md">play_circle</span>
+            <!-- Loading Spinner (Preserved ID) -->
+            <div id="loading-spinner" class="hidden spinner-box">
+              <div class="spinner"></div>
+              <p style="font-size:13px; font-weight:600; color:var(--text-secondary);">Extracting media stream, please wait...</p>
+            </div>
+
+            <!-- Download Result Card (Preserved ID & All Sub-IDs) -->
+            <div id="result-card" class="hidden" style="display:flex; flex-direction:column; gap:16px;">
+              <div class="result-header">
+                <div class="status-badge">
+                  <span class="material-symbols-outlined" style="font-size:16px;">check_circle</span>
+                  Ready to download
                 </div>
-            </div>
+                <span id="res-platform" class="platform-pill">TikTok</span>
+              </div>
 
-            <div class="flex-1 flex flex-col justify-between h-full w-full gap-4">
+              <div class="media-preview-box">
+                <img id="res-cover" src="" alt="Media Cover" class="media-cover" />
+                <div class="media-info">
+                  <div id="res-title" class="media-title">Video Title</div>
+                  <div id="res-author" class="media-author">By: Creator</div>
+                </div>
+              </div>
+
+              <div class="options-row">
                 <div>
-                    <span id="res-platform" class="text-[10px] uppercase tracking-widest font-extrabold px-2.5 py-1 rounded-md bg-primary-container/20 text-primary-container border border-primary-container/30">TikTok</span>
-                    <h3 id="res-title" class="text-lg font-bold text-on-surface mt-2 line-clamp-2">Judul Video</h3>
-                    <p id="res-author" class="text-xs text-on-surface-variant mt-1">By: Creator</p>
+                  <label class="card-label" style="margin-bottom:4px; display:block;">Quality</label>
+                  <select class="select-box">
+                    <option>1080p (HD)</option>
+                    <option>720p (SD)</option>
+                  </select>
                 </div>
+                <div>
+                  <label class="card-label" style="margin-bottom:4px; display:block;">Format</label>
+                  <select class="select-box">
+                    <option>MP4</option>
+                    <option>MP3</option>
+                  </select>
+                </div>
+              </div>
 
-                <div class="flex flex-col sm:flex-row gap-3 mt-4">
-                    <a id="btn-dl-no-wm" href="#" target="_blank" download class="flex-1 py-3 px-4 bg-primary-container text-black font-bold rounded-xl text-xs hover:scale-105 transition-all shadow-[0_0_15px_rgba(0,229,255,0.3)] flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined text-lg">download</span> Video (No Watermark)
-                    </a>
-                    <a id="btn-dl-audio" href="#" target="_blank" download class="flex-1 py-3 px-4 bg-surface-container-high border border-white/10 hover:border-primary-container/50 text-on-surface font-bold rounded-xl text-xs hover:scale-105 transition-all flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined text-lg">music_note</span> Audio MP3
-                    </a>
-                </div>
+              <div class="actions-group">
+                <a id="btn-dl-no-wm" href="#" target="_blank" download class="btn-dl-primary">
+                  <span class="material-symbols-outlined" style="font-size:16px;">download</span>
+                  Save to Device
+                </a>
+                <a id="btn-dl-audio" href="#" target="_blank" download class="btn-dl-secondary">
+                  <span class="material-symbols-outlined" style="font-size:16px;">music_note</span>
+                  Audio MP3
+                </a>
+              </div>
             </div>
+
+            <!-- Error Message Alert (Preserved ID) -->
+            <div id="error-msg" class="hidden error-card">
+              <span class="material-symbols-outlined" style="font-size:18px;">error</span>
+              <span id="error-text">Gagal memproses URL. Pastikan tautan video publik & valid.</span>
+            </div>
+          </div>
         </div>
 
-        <div id="error-msg" class="hidden p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-semibold flex items-center gap-2">
-            <span class="material-symbols-outlined text-base">error</span>
-            <span id="error-text">Gagal memproses URL. Pastikan tautan video publik & valid.</span>
-        </div>
-    </section>
+        <!-- Recent Downloads Section -->
+        <section class="recent-section">
+          <div class="recent-header-flex">
+            <div class="card-label" style="font-size:12px; color:var(--text-primary);">RECENT DOWNLOADS</div>
+            <a href="#" style="font-size:11px; font-weight:700; color:var(--accent-main);">VIEW ALL</a>
+          </div>
 
-</main>
+          <!-- Desktop Table View -->
+          <div class="downloads-table-wrap recent-table-card">
+            <table class="downloads-table">
+              <thead>
+                <tr>
+                  <th>ITEM</th>
+                  <th>PLATFORM</th>
+                  <th>FORMAT</th>
+                  <th>SIZE</th>
+                  <th>DATE</th>
+                  <th>STATUS</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="table-item-title">Lo-Fi Beats to Relax/Study To</td>
+                  <td>YouTube</td>
+                  <td>MP3 (320k)</td>
+                  <td>42 MB</td>
+                  <td>Today, 09:41</td>
+                  <td><span class="status-completed">• Completed</span></td>
+                </tr>
+                <tr>
+                  <td class="table-item-title">Quick Guide: Notion Setup</td>
+                  <td>TikTok</td>
+                  <td>MP4 (1080p)</td>
+                  <td>18 MB</td>
+                  <td>Yesterday, 14:22</td>
+                  <td><span class="status-completed">• Completed</span></td>
+                </tr>
+                <tr>
+                  <td class="table-item-title">Street Photography POV</td>
+                  <td>Instagram</td>
+                  <td>MP4 (720p)</td>
+                  <td>12 MB</td>
+                  <td>Oct 24, 2026</td>
+                  <td><span class="status-failed">• Failed</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-<section class="fixed bottom-margin-desktop left-1/2 -translate-x-1/2 z-50 md:ml-32">
-    <div class="glass-panel rounded-full p-2 flex items-center gap-2 border border-white/10 bg-surface/80 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-        <a href="ai.html" class="flex items-center gap-2 px-6 py-3 rounded-full bg-primary-container text-black font-bold hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,229,255,0.2)]">
-            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">graphic_eq</span> Ask AI
-        </a>
-        <div class="w-[1px] h-8 bg-white/10 mx-2"></div>
-        <a href="dashboard.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
-            <span class="material-symbols-outlined">dashboard</span>
-        </a>
-        <a href="finance.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
-            <span class="material-symbols-outlined">receipt_long</span>
-        </a>
-        <a href="music.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
-            <span class="material-symbols-outlined">music_note</span>
-        </a>
-        <a href="movies.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
-            <span class="material-symbols-outlined">movie</span>
-        </a>
-        <a href="notes.html" class="w-12 h-12 flex items-center justify-center rounded-full text-on-surface-variant hover:text-white hover:bg-white/10 transition-all">
-            <span class="material-symbols-outlined">edit_note</span>
-        </a>
-        <a href="downloader.html" class="w-12 h-12 flex items-center justify-center rounded-full text-primary-container bg-primary-container/10 transition-all mr-2">
-            <span class="material-symbols-outlined">cloud_download</span>
-        </a>
-    </div>
-</section>
+          <!-- Mobile Card List View (Stitch Mobile Ref) -->
+          <div class="mobile-recent-list">
+            <div class="mobile-recent-card">
+              <div class="mobile-recent-left">
+                <div class="mobile-recent-icon">
+                  <span class="material-symbols-outlined">smart_display</span>
+                </div>
+                <div class="mobile-recent-info">
+                  <div class="mobile-recent-title">Lo-Fi Beats to Relax/Study To</div>
+                  <div class="mobile-recent-sub">YouTube • MP3 • 42MB</div>
+                </div>
+              </div>
+              <span class="badge-done">DONE</span>
+            </div>
 
-<script>
+            <div class="mobile-recent-card">
+              <div class="mobile-recent-left">
+                <div class="mobile-recent-icon">
+                  <span class="material-symbols-outlined">movie</span>
+                </div>
+                <div class="mobile-recent-info">
+                  <div class="mobile-recent-title">Quick Guide: Notion Setup</div>
+                  <div class="mobile-recent-sub">TikTok • MP4 • 18MB</div>
+                </div>
+              </div>
+              <span class="badge-done">DONE</span>
+            </div>
+
+            <div class="mobile-recent-card">
+              <div class="mobile-recent-left">
+                <div class="mobile-recent-icon">
+                  <span class="material-symbols-outlined">photo_camera</span>
+                </div>
+                <div class="mobile-recent-info">
+                  <div class="mobile-recent-title">Street Photography POV</div>
+                  <div class="mobile-recent-sub">Instagram • MP4 • 12MB</div>
+                </div>
+              </div>
+              <span class="badge-done" style="color:var(--color-danger)">FAILED</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+          <div>© 2026 <span style="color:var(--text-secondary); font-weight:600;">LifeHub AI</span>. All rights reserved.</div>
+          <div>Developed by <a href="https://github.com/reskisetiawan301210-ai" target="_blank" style="color:var(--accent-main); font-weight:600;">Reski X legacyy403</a></div>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Navigation (Stitch Mobile Design Reference) -->
+  <nav class="mobile-bottom-nav">
+    <a href="dashboard.html" class="mobile-nav-link">
+      <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      DASHBOARD
+    </a>
+    <a href="music.html" class="mobile-nav-link">
+      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      MEDIA
+    </a>
+    <a href="downloader.html" class="mobile-nav-link active">
+      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      DOWNLOAD
+    </a>
+    <a href="#" class="mobile-nav-link" id="mobileMenuOpenBtn" onclick="document.getElementById('sidebar').classList.toggle('is-active'); document.getElementById('sidebarOverlay').classList.toggle('is-active'); return false;">
+      <svg class="icon-svg" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      SETTINGS
+    </a>
+  </nav>
+
+  <!-- Ambient Canvas Background Engine -->
+  <script>
+    class AmbientEngine {
+      constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) return;
+        this.ctx = this.canvas.getContext('2d');
+        this.particles = [];
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+        this.initParticles();
+        this.animate();
+      }
+
+      resize() {
+        this.width = this.canvas.width = window.innerWidth;
+        this.height = this.canvas.height = window.innerHeight;
+      }
+
+      initParticles() {
+        const count = window.innerWidth < 768 ? 20 : 40;
+        this.particles = [];
+        for (let i = 0; i < count; i++) {
+          this.particles.push({
+            x: Math.random() * this.width,
+            y: Math.random() * this.height,
+            radius: Math.random() * 1.5 + 0.5,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            alpha: Math.random() * 0.4 + 0.1
+          });
+        }
+      }
+
+      animate() {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        this.particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < 0) p.x = this.width;
+          if (p.x > this.width) p.x = 0;
+          if (p.y < 0) p.y = this.height;
+          if (p.y > this.height) p.y = 0;
+
+          this.ctx.beginPath();
+          this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          this.ctx.fillStyle = `rgba(245, 158, 11, ${p.alpha})`;
+          this.ctx.fill();
+        });
+        requestAnimationFrame(() => this.animate());
+      }
+    }
+
+    new AmbientEngine('ambientCanvas');
+
+    // Mobile Sidebar Navigation Toggle
+    const mobileTrigger = document.getElementById('mobileMenuTrigger');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    if (mobileTrigger) {
+      mobileTrigger.addEventListener('click', () => {
+        sidebar.classList.add('is-active');
+        sidebarOverlay.classList.add('is-active');
+      });
+    }
+
+    if (sidebarOverlay) {
+      sidebarOverlay.addEventListener('click', () => {
+        sidebar.classList.remove('is-active');
+        sidebarOverlay.classList.remove('is-active');
+      });
+    }
+  </script>
+
+  <!-- EXISTING DOWNLOADER LOGIC (EXACT UNTOUCHED CODE & APIS) -->
+  <script>
     const currentUserName = localStorage.getItem('lifehub_user_name') || 'Reski';
-    document.getElementById('user-avatar').textContent = currentUserName.charAt(0).toUpperCase();
+    const avatarEl = document.getElementById('user-avatar');
+    if (avatarEl) avatarEl.textContent = currentUserName.charAt(0).toUpperCase();
 
     async function pasteFromClipboard() {
         try {
@@ -213,6 +1305,7 @@
             alert("Silakan tempel URL secara manual.");
         }
     }
+    window.pasteFromClipboard = pasteFromClipboard;
 
     document.getElementById('download-form').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -222,8 +1315,10 @@
         const spinner = document.getElementById('loading-spinner');
         const resultCard = document.getElementById('result-card');
         const errorMsg = document.getElementById('error-msg');
+        const emptyState = document.getElementById('empty-state');
 
         spinner.classList.remove('hidden');
+        if (emptyState) emptyState.classList.add('hidden');
         resultCard.classList.add('hidden');
         errorMsg.classList.add('hidden');
 
@@ -286,7 +1381,7 @@
             errorMsg.classList.remove('hidden');
         }
     });
-</script>
+  </script>
 
 </body>
 </html>

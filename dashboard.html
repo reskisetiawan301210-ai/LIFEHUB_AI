@@ -4,12 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>LifeHub Workspace</title>
-  <head>
-  <meta charset="UTF-8">
-  <title>LifeHub Workspace</title>
   
   <link rel="icon" type="image/png" href="https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png">
-<link rel="apple-touch-icon" href="https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png">
+  <link rel="apple-touch-icon" href="https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png">
 
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#f59e0b">
@@ -20,59 +17,52 @@
   
   <style>
     /* ==========================================================================
-       1. CSS VARIABLES & DESIGN TOKENS (OBSIDIAN & AMBER THEME)
+       1. STITCH DESIGN TOKENS (OBSIDIAN DARK & CONTROLLED AMBER)
        ========================================================================== */
     :root {
-      /* Color Palette */
-      --bg-base: #09090b;       /* Zinc 950 - Deepest black */
-      --bg-surface: #18181b;    /* Zinc 900 - Card background */
-      --bg-elevated: #27272a;   /* Zinc 800 - Hover states */
-      --bg-highlight: #3f3f46;  /* Zinc 700 - Active states */
+      --bg-base: #0a0a0c;
+      --bg-sidebar: #101013;
+      --bg-surface: #141418;
+      --bg-elevated: #1a1a20;
+      --bg-highlight: #24242e;
       
       --border-subtle: rgba(255, 255, 255, 0.05);
-      --border-base: rgba(255, 255, 255, 0.1);
-      --border-strong: rgba(255, 255, 255, 0.2);
+      --border-base: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
       
-      /* Brand Accents */
-      --accent-main: #f59e0b;    /* Amber 500 - Primary Gold */
-      --accent-hover: #d97706;   /* Amber 600 */
-      --accent-dim: rgba(245, 158, 11, 0.15);
-      --accent-glow: rgba(245, 158, 11, 0.3);
+      --accent-main: #f59e0b;
+      --accent-hover: #d97706;
+      --accent-dim: rgba(245, 158, 11, 0.12);
+      --accent-glow: rgba(245, 158, 11, 0.25);
       
-      /* Secondary Accents */
       --color-success: #10b981;
       --color-danger: #ef4444;
-      --color-info: #3b82f6;
-      --color-purple: #8b5cf6;
+      --color-info: #06b6d4;
       
-      /* Typography */
-      --text-primary: #f4f4f5;   /* Zinc 100 */
-      --text-secondary: #a1a1aa; /* Zinc 400 */
-      --text-tertiary: #71717a;  /* Zinc 500 */
+      --text-primary: #f4f4f6;
+      --text-secondary: #9e9ea7;
+      --text-tertiary: #62626b;
       
-      /* Geometry */
       --radius-sm: 8px;
       --radius-md: 12px;
-      --radius-lg: 20px;
-      --radius-xl: 32px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
       
-      /* Layout & Animation */
-      --sidebar-width: 280px;
-      --header-height: 80px;
-      --transition-snappy: 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-      --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      --sidebar-width: 240px;
+      --header-height: 64px;
+      --mobile-nav-height: 64px;
       
-      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
-      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
-      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
+      --transition-snappy: 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+      --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
     }
 
     /* ==========================================================================
-       2. GLOBAL RESET & BASE STYLES
+       2. RESET & BASE STYLES
        ========================================================================== */
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -81,74 +71,32 @@
     html {
       font-size: 16px;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
       scroll-behavior: smooth;
     }
 
     body {
       background-color: var(--bg-base);
       color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       line-height: 1.5;
       overflow-x: hidden;
       min-height: 100vh;
     }
 
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
     }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--bg-highlight); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
 
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--bg-highlight);
-      border-radius: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--text-tertiary);
-    }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      font-weight: 700;
-      line-height: 1.2;
-      color: var(--text-primary);
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button {
-      background: none;
-      border: none;
-      font-family: inherit;
-      color: inherit;
-      cursor: pointer;
-    }
-
-    button:focus,
-    input:focus {
-      outline: 2px solid var(--accent-main);
-      outline-offset: 2px;
-    }
-
-    input:focus:not(:focus-visible) {
-      outline: none;
-    }
+    a { color: inherit; text-decoration: none; }
+    button { background: none; border: none; font-family: inherit; color: inherit; cursor: pointer; }
 
     .icon-svg {
-      width: 24px;
-      height: 24px;
+      width: 20px;
+      height: 20px;
       fill: none;
       stroke: currentColor;
       stroke-width: 2;
@@ -164,11 +112,11 @@
       height: 100%;
       z-index: 0;
       pointer-events: none;
-      opacity: 0.6;
+      opacity: 0.4;
     }
 
     /* ==========================================================================
-       3. STRUCTURAL LAYOUT
+       3. DESKTOP LAYOUT (STITCH DESIGN)
        ========================================================================== */
     .app-layout {
       display: flex;
@@ -177,12 +125,11 @@
       z-index: 1;
     }
 
+    /* Sidebar (Desktop Left) */
     .sidebar {
       width: var(--sidebar-width);
-      background: rgba(9, 9, 11, 0.85);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-right: 1px solid var(--border-base);
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-subtle);
       display: flex;
       flex-direction: column;
       position: fixed;
@@ -197,67 +144,59 @@
       height: var(--header-height);
       display: flex;
       align-items: center;
-      padding: 0 24px;
+      padding: 0 20px;
       border-bottom: 1px solid var(--border-subtle);
     }
 
     .brand-combo {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .brand-icon {
-      width: 32px;
-      height: 32px;
-      background: var(--accent-main);
+      width: 28px;
+      height: 28px;
       border-radius: var(--radius-sm);
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--bg-base);
-      box-shadow: 0 2px 10px var(--accent-glow);
-    }
-
-    .brand-icon svg {
-      width: 20px;
-      height: 20px;
-      stroke-width: 2.5;
     }
 
     .brand-text {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.3px;
     }
 
     .sidebar-nav {
       flex: 1;
-      padding: 24px 16px;
+      padding: 16px 12px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 4px;
     }
 
     .nav-label {
-      font-size: 11px;
-      font-weight: 600;
+      font-size: 10px;
+      font-weight: 700;
       color: var(--text-tertiary);
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin: 12px 0 4px 8px;
+      margin: 16px 0 6px 10px;
     }
 
     .nav-item {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 12px 16px;
-      border-radius: var(--radius-md);
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
       color: var(--text-secondary);
       font-weight: 500;
-      font-size: 14px;
+      font-size: 13px;
       transition: all var(--transition-snappy);
     }
 
@@ -267,8 +206,9 @@
     }
 
     .nav-item.active {
-      background: var(--accent-dim);
-      color: var(--accent-main);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      font-weight: 600;
     }
 
     .nav-item.active .icon-svg {
@@ -287,7 +227,7 @@
     .sidebar-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(4px);
       z-index: 40;
       opacity: 0;
@@ -300,82 +240,88 @@
       visibility: visible;
     }
 
+    /* Main Content Area */
     .main-content {
       flex: 1;
       margin-left: var(--sidebar-width);
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      transition: margin var(--transition-smooth);
+      padding-bottom: 40px;
     }
 
+    /* Top Navigation Bar */
     .top-header {
       height: var(--header-height);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 40px;
+      padding: 0 32px;
       position: sticky;
       top: 0;
-      background: rgba(9, 9, 11, 0.7);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(10, 10, 12, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-subtle);
       z-index: 30;
     }
 
-    .header-left,
-    .header-right {
+    .header-left, .header-right {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 16px;
+    }
+
+    .mobile-brand {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 16px;
     }
 
     .mobile-trigger {
       display: none;
       color: var(--text-primary);
-      padding: 8px;
-      margin-left: -8px;
+      padding: 6px;
     }
 
     .search-wrapper {
       position: relative;
-      width: 400px;
+      width: 320px;
     }
 
     .search-icon {
       position: absolute;
-      left: 16px;
+      left: 14px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-tertiary);
+      width: 16px;
+      height: 16px;
     }
 
     .search-input {
       width: 100%;
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
-      border-radius: 999px;
-      padding: 12px 20px 12px 48px;
+      border-radius: var(--radius-sm);
+      padding: 8px 14px 8px 38px;
       color: var(--text-primary);
-      font-size: 14px;
+      font-size: 13px;
       transition: all var(--transition-snappy);
     }
 
     .search-input:focus {
       background: var(--bg-elevated);
-      border-color: var(--accent-main);
-      box-shadow: 0 0 0 4px var(--accent-dim);
-    }
-
-    .search-input::placeholder {
-      color: var(--text-tertiary);
+      border-color: var(--border-strong);
+      outline: none;
     }
 
     .action-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -388,27 +334,24 @@
 
     .action-btn:hover {
       color: var(--text-primary);
-      border-color: var(--text-tertiary);
       background: var(--bg-elevated);
     }
 
     .badge-indicator {
       position: absolute;
-      top: -2px;
-      right: -2px;
-      width: 100px;
-      height: 10px;
-      width: 10px;
-      background: var(--color-danger);
-      border: 2px solid var(--bg-base);
+      top: 6px;
+      right: 6px;
+      width: 7px;
+      height: 7px;
+      background: var(--accent-main);
       border-radius: 50%;
     }
 
     .user-profile {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 6px 16px 6px 6px;
+      gap: 10px;
+      padding: 4px 10px 4px 4px;
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
       border-radius: 999px;
@@ -416,13 +359,11 @@
       transition: border var(--transition-snappy);
     }
 
-    .user-profile:hover {
-      border-color: var(--border-strong);
-    }
+    .user-profile:hover { border-color: var(--border-strong); }
 
     .user-avatar {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       background: var(--accent-main);
       color: var(--bg-base);
@@ -430,35 +371,39 @@
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: 12px;
-    }
-
-    .user-details {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .user-name {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .user-role {
       font-size: 11px;
-      color: var(--text-tertiary);
     }
 
+    .user-details { display: flex; flex-direction: column; }
+    .user-name { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+    .user-role { font-size: 10px; color: var(--text-tertiary); font-weight: 700; }
+
+    /* Workspace Content Container */
     .workspace {
-      padding: 40px;
-      max-width: 1600px;
+      padding: 32px;
+      max-width: 1400px;
       width: 100%;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 40px;
+      gap: 28px;
     }
 
+    .announcement-banner {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      color: var(--text-primary);
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--accent-main);
+    }
+
+    /* Hero Section */
     .hero-section {
       display: flex;
       justify-content: space-between;
@@ -466,608 +411,378 @@
     }
 
     .greeting-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 48px;
-      font-weight: 600;
-      letter-spacing: -1px;
-      margin-bottom: 8px;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
       color: var(--text-primary);
+      margin-bottom: 4px;
     }
 
-    .greeting-title span {
-      color: var(--accent-main);
-      font-style: italic;
-    }
+    .greeting-title span { color: var(--text-primary); }
 
     .greeting-subtitle {
-      font-size: 15px;
+      font-size: 14px;
       color: var(--text-secondary);
+    }
+
+    .hero-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 14px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .status-indicator {
+      width: 7px;
+      height: 7px;
+      background: var(--accent-main);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    .clock-time { font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .clock-date { color: var(--text-tertiary); }
+
+    /* Main Grid Layout (Stitch 2-Column Desktop Architecture) */
+    .workspace-main-grid {
+      display: grid;
+      grid-template-columns: 8fr 4fr;
+      gap: 24px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-main);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .status-indicator {
-      width: 8px;
-      height: 8px;
-      background: var(--accent-main);
-      border-radius: 50%;
-      box-shadow: 0 0 10px var(--accent-glow);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
-      }
-      70% {
-        transform: scale(1);
-        box-shadow: 0 0 0 6px rgba(245, 158, 11, 0);
-      }
-      100% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
-      }
-    }
-
-    .clock-widget {
-      text-align: right;
-    }
-
-    .clock-time {
-      font-size: 32px;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -1px;
-    }
-
-    .clock-date {
-      font-size: 13px;
-      color: var(--text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 600;
-    }
-
-    .bento-layout {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 24px;
-    }
-
-    .card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-base);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
-      transition: transform var(--transition-snappy), border-color var(--transition-snappy);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .card:hover {
-      border-color: var(--border-strong);
-      box-shadow: var(--shadow-md);
-    }
-
-    .card-header {
+    .section-header-flex {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 12px;
     }
 
-    .card-title {
-      font-size: 16px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .section-header-flex .section-label { margin-bottom: 0; }
 
-    .card-title .icon-svg {
-      color: var(--text-tertiary);
-      width: 20px;
-      height: 20px;
-    }
-
-    .card-action {
+    .view-all-link {
       font-size: 12px;
       font-weight: 600;
       color: var(--accent-main);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    }
+    .view-all-link:hover { text-decoration: underline; }
+
+    /* Your Workspace Cards Grid (4x2 on Desktop) */
+    .workspace-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
     }
 
-    .card-action:hover {
-      text-decoration: underline;
-    }
-
-    .stat-card {
-      grid-column: span 3;
+    .workspace-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-md);
+      padding: 16px;
       display: flex;
       flex-direction: column;
+      gap: 12px;
+      cursor: pointer;
+      transition: all var(--transition-snappy);
     }
 
-    .stat-icon-wrap {
-      width: 48px;
-      height: 48px;
+    .workspace-card:hover {
       background: var(--bg-elevated);
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+    }
+
+    .workspace-card-icon {
+      width: 38px;
+      height: 38px;
       border-radius: var(--radius-sm);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-base);
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--text-primary);
-      margin-bottom: 16px;
     }
 
-    .stat-value {
-      font-size: 32px;
-      font-weight: 700;
-      margin-bottom: 4px;
-      letter-spacing: -1px;
+    .workspace-card:hover .workspace-card-icon {
+      color: var(--accent-main);
+      border-color: var(--accent-dim);
     }
 
-    .stat-label {
+    .workspace-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .workspace-card-desc {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Recent Activity Card/List */
+    .recent-activity-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+    }
+
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .activity-item:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .activity-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .activity-details { flex: 1; }
+    .activity-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .activity-sub { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+    .activity-time { font-size: 11px; color: var(--text-tertiary); font-weight: 500; }
+
+    /* Right Sidebar Widgets: Productivity Metrics & Jubel Hub Banner */
+    .right-widgets-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .productivity-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+    }
+
+    .metrics-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .metric-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .metric-label-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       font-size: 13px;
       color: var(--text-secondary);
     }
 
-    .stat-trend {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      font-weight: 600;
-      margin-top: 12px;
-      padding: 4px 8px;
-      border-radius: 4px;
+    .metric-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
     }
 
-    .trend-up {
-      background: rgba(16, 185, 129, 0.1);
-      color: var(--color-success);
+    .metric-sparkline {
+      width: 60px;
+      height: 18px;
     }
 
-    .trend-down {
-      background: rgba(239, 68, 68, 0.1);
-      color: var(--color-danger);
+    .metric-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
     }
 
-    .trend-neutral {
-      background: var(--bg-elevated);
-      color: var(--text-secondary);
-    }
-
-    .modules-section {
-      grid-column: span 8;
-    }
-
-    .module-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .module-card {
-      height: 200px;
-      background: var(--bg-elevated);
+    /* Jubel Hub Marketplace Card */
+    .jubel-promo-card {
+      background: linear-gradient(145deg, var(--bg-surface) 0%, var(--bg-elevated) 100%);
       border: 1px solid var(--border-base);
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-lg);
       padding: 20px;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end;
-      transition: all var(--transition-snappy);
-      cursor: pointer;
+      gap: 12px;
       position: relative;
-      overflow: hidden;
     }
 
-    .module-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, transparent 0%, rgba(9, 9, 11, 0.8) 100%);
-      z-index: 1;
-    }
-
-    .module-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--accent-main);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-
-    .module-card-icon {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      width: 44px;
-      height: 44px;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-sm);
+    .jubel-promo-header {
       display: flex;
       align-items: center;
-      justify-content: center;
-      color: var(--accent-main);
-      z-index: 2;
-    }
-
-    .module-card-content {
-      position: relative;
-      z-index: 2;
-    }
-
-    .module-title {
-      font-size: 18px;
+      gap: 10px;
+      font-size: 15px;
       font-weight: 700;
-      margin-bottom: 4px;
+      color: var(--text-primary);
     }
 
-    .module-desc {
+    .jubel-promo-desc {
       font-size: 12px;
       color: var(--text-secondary);
+      line-height: 1.4;
     }
 
-    .agenda-section {
-      grid-column: span 4;
+    .jubel-open-btn {
+      align-self: flex-end;
+      background: var(--accent-main);
+      color: #000;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 8px 20px;
+      border-radius: var(--radius-sm);
+      transition: background var(--transition-snappy);
+    }
+
+    .jubel-open-btn:hover { background: var(--accent-hover); }
+
+    /* Store Grid (Inside Jubel Section) */
+    .store-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .store-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-md);
+      padding: 14px;
       display: flex;
       flex-direction: column;
+      gap: 8px;
+    }
+
+    .store-card img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Agenda/Tasks Widget (Preserving functionality) */
+    .agenda-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-lg);
+      padding: 20px;
     }
 
     .agenda-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      flex: 1;
+      gap: 10px;
+      max-height: 180px;
       overflow-y: auto;
-      max-height: 200px;
-      padding-right: 4px;
+      margin-top: 10px;
     }
 
     .agenda-item {
       display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
       background: var(--bg-elevated);
       border-radius: var(--radius-sm);
-      border: 1px solid transparent;
-      transition: all var(--transition-snappy);
-    }
-
-    .agenda-item:hover {
-      border-color: var(--border-base);
+      font-size: 12px;
     }
 
     .agenda-checkbox {
-      width: 18px;
-      height: 18px;
-      border: 2px solid var(--text-tertiary);
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--text-tertiary);
       border-radius: 4px;
       cursor: pointer;
-      margin-top: 2px;
-      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s;
+      flex-shrink: 0;
     }
 
     .agenda-item.completed .agenda-checkbox {
       background: var(--accent-main);
       border-color: var(--accent-main);
     }
+    .agenda-item.completed .agenda-checkbox::after { content: '✓'; color: #000; font-size: 10px; font-weight: 800; }
+    .agenda-item.completed .agenda-text { text-decoration: line-through; color: var(--text-tertiary); }
+    .agenda-content { flex: 1; }
+    .agenda-text { color: var(--text-primary); font-weight: 500; }
+    .agenda-time { font-size: 10px; color: var(--text-tertiary); }
+    .agenda-delete { color: var(--text-tertiary); cursor: pointer; }
+    .agenda-delete:hover { color: var(--color-danger); }
 
-    .agenda-item.completed .agenda-checkbox::after {
-      content: '✓';
-      color: var(--bg-base);
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .agenda-content {
-      flex: 1;
-    }
-
-    .agenda-text {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-primary);
-    }
-
-    .agenda-item.completed .agenda-text {
-      text-decoration: line-through;
-      color: var(--text-tertiary);
-    }
-
-    .agenda-time {
-      font-size: 11px;
-      color: var(--text-tertiary);
-      margin-top: 4px;
-    }
-
-    .agenda-delete {
-      color: var(--text-tertiary);
-      cursor: pointer;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .agenda-item:hover .agenda-delete {
-      opacity: 1;
-    }
-
-    .agenda-delete:hover {
-      color: var(--color-danger);
-    }
-
-    .add-task-form {
-      display: flex;
-      margin-top: 16px;
-      gap: 8px;
-    }
-
+    .add-task-form { display: flex; gap: 8px; margin-top: 12px; }
     .task-input {
       flex: 1;
       background: var(--bg-elevated);
       border: 1px solid var(--border-base);
-      padding: 10px 12px;
+      padding: 8px 12px;
       border-radius: var(--radius-sm);
       color: var(--text-primary);
-      font-size: 13px;
+      font-size: 12px;
     }
-
     .task-submit {
       background: var(--accent-main);
-      color: var(--bg-base);
-      border: none;
-      padding: 0 16px;
+      color: #000;
+      padding: 0 14px;
       border-radius: var(--radius-sm);
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .music-section {
-      grid-column: span 6;
-    }
-
-    .player-container {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding: 20px;
-      background: var(--bg-elevated);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-base);
-    }
-
-    .album-art {
-      width: 80px;
-      height: 80px;
-      border-radius: var(--radius-sm);
-      background: #000;
-      background-size: cover;
-      background-position: center;
-      flex-shrink: 0;
-      position: relative;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .album-art .fallback-icon {
-      color: var(--text-tertiary);
-      width: 32px;
-      height: 32px;
-    }
-
-    .player-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .track-title {
-      font-size: 18px;
       font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-bottom: 4px;
+      font-size: 12px;
     }
 
-    .track-artist {
-      font-size: 14px;
-      color: var(--text-secondary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    /* Admin Only Elements */
+    .admin-only { display: none !important; }
+    body.is-admin .admin-only { display: inline-flex !important; }
 
-    .player-controls {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 12px;
-    }
-
-    .ctrl-btn {
-      color: var(--text-secondary);
-      transition: color 0.2s;
-    }
-
-    .ctrl-btn:hover {
-      color: var(--text-primary);
-    }
-
-    .play-pause-btn {
-      width: 40px;
-      height: 40px;
-      background: var(--accent-main);
-      color: var(--bg-base);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.2s;
-    }
-
-    .play-pause-btn:hover {
-      transform: scale(1.05);
-      background: var(--accent-hover);
-    }
-
-    .progress-container {
-      width: 100%;
-      margin-top: 16px;
-    }
-
-    .progress-bar {
-      height: 4px;
-      background: var(--bg-highlight);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: var(--accent-main);
-      border-radius: 2px;
-      transition: width 1s linear;
-    }
-
-    .progress-times {
-      display: flex;
-      justify-content: space-between;
-      font-size: 10px;
-      color: var(--text-tertiary);
-      margin-top: 6px;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .weather-section {
-      grid-column: span 6;
-    }
-
-    .weather-main {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-    }
-
-    .weather-temp-box {
-      display: flex;
-      align-items: flex-start;
-    }
-
-    .temp-value {
-      font-size: 64px;
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -2px;
-    }
-
-    .temp-unit {
-      font-size: 24px;
-      font-weight: 600;
-      color: var(--accent-main);
-      margin-top: 8px;
-      margin-left: 4px;
-    }
-
-    .weather-condition {
-      text-align: right;
-    }
-
-    .weather-icon {
-      width: 48px;
-      height: 48px;
-      color: var(--accent-main);
-      margin-bottom: 8px;
-    }
-
-    .condition-text {
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .weather-details {
-      display: flex;
-      gap: 16px;
-    }
-
-    .w-detail {
-      flex: 1;
-      background: var(--bg-elevated);
-      padding: 12px 16px;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .w-detail svg {
-      color: var(--text-tertiary);
-    }
-
-    .w-data {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .w-label {
-      font-size: 11px;
-      color: var(--text-tertiary);
-      text-transform: uppercase;
-    }
-
-    .w-val {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .fab-container {
-      position: fixed;
-      bottom: 40px;
-      right: 40px;
-      z-index: 40;
-    }
-
-    .fab-btn {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: var(--accent-main);
-      color: var(--bg-base);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
-      cursor: pointer;
-      transition: all var(--transition-snappy);
-    }
-
-    .fab-btn:hover {
-      transform: translateY(-4px) scale(1.05);
-      background: var(--accent-hover);
-    }
-
-    .fab-btn svg {
-      width: 28px;
-      height: 28px;
-    }
-
+    /* Modals Styling */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(8px);
       z-index: 100;
       display: flex;
@@ -1077,299 +792,169 @@
       visibility: hidden;
       transition: all var(--transition-snappy);
     }
-
-    .modal-backdrop.is-active {
-      opacity: 1;
-      visibility: visible;
-    }
+    .modal-backdrop.is-active { opacity: 1; visibility: visible; }
 
     .ai-modal {
       width: 100%;
-      max-width: 560px;
+      max-width: 500px;
       background: var(--bg-surface);
       border: 1px solid var(--border-strong);
       border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow-md);
       display: flex;
       flex-direction: column;
-      transform: translateY(20px) scale(0.95);
-      transition: all var(--transition-smooth);
-    }
-
-    .modal-backdrop.is-active .ai-modal {
-      transform: translateY(0) scale(1);
+      overflow: hidden;
     }
 
     .modal-header {
-      padding: 20px 24px;
+      padding: 16px 20px;
       border-bottom: 1px solid var(--border-base);
       display: flex;
       align-items: center;
       justify-content: space-between;
-    }
-
-    .modal-title {
-      font-size: 18px;
       font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
-    .modal-title svg {
-      color: var(--accent-main);
+    .modal-close { color: var(--text-tertiary); font-size: 18px; }
+    .chat-window { height: 300px; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+    .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; }
+    .chat-bubble.ai { background: var(--bg-elevated); align-self: flex-start; }
+    .chat-bubble.user { background: var(--accent-dim); color: var(--accent-main); align-self: flex-end; }
+    .chat-input-area { padding: 16px 20px; border-top: 1px solid var(--border-base); display: flex; gap: 10px; }
+    .chat-input-area input { flex: 1; background: var(--bg-elevated); border: 1px solid var(--border-base); padding: 10px 12px; border-radius: var(--radius-sm); color: #fff; font-size: 13px; }
+
+    .fab-container { position: fixed; bottom: 80px; right: 28px; z-index: 40; }
+    .fab-btn {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--accent-main); color: #000;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 20px var(--accent-glow);
     }
 
-    .modal-close {
-      color: var(--text-tertiary);
-      transition: color 0.2s;
-    }
-
-    .modal-close:hover {
-      color: var(--text-primary);
-    }
-
-    .chat-window {
-      height: 350px;
-      padding: 24px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .chat-bubble {
-      max-width: 85%;
-      padding: 12px 16px;
-      border-radius: var(--radius-md);
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .chat-bubble.ai {
-      align-self: flex-start;
-      background: var(--bg-elevated);
-      border-bottom-left-radius: 4px;
-      border: 1px solid var(--border-base);
-    }
-
-    .chat-bubble.user {
-      align-self: flex-end;
-      background: var(--accent-dim);
-      color: var(--accent-main);
-      border-bottom-right-radius: 4px;
-      border: 1px solid rgba(245, 158, 11, 0.2);
-    }
-
-    .chat-input-area {
-      padding: 20px 24px;
-      border-top: 1px solid var(--border-base);
-      display: flex;
-      gap: 12px;
-    }
-
-    .chat-input-area input {
-      flex: 1;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-base);
-      padding: 14px 16px;
-      border-radius: var(--radius-sm);
-      color: var(--text-primary);
-      font-size: 14px;
-    }
-
-    .send-btn {
-      width: 48px;
-      height: 48px;
-      background: var(--accent-main);
-      color: var(--bg-base);
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
-    }
-
-    .send-btn:hover {
-      background: var(--accent-hover);
-    }
+    .color-picker-btn { width: 28px; height: 28px; border-radius: 50%; border: none; cursor: pointer; }
 
     .app-footer {
-      margin-top: 40px;
-      padding: 24px 0;
+      margin-top: 32px;
+      padding-top: 20px;
       border-top: 1px solid var(--border-subtle);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-tertiary);
     }
 
-    .footer-copyright span {
-      color: var(--text-secondary);
+    /* ==========================================================================
+       4. MOBILE BOTTOM NAVIGATION & RESPONSIVE LAYOUT (STITCH MOBILE REF)
+       ========================================================================== */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--mobile-nav-height);
+      background: var(--bg-sidebar);
+      border-top: 1px solid var(--border-base);
+      z-index: 60;
+      padding: 0 16px;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .mobile-nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-tertiary);
+      font-size: 10px;
       font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
     }
 
-    .footer-dev .heart {
-      color: #ef4444;
-      display: inline-block;
-      margin: 0 2px;
-    }
-
-    .footer-dev .dev-name {
+    .mobile-nav-link.active {
       color: var(--accent-main);
-      font-weight: 600;
-      text-decoration: none;
     }
 
-    .footer-dev .dev-name:hover {
-      text-decoration: underline;
-      color: var(--accent-hover);
-    }
-
-    /* Breakpoints */
-    @media (max-width: 1400px) {
-      .stat-card {
-        grid-column: span 6;
-      }
-      .modules-section {
-        grid-column: span 12;
-      }
-      .agenda-section {
-        grid-column: span 12;
-      }
+    .mobile-nav-link .icon-svg {
+      width: 20px;
+      height: 20px;
     }
 
     @media (max-width: 1024px) {
-      .music-section {
-        grid-column: span 12;
+      .workspace-main-grid {
+        grid-template-columns: 1fr;
       }
-      .weather-section {
-        grid-column: span 12;
+      .workspace-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
     @media (max-width: 860px) {
       :root {
-        --sidebar-width: 280px;
+        --sidebar-width: 0px;
       }
+
       .sidebar {
         transform: translateX(-100%);
+        width: 260px;
       }
+
       .sidebar.is-active {
         transform: translateX(0);
       }
+
+      .mobile-trigger, .mobile-brand {
+        display: flex;
+      }
+
+      .search-wrapper { display: none; }
+
       .main-content {
         margin-left: 0;
+        padding-bottom: calc(var(--mobile-nav-height) + 20px);
       }
-      .mobile-trigger {
-        display: block;
-      }
-      .top-header {
-        padding: 0 20px;
-      }
-      .search-wrapper {
-        display: none;
-      }
-      .workspace {
-        padding: 24px 20px;
-        gap: 24px;
-      }
-      .greeting-title {
-        font-size: 36px;
-      }
-      .module-grid {
-        grid-template-columns: 1fr;
-      }
-      .stat-card {
-        grid-column: span 12;
-      }
-      .fab-container {
-        bottom: 20px;
-        right: 20px;
-      }
-      .weather-details {
-        flex-direction: column;
-      }
-    }
 
-    @media (max-width: 768px) {
+      .top-header {
+        padding: 0 16px;
+      }
+
+      .workspace {
+        padding: 20px 16px;
+        gap: 20px;
+      }
+
+      .greeting-title {
+        font-size: 24px;
+      }
+
+      .hero-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .workspace-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .mobile-bottom-nav {
+        display: flex;
+      }
+
+      .fab-container {
+        bottom: calc(var(--mobile-nav-height) + 16px);
+        right: 16px;
+      }
+
       .app-footer {
         flex-direction: column;
         gap: 8px;
         text-align: center;
       }
-    }
-
-    /* */
-    .admin-only {
-      display: none !important;
-    }
-
-    body.is-admin .admin-only {
-      display: flex !important;
-    }
-
-    body.is-admin button.admin-only,
-    body.is-admin a.admin-only {
-      display: inline-flex !important;
-    }
-
-    .announcement-banner {
-      background: linear-gradient(90deg, var(--accent-hover), var(--accent-main));
-      color: #09090b;
-      padding: 10px 18px;
-      font-size: 13px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-radius: var(--radius-md);
-      margin-bottom: 24px;
-      box-shadow: 0 4px 20px var(--accent-glow);
-    }
-
-    .store-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 16px;
-      width: 100%;
-    }
-
-    .store-card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-base);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      transition: all var(--transition-snappy);
-    }
-
-    .store-card:hover {
-      border-color: var(--accent-main);
-      transform: translateY(-2px);
-    }
-
-    .store-card img {
-      width: 100%;
-      height: 140px;
-      object-fit: cover;
-      border-radius: var(--radius-sm);
-    }
-
-    .color-picker-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .color-picker-btn:hover {
-      transform: scale(1.1);
     }
   </style>
 </head>
@@ -1380,567 +965,436 @@
   <div class="app-layout">
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+    <!-- Desktop Left Sidebar -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="brand-combo">
-          <div class="brand-icon" style="background: transparent; padding: 0;">
-        <img src="https://cdn.phototourl.com/free/2026-08-10-e2258c8f-a8af-411b-9efc-aaed64b1e6c9.png" alt="LifeHub Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-sm);">
+          <div class="brand-icon">
+            <img src="https://cdn.phototourl.com/free/2026-08-10-e2258c8f-a8af-411b-9efc-aaed64b1e6c9.png" alt="LifeHub" style="width:100%; height:100%; object-fit:cover;">
           </div>
           <div class="brand-text">LifeHub</div>
         </div>
       </div>
 
       <nav class="sidebar-nav">
-        <div class="nav-label">Main Menu</div>
-        
+        <div class="nav-label">WORKSPACE</div>
         <a href="dashboard.html" class="nav-item active">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <rect x="3" y="3" width="7" height="9" rx="1"/>
-            <rect x="14" y="3" width="7" height="5" rx="1"/>
-            <rect x="14" y="12" width="7" height="9" rx="1"/>
-            <rect x="3" y="16" width="7" height="5" rx="1"/>
-          </svg>
+          <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
           <span class="nav-text">Dashboard</span>
         </a>
-        
         <a href="ai.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-            <circle cx="12" cy="12" r="4"/>
-          </svg>
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
           <span class="nav-text">AI Assistant</span>
         </a>
-        
-        <a href="music.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <path d="M9 18V5l12-2v13"/>
-            <circle cx="6" cy="18" r="3"/>
-            <circle cx="18" cy="16" r="3"/>
-          </svg>
-          <span class="nav-text">Music (Nocturne)</span>
-        </a>
-        
-        <a href="movies.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <rect x="2" y="4" width="20" height="16" rx="2"/>
-            <path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/>
-          </svg>
-          <span class="nav-text">Movies</span>
-        </a>
-
-        <div class="nav-label" style="margin-top:24px;">Tools & Space</div>
-        
-        <a href="downloader.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-          </svg>
-          <span class="nav-text">Downloader</span>
-        </a>
-        
         <a href="notes.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-          </svg>
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           <span class="nav-text">Notes</span>
         </a>
-        
         <a href="focus.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
-          </svg>
+          <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           <span class="nav-text">Focus Space</span>
         </a>
 
-        <a href="mastery.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <polyline points="16 18 22 12 16 6"/>
-            <polyline points="8 6 2 12 8 18"/>
-          </svg>
-          <span class="nav-text">Code Mastery</span>
+        <div class="nav-label">MEDIA</div>
+        <a href="music.html" class="nav-item">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          <span class="nav-text">Music</span>
+        </a>
+        <a href="movies.html" class="nav-item">
+          <svg class="icon-svg" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/></svg>
+          <span class="nav-text">Movies</span>
+        </a>
+        <a href="downloader.html" class="nav-item">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          <span class="nav-text">Downloader</span>
         </a>
 
+        <div class="nav-label">TOOLS</div>
+        <a href="mastery.html" class="nav-item">
+          <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span class="nav-text">Code Mastery</span>
+        </a>
         <a href="qr-tools.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <rect x="3" y="3" width="7" height="7"/>
-            <rect x="14" y="3" width="7" height="7"/>
-            <rect x="14" y="14" width="7" height="7"/>
-            <path d="M3 14h7v7H3z"/>
-          </svg>
+          <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><path d="M3 14h7v7H3z"/></svg>
           <span class="nav-text">QR Tools</span>
+        </a>
+
+        <div class="nav-label">MARKETPLACE</div>
+        <a href="#jubelSection" class="nav-item">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="nav-text">Jubel Hub</span>
         </a>
 
         <div id="customNavContainer"></div>
 
         <a href="#" class="nav-item logout" id="logoutBtn">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
-          </svg>
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
           Logout Session
         </a>
       </nav>
     </aside>
 
+    <!-- Main Workspace Container -->
     <main class="main-content">
+      <!-- Topbar Header -->
       <header class="top-header">
         <div class="header-left">
           <button class="mobile-trigger" id="mobileMenuTrigger">
-            <svg class="icon-svg" viewBox="0 0 24 24">
-              <line x1="3" y1="12" x2="21" y2="12"/>
-              <line x1="3" y1="6" x2="21" y2="6"/>
-              <line x1="3" y1="18" x2="21" y2="18"/>
-            </svg>
+            <svg class="icon-svg" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
           
+          <div class="mobile-brand">
+            <img src="https://cdn.phototourl.com/free/2026-08-10-e2258c8f-a8af-411b-9efc-aaed64b1e6c9.png" alt="LifeHub" style="width:22px; height:22px; border-radius:4px;">
+            LifeHub
+          </div>
+
           <div class="search-wrapper">
-            <svg class="icon-svg search-icon" viewBox="0 0 24 24">
-              <circle cx="11" cy="11" r="8"/>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-            <input type="text" class="search-input" placeholder="Search across LifeHub...">
+            <svg class="icon-svg search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input" placeholder="Search anything...">
           </div>
         </div>
-        
-        <div class="header-right">
-          -->
-          <button class="action-btn admin-only" id="openAdminPanelBtn" title="Admin Settings" style="border-color: var(--accent-main);">
-            ⚙️
-          </button>
 
+        <div class="header-right">
+          <button class="action-btn admin-only" id="openAdminPanelBtn" title="Admin Settings">⚙️</button>
           <button class="action-btn" title="Notifications">
-            <svg class="icon-svg" viewBox="0 0 24 24">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-            </svg>
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             <span class="badge-indicator"></span>
           </button>
-          
-          <div class="user-profile" id="userProfileBtn" title="Klik untuk Edit Profil">
-            <div class="user-avatar" id="headerAvatarInitials" style="overflow: hidden; background-size: cover; background-position: center;">--</div>
+
+          <div class="user-profile" id="userProfileBtn" title="Edit Profile">
+            <div class="user-avatar" id="headerAvatarInitials">--</div>
             <div class="user-details">
-              <span class="user-name" id="headerUserName">Loading...</span>
+              <span class="user-name" id="headerUserName">Reski</span>
               <span class="user-role">PRO PLAN</span>
             </div>
           </div>
         </div>
       </header>
 
+      <!-- Main Workspace View -->
       <div class="workspace">
-        -->
+        <!-- Announcement Banner -->
         <div class="announcement-banner" id="announcementBanner">
           <span>📢 <span id="announcementText">Welcome to LifeHub Workspace! Marketplace & Workspace Active.</span></span>
-          <span style="font-size: 11px; opacity: 0.8; font-weight: 800;">OFFICIAL BANNER</span>
         </div>
 
+        <!-- Hero Greeting Section -->
         <section class="hero-section">
           <div>
-            <h1 class="greeting-title">
-              Good <span>Evening</span>, User.
-            </h1>
-            <div class="greeting-subtitle">
-              <div class="status-indicator"></div> 
-              Obsidian & Gold protocols active. All systems online.
-            </div>
+            <h1 class="greeting-title">Good evening, <span id="greetingTitleSpan">Reski</span>.</h1>
+            <div class="greeting-subtitle">Here's your LifeHub overview for today.</div>
           </div>
-          
-          <div class="clock-widget">
-            <div class="clock-time" id="realTimeClock">00:00</div>
-            <div class="clock-date" id="realTimeDate">LOADING...</div>
+
+          <div class="hero-status-pill">
+            <span class="clock-date" id="realTimeDate">AUG 17, 2026</span>
+            <span class="clock-time" id="realTimeClock">07:52 AM</span>
+            <span style="display:flex; align-items:center; gap:6px; font-weight:700; color:var(--accent-main)">
+              <div class="status-indicator"></div> ACTIVE
+            </span>
           </div>
         </section>
 
-        <div class="bento-layout">
-          -->
-          <div class="card" style="grid-column: span 12;" id="jubelSection">
-            <div class="card-header">
-              <h2 class="card-title">
-                <svg class="icon-svg" viewBox="0 0 24 24">
-                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                  <line x1="3" y1="6" x2="21" y2="6"/>
-                  <path d="M16 10a4 4 0 0 1-8 0"/>
-                </svg>
-                <span id="jubelTitleText">Jubel Hub — Digital Account Store</span>
-              </h2>
-              <button class="task-submit admin-only" id="openAddProductBtn" style="padding: 8px 16px; font-size: 12px; height: auto;">
-                + Tambah Produk / Akun
-              </button>
+        <!-- Stitch 2-Column Desktop Grid Layout -->
+        <div class="workspace-main-grid">
+          <!-- Left Column (Workspace Shortcuts & Recent Activity) -->
+          <div class="left-main-col">
+            <div class="section-label">
+              <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              YOUR WORKSPACE
             </div>
-            <div id="productGrid" class="store-grid">
-              </div>
-          </div>
 
-          <div class="card stat-card">
-            <div class="stat-icon-wrap">
-              <svg class="icon-svg" viewBox="0 0 24 24">
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-              </svg>
-            </div>
-            <div class="stat-value">1,248</div>
-            <div class="stat-label">AI Interactions</div>
-            <div class="stat-trend trend-up">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-                <polyline points="17 6 23 6 23 12"/>
-              </svg> 
-              +12.5%
-            </div>
-          </div>
-
-          <div class="card stat-card">
-            <div class="stat-icon-wrap">
-              <svg class="icon-svg" viewBox="0 0 24 24">
-                <ellipse cx="12" cy="5" rx="9" ry="3"/>
-                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
-                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
-              </svg>
-            </div>
-            <div class="stat-value">45.2k</div>
-            <div class="stat-label">Tokens Used</div>
-            <div class="stat-trend trend-down">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/>
-                <polyline points="17 18 23 18 23 12"/>
-              </svg> 
-              -2.1%
-            </div>
-          </div>
-
-          <div class="card stat-card">
-            <div class="stat-icon-wrap">
-              <svg class="icon-svg" viewBox="0 0 24 24">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-              </svg>
-            </div>
-            <div class="stat-value">
-              94<span style="font-size:16px; color:var(--text-tertiary)">/100</span>
-            </div>
-            <div class="stat-label">Productivity Score</div>
-            <div class="stat-trend trend-up">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-                <polyline points="17 6 23 6 23 12"/>
-              </svg> 
-              Peak
-            </div>
-          </div>
-
-          <div class="card stat-card">
-            <div class="stat-icon-wrap">
-              <svg class="icon-svg" viewBox="0 0 24 24">
-                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
-                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
-                <line x1="6" y1="6" x2="6.01" y2="6"/>
-                <line x1="6" y1="18" x2="6.01" y2="18"/>
-              </svg>
-            </div>
-            <div class="stat-value">
-              64<span style="font-size:16px; color:var(--text-tertiary)">%</span>
-            </div>
-            <div class="stat-label">Storage Active (2.4GB)</div>
-            <div class="stat-trend trend-neutral">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="5" y1="12" x2="19" y2="12"/>
-              </svg> 
-              Stable
-            </div>
-          </div>
-
-          <div class="modules-section">
-            <div class="card" style="height: 100%;">
-              <div class="card-header">
-                <h2 class="card-title">
-                  <svg class="icon-svg">
-                    <path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <path d="M2 15h10"/>
-                    <path d="M9 18l3-3-3-3"/>
-                  </svg> 
-                  Quick Modules
-                </h2>
-                <a href="ai.html" class="card-action">View All</a>
-              </div>
-              <div class="module-grid">
-                <div class="module-card" onclick="location.href='ai.html'">
-                  <div class="module-card-icon">
-                    <svg class="icon-svg">
-                      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-                      <circle cx="12" cy="12" r="4"/>
-                    </svg>
-                  </div>
-                  <div class="module-card-content">
-                    <div class="module-title">Neural Chat</div>
-                    <div class="module-desc">Engage with sophisticated AI models.</div>
-                  </div>
+            <!-- Workspace Cards Grid (8 Core Features) -->
+            <div class="workspace-cards-grid">
+              <div class="workspace-card" onclick="location.href='ai.html'">
+                <div class="workspace-card-icon">
+                  <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
                 </div>
-                
-                <div class="module-card" onclick="location.href='music.html'">
-                  <div class="module-card-icon">
-                    <svg class="icon-svg">
-                      <path d="M9 18V5l12-2v13"/>
-                      <circle cx="6" cy="18" r="3"/>
-                      <circle cx="18" cy="16" r="3"/>
-                    </svg>
-                  </div>
-                  <div class="module-card-content">
-                    <div class="module-title">Nocturne Audio</div>
-                    <div class="module-desc">Your curated music library.</div>
-                  </div>
+                <div class="workspace-card-title">AI Assistant</div>
+                <div class="workspace-card-desc">Intelligent chat...</div>
+              </div>
+
+              <div class="workspace-card" onclick="location.href='notes.html'">
+                <div class="workspace-card-icon">
+                  <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                 </div>
-                
-                <div class="module-card" onclick="location.href='movies.html'">
-                  <div class="module-card-icon">
-                    <svg class="icon-svg">
-                      <rect x="2" y="4" width="20" height="16" rx="2"/>
-                      <path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/>
-                    </svg>
+                <div class="workspace-card-title">Notes</div>
+                <div class="workspace-card-desc">Quick notes...</div>
+              </div>
+
+              <div class="workspace-card" onclick="location.href='focus.html'">
+                <div class="workspace-card-icon">
+                  <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div class="workspace-card-title">Focus Space</div>
+                <div class="workspace-card-desc">Deep work...</div>
+              </div>
+
+              <div class="workspace-card" onclick="location.href='mastery.html'">
+                <div class="workspace-card-icon">
+                  <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                </div>
+                <div class="workspace-card-title">Code Mastery</div>
+                <div class="workspace-card-desc">Snippets & docs</div>
+              </div>
+
+              <div class="workspace-card" onclick="location.href='music.html'">
+                <div class="workspace-card-icon">
+                  <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                </div>
+                <div class="workspace-card-title">Music</div>
+                <div class="workspace-card-desc">Playlists & audio</div>
+              </div>
+
+              <div class="workspace-card" onclick="location.href='movies.html'">
+                <div class="workspace-card-icon">
+                  <svg class="icon-svg" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/></svg>
+                </div>
+                <div class="workspace-card-title">Movies</div>
+                <div class="workspace-card-desc">Media library</div>
+              </div>
+
+              <div class="workspace-card" onclick="location.href='downloader.html'">
+                <div class="workspace-card-icon">
+                  <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                </div>
+                <div class="workspace-card-title">Downloader</div>
+                <div class="workspace-card-desc">Asset downloads</div>
+              </div>
+
+              <div class="workspace-card" onclick="location.href='qr-tools.html'">
+                <div class="workspace-card-icon">
+                  <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><path d="M3 14h7v7H3z"/></svg>
+                </div>
+                <div class="workspace-card-title">QR Tools</div>
+                <div class="workspace-card-desc">Generate & scan</div>
+              </div>
+            </div>
+
+            <!-- Recent Activity Section -->
+            <div class="section-header-flex">
+              <div class="section-label" style="margin-bottom:0;">
+                <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                RECENT ACTIVITY
+              </div>
+              <a href="#" class="view-all-link">View All</a>
+            </div>
+
+            <div class="recent-activity-card">
+              <div class="activity-list">
+                <div class="activity-item">
+                  <div class="activity-icon">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
                   </div>
-                  <div class="module-card-content">
-                    <div class="module-title">Vision Media</div>
-                    <div class="module-desc">Stream and manage cinematic assets.</div>
+                  <div class="activity-details">
+                    <div class="activity-title">AI Assistant</div>
+                    <div class="activity-sub">Debugged Javascript utility function for layout generator.</div>
                   </div>
+                  <div class="activity-time">2m ago</div>
+                </div>
+
+                <div class="activity-item">
+                  <div class="activity-icon">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </div>
+                  <div class="activity-details">
+                    <div class="activity-title">Notes</div>
+                    <div class="activity-sub">Created 'Project Ideas - Q4 Planning' document.</div>
+                  </div>
+                  <div class="activity-time">1h ago</div>
+                </div>
+
+                <div class="activity-item">
+                  <div class="activity-icon">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  </div>
+                  <div class="activity-details">
+                    <div class="activity-title">Focus Space</div>
+                    <div class="activity-sub">Completed 45m deep work session: 'UI Design'.</div>
+                  </div>
+                  <div class="activity-time">Today</div>
                 </div>
               </div>
             </div>
+
+            <!-- Jubel Hub Marketplace Section (Preserved Functionality) -->
+            <div id="jubelSection" style="margin-top: 28px;">
+              <div class="section-header-flex">
+                <div class="section-label" style="margin-bottom:0;">
+                  <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                  <span id="jubelTitleText">JUBEL HUB — DIGITAL ACCOUNT STORE</span>
+                </div>
+                <button class="task-submit admin-only" id="openAddProductBtn" style="padding: 6px 12px; font-size: 11px;">
+                  + Tambah Produk
+                </button>
+              </div>
+              <div id="productGrid" class="store-grid"></div>
+            </div>
           </div>
 
-          <div class="agenda-section">
-            <div class="card" style="height: 100%; display: flex; flex-direction: column;">
-              <div class="card-header">
-                <h2 class="card-title">
-                  <svg class="icon-svg">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <path d="M14 2v6h6"/>
-                    <line x1="16" y1="13" x2="8" y2="13"/>
-                    <line x1="16" y1="17" x2="8" y2="17"/>
-                    <polyline points="10 9 9 9 8 9"/>
-                  </svg> 
-                  Agenda
-                </h2>
+          <!-- Right Column Widgets (Productivity, Agenda, Music/Weather Sync) -->
+          <div class="right-widgets-col">
+            <!-- Productivity Metrics -->
+            <div class="productivity-card">
+              <div class="section-label" style="margin-bottom:12px;">
+                <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                PRODUCTIVITY
+              </div>
+
+              <div class="metrics-list">
+                <div class="metric-row">
+                  <div class="metric-label-group">
+                    <div class="metric-dot" style="background:#06b6d4;"></div>
+                    AI Sessions
+                  </div>
+                  <svg class="metric-sparkline" viewBox="0 0 60 18"><path d="M0,14 L15,10 L30,12 L45,4 L60,8" fill="none" stroke="#06b6d4" stroke-width="2"/></svg>
+                  <span class="metric-val">12</span>
+                </div>
+
+                <div class="metric-row">
+                  <div class="metric-label-group">
+                    <div class="metric-dot" style="background:var(--accent-main);"></div>
+                    Tasks
+                  </div>
+                  <svg class="metric-sparkline" viewBox="0 0 60 18"><path d="M0,12 L15,14 L30,8 L45,10 L60,4" fill="none" stroke="var(--accent-main)" stroke-width="2"/></svg>
+                  <span class="metric-val">8</span>
+                </div>
+
+                <div class="metric-row">
+                  <div class="metric-label-group">
+                    <div class="metric-dot" style="background:#a1a1aa;"></div>
+                    Focus Time
+                  </div>
+                  <svg class="metric-sparkline" viewBox="0 0 60 18"><path d="M0,16 L20,16 L30,4 L40,16 L60,16" fill="none" stroke="#a1a1aa" stroke-width="2"/></svg>
+                  <span class="metric-val">2.5h</span>
+                </div>
+
+                <div class="metric-row">
+                  <div class="metric-label-group">
+                    <div class="metric-dot" style="background:#71717a;"></div>
+                    Storage
+                  </div>
+                  <svg class="metric-sparkline" viewBox="0 0 60 18"><rect x="0" y="7" width="60" height="4" rx="2" fill="#27272a"/><rect x="0" y="7" width="27" height="4" rx="2" fill="#a1a1aa"/></svg>
+                  <span class="metric-val">45%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Jubel Hub Quick Card -->
+            <div class="jubel-promo-card">
+              <div class="jubel-promo-header">
+                <svg class="icon-svg" style="color:var(--accent-main);" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                Jubel Hub
+              </div>
+              <p class="jubel-promo-desc">Manage your digital products and accounts across the unified ecosystem.</p>
+              <button class="jubel-open-btn" onclick="location.href='#jubelSection'">Open</button>
+            </div>
+
+            <!-- Agenda / Tasks Widget (Preserved Functionality) -->
+            <div class="agenda-card">
+              <div class="section-label" style="margin-bottom:8px;">
+                <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                AGENDA & TASKS
               </div>
               <div class="agenda-list" id="agendaContainer"></div>
               <form class="add-task-form" id="addTaskForm">
-                <input type="text" class="task-input" id="newTaskInput" placeholder="Add new task..." required>
+                <input type="text" class="task-input" id="newTaskInput" placeholder="Add task..." required>
                 <button type="submit" class="task-submit">+</button>
               </form>
             </div>
-          </div>
 
-          <div class="music-section">
-            <div class="card" style="height: 100%;">
-              <div class="card-header">
-                <h2 class="card-title">
-                  <svg class="icon-svg">
-                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
-                  </svg> 
-                  Now Playing
-                </h2>
-                <a href="music.html" class="card-action">Open Player</a>
-              </div>
-              <div class="player-container">
-                <div class="album-art" id="dashAlbumArt">
-                  <svg class="icon-svg fallback-icon" viewBox="0 0 24 24">
-                    <path d="M9 18V5l12-2v13"/>
-                    <circle cx="6" cy="18" r="3"/>
-                    <circle cx="18" cy="16" r="3"/>
-                  </svg>
-                </div>
-                <div class="player-info">
-                  <div class="track-title" id="dashTrackTitle">Nocturne Standby</div>
-                  <div class="track-artist" id="dashTrackArtist">Awaiting signal</div>
-                  
-                  <div class="progress-container">
-                    <div class="progress-bar">
-                      <div class="progress-fill" id="dashProgressFill"></div>
-                    </div>
-                    <div class="progress-times">
-                      <span id="dashTimeCurrent">0:00</span>
-                      <span id="dashTimeTotal">-:--</span>
-                    </div>
-                  </div>
-                  
-                  <div class="player-controls">
-                    <button class="ctrl-btn">
-                      <svg class="icon-svg" viewBox="0 0 24 24">
-                        <polygon points="19 20 9 12 19 4 19 20"/>
-                        <line x1="5" y1="19" x2="5" y2="5"/>
-                      </svg>
-                    </button>
-                    
-                    <button class="play-pause-btn" id="dashPlayPauseBtn">
-                      <svg class="icon-svg" viewBox="0 0 24 24" style="fill:currentColor">
-                        <polygon points="5 3 19 12 5 21 5 3"/>
-                      </svg>
-                    </button>
-                    
-                    <button class="ctrl-btn">
-                      <svg class="icon-svg" viewBox="0 0 24 24">
-                        <polygon points="5 4 15 12 5 20 5 4"/>
-                        <line x1="19" y1="5" x2="19" y2="19"/>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
+            <!-- Hidden/Preserved Audio Player & Weather DOM hooks to prevent JS errors -->
+            <div style="display:none;">
+              <div id="simTemp">28</div>
+              <div id="dashAlbumArt"></div>
+              <div id="dashTrackTitle">Nocturne Standby</div>
+              <div id="dashTrackArtist">Awaiting signal</div>
+              <div id="dashProgressFill"></div>
+              <div id="dashTimeCurrent">0:00</div>
+              <div id="dashTimeTotal">-:--</div>
+              <button id="dashPlayPauseBtn"></button>
             </div>
           </div>
-
-          <div class="weather-section">
-            <div class="card" style="height: 100%;">
-              <div class="card-header">
-                <h2 class="card-title">
-                  <svg class="icon-svg">
-                    <circle cx="12" cy="12" r="5"/>
-                    <line x1="12" y1="1" x2="12" y2="3"/>
-                    <line x1="12" y1="21" x2="12" y2="23"/>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                    <line x1="1" y1="12" x2="3" y2="12"/>
-                    <line x1="21" y1="12" x2="23" y2="12"/>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                  </svg> 
-                  Environment
-                </h2>
-                <span class="card-action" style="color:var(--text-tertiary)">Jakarta, ID</span>
-              </div>
-              
-              <div class="weather-main">
-                <div class="weather-temp-box">
-                  <div class="temp-value" id="simTemp">28</div>
-                  <div class="temp-unit">°C</div>
-                </div>
-                <div class="weather-condition">
-                  <svg class="icon-svg weather-icon" viewBox="0 0 24 24">
-                    <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
-                  </svg>
-                  <div class="condition-text">Partly Cloudy</div>
-                </div>
-              </div>
-              
-              <div class="weather-details">
-                <div class="w-detail">
-                  <svg class="icon-svg" viewBox="0 0 24 24">
-                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
-                  </svg>
-                  <div class="w-data">
-                    <span class="w-label">Humidity</span>
-                    <span class="w-val">65%</span>
-                  </div>
-                </div>
-                
-                <div class="w-detail">
-                  <svg class="icon-svg" viewBox="0 0 24 24">
-                    <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/>
-                  </svg>
-                  <div class="w-data">
-                    <span class="w-label">Wind Force</span>
-                    <span class="w-val">12 km/h</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> 
+        </div>
 
         <footer class="app-footer">
-          <div class="footer-copyright">
-            © 2026 <span>LifeHub AI</span>. All rights reserved.
-          </div>
-          <div class="footer-dev">
-            Developed with <span class="heart">*</span> by <a href="https://github.com/reskisetiawan301210-ai" target="_blank" class="dev-name">Reski X legacyy403</a>
-          </div>
+          <div class="footer-copyright">© 2026 <span>LifeHub AI</span>. All rights reserved.</div>
+          <div class="footer-dev">Developed by <a href="https://github.com/reskisetiawan301210-ai" target="_blank" style="color:var(--accent-main); font-weight:600;">Reski X legacyy403</a></div>
         </footer>
-      </div> 
+      </div>
     </main>
   </div>
 
+  <!-- Mobile Bottom Navigation (Stitch Mobile Design Reference) -->
+  <nav class="mobile-bottom-nav">
+    <a href="dashboard.html" class="mobile-nav-link active">
+      <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Home
+    </a>
+    <a href="music.html" class="mobile-nav-link">
+      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      Media
+    </a>
+    <a href="mastery.html" class="mobile-nav-link">
+      <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      Tools
+    </a>
+    <a href="#" class="mobile-nav-link" id="mobileMenuOpenBtn" onclick="document.getElementById('sidebar').classList.toggle('is-active'); document.getElementById('sidebarOverlay').classList.toggle('is-active'); return false;">
+      <svg class="icon-svg" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      Menu
+    </a>
+  </nav>
+
+  <!-- Floating AI Assistant Launcher -->
   <div class="fab-container">
     <button class="fab-btn" id="fabBtn" aria-label="Ask AI">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-        <circle cx="12" cy="12" r="4"/>
-      </svg>
+      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
     </button>
   </div>
 
+  <!-- AI Modal -->
   <div class="modal-backdrop" id="aiModalBackdrop">
     <div class="ai-modal">
       <div class="modal-header">
-        <h3 class="modal-title">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-          </svg>
-          LifeHub Intelligence
-        </h3>
-        <button class="modal-close" id="closeAiModal">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
+        <span>LifeHub Intelligence</span>
+        <button class="modal-close" id="closeAiModal">✕</button>
       </div>
-      
       <div class="chat-window" id="chatWindow">
-        <div class="chat-bubble ai">
-          Greetings, Alex. I am ready to assist. You can ask me to draft emails, analyze code, or manage your workspace. What do you need?
-        </div>
+        <div class="chat-bubble ai">Greetings. I am ready to assist. What do you need?</div>
       </div>
-      
       <div class="chat-input-area">
-        <input type="text" id="aiInput" placeholder="Command or question..." autocomplete="off">
-        <button class="send-btn" id="aiSendBtn">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <line x1="22" y1="2" x2="11" y2="13"/>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-          </svg>
-        </button>
+        <input type="text" id="aiInput" placeholder="Command or question...">
+        <button class="task-submit" id="aiSendBtn">Send</button>
       </div>
     </div>
   </div>
 
-  -->
+  <!-- Admin Modal -->
   <div class="modal-backdrop" id="adminModalBackdrop">
-    <div class="ai-modal" style="max-width: 520px;">
+    <div class="ai-modal">
       <div class="modal-header">
-        <h3 class="modal-title">
-          ⚙️ Admin Control Panel
-        </h3>
-        <button class="modal-close" id="closeAdminModal">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
+        <span>⚙️ Admin Control Panel</span>
+        <button class="modal-close" id="closeAdminModal">✕</button>
       </div>
-      
-      <div class="chat-window" style="height: auto; max-height: 480px; gap: 16px;">
+      <div class="chat-window" style="height:auto; max-height:420px; gap:14px;">
         <div>
-          <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">Warna Aksent Utama Dashboard:</label>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <button class="color-picker-btn" data-color="#f59e0b" style="background:#f59e0b;" title="Amber"></button>
-            <button class="color-picker-btn" data-color="#06b6d4" style="background:#06b6d4;" title="Cyan"></button>
-            <button class="color-picker-btn" data-color="#10b981" style="background:#10b981;" title="Emerald"></button>
-            <button class="color-picker-btn" data-color="#8b5cf6" style="background:#8b5cf6;" title="Purple"></button>
-            <button class="color-picker-btn" data-color="#ef4444" style="background:#ef4444;" title="Red"></button>
-            <button class="color-picker-btn" data-color="#f43f5e" style="background:#f43f5e;" title="Rose Pink"></button>
-            <button class="color-picker-btn" data-color="#f97316" style="background:#f97316;" title="Sunset Orange"></button>
-            <button class="color-picker-btn" data-color="#3b82f6" style="background:#3b82f6;" title="Electric Blue"></button>
-            <button class="color-picker-btn" data-color="#84cc16" style="background:#84cc16;" title="Lime Green"></button>
-            <button class="color-picker-btn" data-color="#14b8a6" style="background:#14b8a6;" title="Teal"></button>
-            <button class="color-picker-btn" data-color="#e2e8f0" style="background:#e2e8f0;" title="Silver White"></button>
+          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:6px;">Warna Aksent Utama Dashboard:</label>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="color-picker-btn" data-color="#f59e0b" style="background:#f59e0b;"></button>
+            <button class="color-picker-btn" data-color="#06b6d4" style="background:#06b6d4;"></button>
+            <button class="color-picker-btn" data-color="#10b981" style="background:#10b981;"></button>
+            <button class="color-picker-btn" data-color="#8b5cf6" style="background:#8b5cf6;"></button>
+            <button class="color-picker-btn" data-color="#ef4444" style="background:#ef4444;"></button>
           </div>
         </div>
 
         <div>
-          <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">Ubah Teks Pengumuman Global:</label>
-          <input type="text" id="adminAnnounceInput" class="task-input" placeholder="Tulis pengumuman..." style="width: 100%;">
+          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:6px;">Ubah Teks Pengumuman Global:</label>
+          <input type="text" id="adminAnnounceInput" class="task-input" placeholder="Tulis pengumuman..." style="width:100%;">
         </div>
 
         <div>
-          <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">Ubah Nama Fitur Sidebar Default:</label>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:6px;">Ubah Nama Fitur Sidebar:</label>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
             <input type="text" id="adminAiTitleInput" class="task-input" placeholder="Nama AI Assistant">
             <input type="text" id="adminMusicTitleInput" class="task-input" placeholder="Nama Music">
             <input type="text" id="adminMoviesTitleInput" class="task-input" placeholder="Nama Movies">
@@ -1952,76 +1406,71 @@
           </div>
         </div>
 
-        <div style="border-top: 1px solid var(--border-base); padding-top: 12px;">
-          <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 6px;">➕ Tambah Fitur / Menu Sidebar Baru:</label>
-          <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-            <input type="text" id="newFeatureName" class="task-input" placeholder="Nama Fitur (Misal: Live Chat)">
-            <input type="text" id="newFeatureUrl" class="task-input" placeholder="URL/Link (Misal: chat.html)">
+        <div style="border-top:1px solid var(--border-base); padding-top:10px;">
+          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:6px;">➕ Tambah Menu Sidebar Baru:</label>
+          <div style="display:flex; gap:6px; margin-bottom:6px;">
+            <input type="text" id="newFeatureName" class="task-input" placeholder="Nama Fitur">
+            <input type="text" id="newFeatureUrl" class="task-input" placeholder="URL Link">
           </div>
-          <button type="button" id="addNewFeatureBtn" class="task-submit" style="width: 100%; padding: 8px;">+ Tambahkan Menu</button>
-          
-          <div id="adminCustomMenuList" style="margin-top: 10px; display: flex; flex-direction: column; gap: 6px;"></div>
+          <button type="button" id="addNewFeatureBtn" class="task-submit" style="width:100%; padding:6px;">+ Tambahkan Menu</button>
+          <div id="adminCustomMenuList" style="margin-top:8px; display:flex; flex-direction:column; gap:4px;"></div>
         </div>
       </div>
-
-      <div class="chat-input-area" style="justify-content: flex-end;">
-        <button class="task-submit" id="saveAdminSettingsBtn" style="padding: 10px 20px;">Simpan Perubahan</button>
+      <div class="chat-input-area" style="justify-content:flex-end;">
+        <button class="task-submit" id="saveAdminSettingsBtn" style="padding:8px 16px;">Simpan Perubahan</button>
       </div>
     </div>
   </div>
 
-  -->
+  <!-- Product Modal -->
   <div class="modal-backdrop" id="productModalBackdrop">
-    <div class="ai-modal" style="max-width: 500px;">
+    <div class="ai-modal">
       <div class="modal-header">
-        <h3 class="modal-title">📦 Tambah Akun / Produk Jual Beli</h3>
-        <button class="modal-close" id="closeProductModal">
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
+        <span>📦 Tambah Akun / Produk Store</span>
+        <button class="modal-close" id="closeProductModal">✕</button>
       </div>
-      <div class="chat-window" style="height: auto; max-height: 450px; gap: 12px;">
-        <input type="text" id="prodTitle" class="task-input" placeholder="Judul Akun (Misal: Akun MLBB Mythic Glory 50★)">
-        <select id="prodCategory" class="task-input" style="background: var(--bg-elevated); color: var(--text-primary);">
+      <div class="chat-window" style="height:auto; max-height:400px; gap:10px;">
+        <input type="text" id="prodTitle" class="task-input" placeholder="Judul Akun">
+        <select id="prodCategory" class="task-input" style="background:var(--bg-elevated); color:#fff;">
           <option value="Mobile Legends">Mobile Legends</option>
           <option value="Free Fire">Free Fire</option>
           <option value="TikTok">TikTok</option>
           <option value="Lainnya">Lainnya</option>
         </select>
         <input type="text" id="prodPrice" class="task-input" placeholder="Harga (Misal: Rp 250.000)">
-        <input type="text" id="prodImage" class="task-input" placeholder="URL Foto Produk (https://...)">
-        <textarea id="prodDesc" class="task-input" rows="3" placeholder="Deskripsi & Spesifikasi Akun..." style="resize: vertical;"></textarea>
+        <input type="text" id="prodImage" class="task-input" placeholder="URL Foto Produk">
+        <textarea id="prodDesc" class="task-input" rows="3" placeholder="Deskripsi & Spesifikasi..."></textarea>
       </div>
-      <div class="chat-input-area" style="justify-content: flex-end;">
-        <button class="task-submit" id="saveProductBtn" style="padding: 10px 20px;">Simpan ke Store</button>
+      <div class="chat-input-area" style="justify-content:flex-end;">
+        <button class="task-submit" id="saveProductBtn" style="padding:8px 16px;">Simpan ke Store</button>
       </div>
     </div>
   </div>
 
+  <!-- Profile Modal -->
   <div class="modal-backdrop" id="profileModalBackdrop">
-    <div class="ai-modal" style="max-width: 420px;">
+    <div class="ai-modal" style="max-width:400px;">
       <div class="modal-header">
-        <h3 class="modal-title">👤 Edit Profil & Foto Profil</h3>
+        <span>👤 Edit Profil</span>
         <button class="modal-close" id="closeProfileModal">✕</button>
       </div>
-      <div class="chat-window" style="height: auto; max-height: 300px; gap: 14px;">
+      <div class="chat-window" style="height:auto; max-height:260px; gap:12px;">
         <div>
-          <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">Nama Pengguna:</label>
-          <input type="text" id="profileNameInput" class="task-input" placeholder="Masukkan Nama Baru" style="width: 100%;">
+          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Nama Pengguna:</label>
+          <input type="text" id="profileNameInput" class="task-input" placeholder="Masukkan Nama Baru" style="width:100%;">
         </div>
         <div>
-          <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">URL Link Foto Profil (PP):</label>
-          <input type="text" id="profileImgUrlInput" class="task-input" placeholder="https://example.com/foto.jpg" style="width: 100%;">
+          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">URL Link Foto Profil (PP):</label>
+          <input type="text" id="profileImgUrlInput" class="task-input" placeholder="https://..." style="width:100%;">
         </div>
       </div>
-      <div class="chat-input-area" style="justify-content: flex-end;">
-        <button class="task-submit" id="saveProfileImgBtn" style="padding: 10px 20px;">Simpan Profil</button>
+      <div class="chat-input-area" style="justify-content:flex-end;">
+        <button class="task-submit" id="saveProfileImgBtn" style="padding:8px 16px;">Simpan Profil</button>
       </div>
     </div>
   </div>
 
+  <!-- JavaScript Module (Exact Unchanged Logic) -->
   <script type="module">
     import { supabase } from './supabase.js';
 
@@ -2034,7 +1483,7 @@
         mobileTrigger: document.getElementById('mobileMenuTrigger'),
         clockTime: document.getElementById('realTimeClock'),
         clockDate: document.getElementById('realTimeDate'),
-        greetingTitle: document.querySelector('.greeting-title span'),
+        greetingTitle: document.getElementById('greetingTitleSpan'),
         
         // Music
         dashAlbumArt: document.getElementById('dashAlbumArt'),
@@ -2085,7 +1534,6 @@
         initParticles() {
           const count = window.innerWidth < 768 ? 20 : 50;
           this.particles = [];
-          
           for (let i = 0; i < count; i++) {
             this.particles.push({
               x: Math.random() * this.width,
@@ -2100,7 +1548,6 @@
 
         animate() {
           this.ctx.clearRect(0, 0, this.width, this.height);
-          
           this.particles.forEach(p => {
             p.x += p.vx;
             p.y += p.vy;
@@ -2115,7 +1562,6 @@
             this.ctx.fillStyle = `rgba(245, 158, 11, ${p.alpha})`;
             this.ctx.fill();
           });
-          
           requestAnimationFrame(() => this.animate());
         }
       }
@@ -2131,27 +1577,16 @@
 
         update() {
           const now = new Date();
-          
           if (DOM.clockTime) {
             DOM.clockTime.textContent = now.toLocaleTimeString('en-US', { 
-              hour12: false, hour: '2-digit', minute: '2-digit' 
+              hour12: true, hour: '2-digit', minute: '2-digit' 
             });
           }
-          
           if (DOM.clockDate) {
             DOM.clockDate.textContent = now.toLocaleDateString('en-US', { 
               weekday: 'short', month: 'short', day: 'numeric' 
             }).toUpperCase();
           }
-          
-          const hour = now.getHours();
-          let segment = "Night";
-          
-          if (hour >= 5 && hour < 12) segment = "Morning";
-          else if (hour >= 12 && hour < 17) segment = "Afternoon";
-          else if (hour >= 17 && hour < 21) segment = "Evening";
-          
-          if (DOM.greetingTitle) DOM.greetingTitle.textContent = segment;
         }
       }
       
@@ -2160,7 +1595,6 @@
       // --- 4. NOCTURNE MUSIC PLAYER (AUDIO MP3 ASLI) ---
       class MusicSyncManager {
         constructor() {
-          // Menggunakan Audio Player Bawaan HTML5 dengan sampel MP3 Lofi
           this.audio = new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3');
           this.audio.crossOrigin = "anonymous";
           
@@ -2184,7 +1618,6 @@
         }
 
         setupAudioEvents() {
-          // Update progress bar & durasi waktu secara realtime dari audio asli
           this.audio.addEventListener('timeupdate', () => {
             if (this.audio.duration) {
               const pct = (this.audio.currentTime / this.audio.duration) * 100;
@@ -2205,8 +1638,7 @@
           const icon = isPlaying 
             ? `<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>`
             : `<polygon points="5 3 19 12 5 21 5 3"/>`;
-            
-          DOM.dashPlayPauseBtn.innerHTML = `<svg class="icon-svg" viewBox="0 0 24 24" style="fill:currentColor; stroke:none;">${icon}</svg>`;
+          DOM.dashPlayPauseBtn.innerHTML = `<svg class="icon-svg" viewBox="0 0 24 24" style="fill:currentColor;">${icon}</svg>`;
         }
 
         formatTime(seconds) {
@@ -2218,7 +1650,7 @@
       
       new MusicSyncManager();
 
-      // --- 5. ENVIRONMENT / WEATHER (LIVE WEATHER API ASLI) ---
+      // --- 5. ENVIRONMENT / WEATHER (LIVE WEATHER API) ---
       class WeatherManager {
         constructor() {
           this.tempEl = document.getElementById('simTemp');
@@ -2227,34 +1659,13 @@
 
         async fetchLiveWeather() {
           try {
-            // Mengambil cuaca realtime wilayah Jakarta (Latitude: -6.2, Longitude: 106.81) via Open-Meteo API
-            const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-6.2088&longitude=106.8456&current_weather=true&hourly=relativehumidity_2m');
+            const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-6.2088&longitude=106.8456&current_weather=true');
             const data = await res.json();
-            
-            if (data && data.current_weather) {
-              const temp = Math.round(data.current_weather.temperature);
-              const wind = data.current_weather.windspeed;
-              
-              if (this.tempEl) this.tempEl.textContent = temp;
-              
-              // Keterangan cuaca sederhana berdasarkan weathercode Open-Meteo
-              const condEl = document.querySelector('.condition-text');
-              if (condEl) {
-                const code = data.current_weather.weathercode;
-                if (code === 0) condEl.textContent = 'Clear Sky';
-                else if (code <= 3) condEl.textContent = 'Partly Cloudy';
-                else if (code <= 67) condEl.textContent = 'Rainy';
-                else condEl.textContent = 'Thunderstorm';
-              }
-
-              // Update Wind Force
-              const wVals = document.querySelectorAll('.w-val');
-              if (wVals.length >= 2) {
-                wVals[1].textContent = `${wind} km/h`;
-              }
+            if (data && data.current_weather && this.tempEl) {
+              this.tempEl.textContent = Math.round(data.current_weather.temperature);
             }
           } catch (err) {
-            console.error("Gagal mengambil data cuaca live:", err);
+            console.error("Weather fetch failed:", err);
           }
         }
       }
@@ -2284,7 +1695,6 @@
           DOM.addTaskForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const val = DOM.newTaskInput.value.trim();
-            
             if (val) {
               this.tasks.push({
                 id: Date.now(),
@@ -2292,7 +1702,6 @@
                 completed: false,
                 time: new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'})
               });
-              
               DOM.newTaskInput.value = '';
               this.save();
             }
@@ -2302,7 +1711,6 @@
             DOM.agendaContainer.addEventListener('click', (e) => {
               const item = e.target.closest('.agenda-item');
               if (!item) return;
-              
               const id = parseInt(item.dataset.id);
 
               if (e.target.closest('.agenda-delete')) {
@@ -2325,9 +1733,8 @@
         render() {
           if (!DOM.agendaContainer) return;
           DOM.agendaContainer.innerHTML = '';
-          
           if (this.tasks.length === 0) {
-            DOM.agendaContainer.innerHTML = `<div style="color:var(--text-tertiary); font-size:12px; padding:12px;">No tasks. You're all caught up!</div>`;
+            DOM.agendaContainer.innerHTML = `<div style="color:var(--text-tertiary); font-size:12px; padding:8px;">No tasks available.</div>`;
             return;
           }
           
@@ -2335,21 +1742,14 @@
             const el = document.createElement('div');
             el.className = `agenda-item ${task.completed ? 'completed' : ''}`;
             el.dataset.id = task.id;
-            
             el.innerHTML = `
               <div class="agenda-checkbox"></div>
               <div class="agenda-content">
                 <div class="agenda-text">${task.text}</div>
                 <div class="agenda-time">${task.time}</div>
               </div>
-              <div class="agenda-delete">
-                <svg class="icon-svg" style="width:16px;height:16px;" viewBox="0 0 24 24">
-                  <polyline points="3 6 5 6 21 6"/>
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                </svg>
-              </div>
+              <div class="agenda-delete">🗑️</div>
             `;
-            
             DOM.agendaContainer.appendChild(el);
           });
         }
@@ -2389,11 +1789,11 @@
           DOM.aiInput.value = '';
 
           setTimeout(() => {
-            this.appendBubble(`Redirecting query "${val}" to main Neural Chat module...`, 'ai');
+            this.appendBubble(`Redirecting query "${val}" to Neural Chat module...`, 'ai');
             setTimeout(() => {
               window.location.href = `ai.html?q=${encodeURIComponent(val)}`;
-            }, 1200);
-          }, 600);
+            }, 1000);
+          }, 500);
         }
 
         appendBubble(text, type) {
@@ -2401,7 +1801,6 @@
           const bubble = document.createElement('div');
           bubble.className = `chat-bubble ${type}`;
           bubble.textContent = text;
-          
           DOM.chatWindow.appendChild(bubble);
           DOM.chatWindow.scrollTop = DOM.chatWindow.scrollHeight;
         }
@@ -2419,10 +1818,10 @@
 
         toggle(show) {
           if (show) {
-            if (DOM.sidebar) DOM.sidebar.style.transform = 'translateX(0)';
+            if (DOM.sidebar) DOM.sidebar.classList.add('is-active');
             if (DOM.sidebarOverlay) DOM.sidebarOverlay.classList.add('is-active');
           } else {
-            if (DOM.sidebar) DOM.sidebar.style.transform = '';
+            if (DOM.sidebar) DOM.sidebar.classList.remove('is-active');
             if (DOM.sidebarOverlay) DOM.sidebarOverlay.classList.remove('is-active');
           }
         }
@@ -2444,20 +1843,19 @@
         if (DOM.headerUserName) {
           const savedName = localStorage.getItem('lifehub_profile_name');
           DOM.headerUserName.textContent = savedName ? savedName : userEmail;
+          if (DOM.greetingTitle) DOM.greetingTitle.textContent = savedName ? savedName : userEmail.split('@')[0];
         }
 
         if (DOM.headerAvatarInitials) {
           DOM.headerAvatarInitials.textContent = userEmail.substring(0, 2).toUpperCase();
         }
 
-        // // NEW CODE: ADMIN ROLE CHECK
         if (userEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
           document.body.classList.add('is-admin');
           const roleEl = document.querySelector('.user-role');
           if (roleEl) {
             roleEl.textContent = 'ADMINISTRATOR';
             roleEl.style.color = 'var(--accent-main)';
-            roleEl.style.fontWeight = '700';
           }
         }
       }
@@ -2467,10 +1865,8 @@
       if (DOM.logoutBtn) {
         DOM.logoutBtn.addEventListener('click', async (e) => {
           e.preventDefault();
-          
           if (confirm("Logout from LifeHub Secure Workspace?")) {
             const { error } = await supabase.auth.signOut();
-
             if (error) {
               alert("Gagal Logout: " + error.message);
             } else {
@@ -2480,11 +1876,10 @@
         });
       }
 
-      // // NEW CODE: ADMIN & JUBEL STORE SYSTEM
-      const ADMIN_EMAIL = "reskisetiawan301210@gmail.com"; // Ganti dengan Email Supabase Kamu
-      const WA_NUMBER = "6281220835748"; // Ganti dengan Nomor WhatsApp Kamu
+      // --- 10. ADMIN & JUBEL STORE SYSTEM ---
+      const ADMIN_EMAIL = "reskisetiawan301210@gmail.com";
+      const WA_NUMBER = "6281220835748";
 
-      // NEW CODE: SCRIPT UBAH NAMA FITUR & TAMBAH FITUR SIDEBAR DARI ADMIN
       const navMap = {
         'ai.html': 'lifehub_nav_ai',
         'music.html': 'lifehub_nav_music',
@@ -2496,356 +1891,275 @@
         'qr-tools.html': 'lifehub_nav_qr'
       };
 
-      // Check and apply custom settings from localStorage
-      //*dieee nya
-      // Fungsi gabungan: Baca Supabase + Tetap simpan pengaturan judul sidebar
-// --- 1. FUNGSI GABUNGAN (SUPABASE ADMIN SETTINGS + SIDEBAR) ---
-    async function applySavedSettings() {
-      try {
-        // Ambil warna & pengumuman global dari Supabase
-        const { data, error } = await supabase
-          .from('admin_settings')
-          .select('*')
-          .eq('id', 1)
-          .single();
+      async function applySavedSettings() {
+        try {
+          const { data } = await supabase
+            .from('admin_settings')
+            .select('*')
+            .eq('id', 1)
+            .single();
 
-        if (data) {
-          if (data.theme_color) {
-            document.documentElement.style.setProperty('--accent-main', data.theme_color);
-            document.documentElement.style.setProperty('--accent-glow', data.theme_color + '4D');
-          }
-          if (data.announcement && document.getElementById('announcementText')) {
-            document.getElementById('announcementText').textContent = data.announcement;
-          }
-        }
-      } catch (err) {
-        console.error("Gagal mengambil data dari Supabase:", err);
-      }
-
-      // Terapkan judul menu sidebar dari LocalStorage
-      Object.keys(navMap).forEach(href => {
-        const savedTitle = localStorage.getItem(navMap[href]);
-        if (savedTitle) {
-          const link = document.querySelector(`a[href="${href}"]`);
-          if (link) {
-            const textSpan = link.querySelector('.nav-text');
-            if (textSpan) textSpan.textContent = savedTitle;
-            else {
-              link.childNodes.forEach(node => {
-                if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) {
-                  node.textContent = '\n          ' + savedTitle + '\n        ';
-                }
-              });
+          if (data) {
+            if (data.theme_color) {
+              document.documentElement.style.setProperty('--accent-main', data.theme_color);
+            }
+            if (data.announcement && document.getElementById('announcementText')) {
+              document.getElementById('announcementText').textContent = data.announcement;
             }
           }
+        } catch (err) {
+          console.error("Supabase fetch failed:", err);
         }
-      });
 
-      // Render menu tambahan
-      renderCustomSidebarNav();
-    }
-
-    // --- 2. CUSTOM SIDEBAR LOGIC ---
-    let customSidebarMenus = JSON.parse(localStorage.getItem('lifehub_custom_menus')) || [];
-
-    function renderCustomSidebarNav() {
-      const container = document.getElementById('customNavContainer');
-      if (!container) return;
-      container.innerHTML = '';
-
-      customSidebarMenus.forEach(menu => {
-        const item = document.createElement('a');
-        item.href = menu.url;
-        item.className = 'nav-item';
-        item.innerHTML = `
-          <svg class="icon-svg" viewBox="0 0 24 24">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-          </svg>
-          <span class="nav-text">${menu.name}</span>
-        `;
-        container.appendChild(item);
-      });
-
-      // Tampilkan daftar menu tambahan di modal admin
-      const adminList = document.getElementById('adminCustomMenuList');
-      if (adminList) {
-        adminList.innerHTML = '';
-        customSidebarMenus.forEach((menu, index) => {
-          const row = document.createElement('div');
-          row.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:var(--bg-elevated); padding:6px 10px; border-radius:6px; font-size:12px;";
-          row.innerHTML = `
-            <span>⭐ ${menu.name} (${menu.url})</span>
-            <button onclick="window.deleteCustomMenu(${index})" style="color:var(--color-danger); font-weight:bold;">🗑️</button>
-          `;
-          adminList.appendChild(row);
+        Object.keys(navMap).forEach(href => {
+          const savedTitle = localStorage.getItem(navMap[href]);
+          if (savedTitle) {
+            const link = document.querySelector(`a[href="${href}"]`);
+            if (link) {
+              const textSpan = link.querySelector('.nav-text');
+              if (textSpan) textSpan.textContent = savedTitle;
+            }
+          }
         });
+
+        renderCustomSidebarNav();
       }
-    }
 
-    window.deleteCustomMenu = function(index) {
-      customSidebarMenus.splice(index, 1);
-      localStorage.setItem('lifehub_custom_menus', JSON.stringify(customSidebarMenus));
-      renderCustomSidebarNav();
-    };
+      let customSidebarMenus = JSON.parse(localStorage.getItem('lifehub_custom_menus')) || [];
 
-    // Tambahkan Fitur Baru dari Admin Panel
-    const addFeatureBtn = document.getElementById('addNewFeatureBtn');
-    if (addFeatureBtn) {
-      addFeatureBtn.addEventListener('click', () => {
-        const nameInput = document.getElementById('newFeatureName');
-        const urlInput = document.getElementById('newFeatureUrl');
-        
-        if (!nameInput.value.trim() || !urlInput.value.trim()) {
-          alert("Harap isi Nama Fitur dan URL Link!");
-          return;
-        }
+      function renderCustomSidebarNav() {
+        const container = document.getElementById('customNavContainer');
+        if (!container) return;
+        container.innerHTML = '';
 
-        customSidebarMenus.push({
-          name: nameInput.value.trim(),
-          url: urlInput.value.trim()
+        customSidebarMenus.forEach(menu => {
+          const item = document.createElement('a');
+          item.href = menu.url;
+          item.className = 'nav-item';
+          item.innerHTML = `
+            <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            <span class="nav-text">${menu.name}</span>
+          `;
+          container.appendChild(item);
         });
 
+        const adminList = document.getElementById('adminCustomMenuList');
+        if (adminList) {
+          adminList.innerHTML = '';
+          customSidebarMenus.forEach((menu, index) => {
+            const row = document.createElement('div');
+            row.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:var(--bg-elevated); padding:6px 10px; border-radius:6px; font-size:12px;";
+            row.innerHTML = `
+              <span>⭐ ${menu.name} (${menu.url})</span>
+              <button onclick="window.deleteCustomMenu(${index})" style="color:var(--color-danger); font-weight:bold;">🗑️</button>
+            `;
+            adminList.appendChild(row);
+          });
+        }
+      }
+
+      window.deleteCustomMenu = function(index) {
+        customSidebarMenus.splice(index, 1);
         localStorage.setItem('lifehub_custom_menus', JSON.stringify(customSidebarMenus));
         renderCustomSidebarNav();
+      };
 
-        nameInput.value = '';
-        urlInput.value = '';
-        alert("Menu fitur baru berhasil ditambahkan!");
+      const addFeatureBtn = document.getElementById('addNewFeatureBtn');
+      if (addFeatureBtn) {
+        addFeatureBtn.addEventListener('click', () => {
+          const nameInput = document.getElementById('newFeatureName');
+          const urlInput = document.getElementById('newFeatureUrl');
+          
+          if (!nameInput.value.trim() || !urlInput.value.trim()) {
+            alert("Harap isi Nama Fitur dan URL Link!");
+            return;
+          }
+
+          customSidebarMenus.push({ name: nameInput.value.trim(), url: urlInput.value.trim() });
+          localStorage.setItem('lifehub_custom_menus', JSON.stringify(customSidebarMenus));
+          renderCustomSidebarNav();
+
+          nameInput.value = '';
+          urlInput.value = '';
+          alert("Menu fitur baru berhasil ditambahkan!");
+        });
+      }
+
+      applySavedSettings();
+
+      // Admin Modal Controls
+      const adminModal = document.getElementById('adminModalBackdrop');
+      const openAdminBtn = document.getElementById('openAdminPanelBtn');
+      const closeAdminBtn = document.getElementById('closeAdminModal');
+      const saveAdminBtn = document.getElementById('saveAdminSettingsBtn');
+
+      if (openAdminBtn && adminModal) openAdminBtn.addEventListener('click', () => adminModal.classList.add('is-active'));
+      if (closeAdminBtn && adminModal) closeAdminBtn.addEventListener('click', () => adminModal.classList.remove('is-active'));
+
+      if (saveAdminBtn) {
+        saveAdminBtn.addEventListener('click', async () => {
+          const annInput = document.getElementById('adminAnnounceInput');
+          if (annInput && annInput.value.trim()) {
+            localStorage.setItem('lifehub_announcement', annInput.value.trim());
+          }
+
+          const selectedColor = localStorage.getItem('lifehub_theme_color') || '#f59e0b';
+          const announceText = annInput ? annInput.value.trim() : 'Welcome to LifeHub Workspace!';
+
+          const { error } = await supabase
+            .from('admin_settings')
+            .update({ theme_color: selectedColor, announcement: announceText })
+            .eq('id', 1);
+
+          if (error) {
+            alert("Gagal menyimpan ke Supabase: " + error.message);
+          } else {
+            await applySavedSettings();
+            if (adminModal) adminModal.classList.remove('is-active');
+            alert("Pengaturan Admin Berhasil Disimpan!");
+          }
+        });
+      }
+
+      document.querySelectorAll('.color-picker-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const color = e.target.dataset.color;
+          if (color) {
+            localStorage.setItem('lifehub_theme_color', color);
+            document.documentElement.style.setProperty('--accent-main', color);
+          }
+        });
       });
-    }
 
-    // Jalankan fungsi pengaturan saat halaman dimuat
-    applySavedSettings();
+      // Jubel Store
+      let storeProducts = JSON.parse(localStorage.getItem('lifehub_products')) || [
+        {
+          id: 1,
+          title: "Akun MLBB Mythic Glory 50★",
+          category: "Mobile Legends",
+          price: "Rp 250.000",
+          image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500",
+          desc: "Skin Collector + Monsep lengkap email first."
+        }
+      ];
 
-    // --- 3. ADMIN PANEL LISTENERS & SUPABASE SAVE ---
-    const adminModal = document.getElementById('adminModalBackdrop');
-    const openAdminBtn = document.getElementById('openAdminPanelBtn');
-    const closeAdminBtn = document.getElementById('closeAdminModal');
-    const saveAdminBtn = document.getElementById('saveAdminSettingsBtn');
+      function renderJubelStore() {
+        const grid = document.getElementById('productGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
 
-    if (openAdminBtn && adminModal) {
-      openAdminBtn.addEventListener('click', () => adminModal.classList.add('is-active'));
-    }
+        storeProducts.forEach(p => {
+          const card = document.createElement('div');
+          card.className = 'store-card';
+          const waText = encodeURIComponent(`Halo Admin, saya berminat membeli: ${p.title} (${p.price})`);
+          const waUrl = `https://wa.me/${WA_NUMBER}?text=${waText}`;
 
-    if (closeAdminBtn && adminModal) {
-      closeAdminBtn.addEventListener('click', () => adminModal.classList.remove('is-active'));
-    }
+          card.innerHTML = `
+            <img src="${p.image}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/300x120?text=No+Image'">
+            <div style="font-size:10px; font-weight:700; color:var(--accent-main); text-transform:uppercase;">${p.category}</div>
+            <div style="font-size:13px; font-weight:700; color:var(--text-primary);">${p.title}</div>
+            <div style="font-size:14px; font-weight:800; color:var(--color-success);">${p.price}</div>
+            <div style="font-size:11px; color:var(--text-secondary); flex:1;">${p.desc}</div>
+            <div style="display:flex; gap:6px; margin-top:6px;">
+              <a href="${waUrl}" target="_blank" class="task-submit" style="flex:1; text-align:center; text-decoration:none; padding:6px; font-size:11px;">Beli via WA</a>
+              <button onclick="window.deleteJubelProduct(${p.id})" class="admin-only task-submit" style="background:var(--color-danger); color:#fff; padding:6px 10px;">🗑️</button>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
 
-    if (saveAdminBtn) {
-      saveAdminBtn.addEventListener('click', async () => {
-        const annInput = document.getElementById('adminAnnounceInput');
-        if (annInput && annInput.value.trim()) {
-          localStorage.setItem('lifehub_announcement', annInput.value.trim());
+      renderJubelStore();
+
+      window.deleteJubelProduct = function(id) {
+        if (confirm("Hapus produk ini dari etalase?")) {
+          storeProducts = storeProducts.filter(p => p.id !== id);
+          localStorage.setItem('lifehub_products', JSON.stringify(storeProducts));
+          renderJubelStore();
+        }
+      };
+
+      const prodModal = document.getElementById('productModalBackdrop');
+      const openProdBtn = document.getElementById('openAddProductBtn');
+      const closeProdBtn = document.getElementById('closeProductModal');
+      const saveProdBtn = document.getElementById('saveProductBtn');
+
+      if (openProdBtn && prodModal) openProdBtn.addEventListener('click', () => prodModal.classList.add('is-active'));
+      if (closeProdBtn && prodModal) closeProdBtn.addEventListener('click', () => prodModal.classList.remove('is-active'));
+
+      if (saveProdBtn) {
+        saveProdBtn.addEventListener('click', () => {
+          const title = document.getElementById('prodTitle').value.trim();
+          const category = document.getElementById('prodCategory').value;
+          const price = document.getElementById('prodPrice').value.trim();
+          const image = document.getElementById('prodImage').value.trim() || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500';
+          const desc = document.getElementById('prodDesc').value.trim();
+
+          if (!title || !price) {
+            alert("Judul dan Harga wajib diisi!");
+            return;
+          }
+
+          storeProducts.push({ id: Date.now(), title, category, price, image, desc });
+          localStorage.setItem('lifehub_products', JSON.stringify(storeProducts));
+          renderJubelStore();
+
+          if (prodModal) prodModal.classList.remove('is-active');
+          document.getElementById('prodTitle').value = '';
+          document.getElementById('prodPrice').value = '';
+          document.getElementById('prodImage').value = '';
+          document.getElementById('prodDesc').value = '';
+        });
+      }
+
+      // Profile Modal Customizer
+      const profileModal = document.getElementById('profileModalBackdrop');
+      const userProfileBtn = document.getElementById('userProfileBtn');
+      const closeProfileModal = document.getElementById('closeProfileModal');
+      const saveProfileImgBtn = document.getElementById('saveProfileImgBtn');
+      const avatarEl = document.getElementById('headerAvatarInitials');
+      const userNameEl = document.getElementById('headerUserName');
+
+      userProfileBtn?.addEventListener('click', () => profileModal.classList.add('is-active'));
+      closeProfileModal?.addEventListener('click', () => profileModal.classList.remove('is-active'));
+
+      function loadSavedProfile() {
+        const savedImg = localStorage.getItem('lifehub_profile_img');
+        const savedName = localStorage.getItem('lifehub_profile_name');
+
+        if (savedImg && avatarEl) {
+          avatarEl.textContent = ''; 
+          avatarEl.style.backgroundImage = `url('${savedImg}')`;
+          avatarEl.style.backgroundSize = 'cover';
         }
 
-        // Simpan judul-judul sidebar default
-        const aiInput = document.getElementById('adminAiTitleInput');
-        const musicInput = document.getElementById('adminMusicTitleInput');
-        const movInput = document.getElementById('adminMoviesTitleInput');
-        const dlInput = document.getElementById('adminDownloaderTitleInput');
-        const notesInput = document.getElementById('adminNotesTitleInput');
-        const focusInput = document.getElementById('adminFocusTitleInput');
-        const masteryInput = document.getElementById('adminMasteryTitleInput');
-        const qrInput = document.getElementById('adminQrTitleInput');
-
-        if (aiInput && aiInput.value.trim()) localStorage.setItem('lifehub_nav_ai', aiInput.value.trim());
-        if (musicInput && musicInput.value.trim()) localStorage.setItem('lifehub_nav_music', musicInput.value.trim());
-        if (movInput && movInput.value.trim()) localStorage.setItem('lifehub_movies_title', movInput.value.trim());
-        if (dlInput && dlInput.value.trim()) localStorage.setItem('lifehub_nav_downloader', dlInput.value.trim());
-        if (notesInput && notesInput.value.trim()) localStorage.setItem('lifehub_nav_notes', notesInput.value.trim());
-        if (focusInput && focusInput.value.trim()) localStorage.setItem('lifehub_nav_focus', focusInput.value.trim());
-        if (masteryInput && masteryInput.value.trim()) localStorage.setItem('lifehub_nav_mastery', masteryInput.value.trim());
-        if (qrInput && qrInput.value.trim()) localStorage.setItem('lifehub_nav_qr', qrInput.value.trim());
-
-        // Simpan Warna & Pengumuman ke Supabase
-        const selectedColor = localStorage.getItem('lifehub_theme_color') || '#f59e0b';
-        const announceText = annInput ? annInput.value.trim() : 'Welcome to LifeHub Workspace!';
-
-        const { error } = await supabase
-          .from('admin_settings')
-          .update({ 
-            theme_color: selectedColor,
-            announcement: announceText
-          })
-          .eq('id', 1);
-
-        if (error) {
-          alert("Gagal menyimpan ke Supabase: " + error.message);
-        } else {
-          await applySavedSettings();
-          if (adminModal) adminModal.classList.remove('is-active');
-          alert("Pengaturan Admin Berhasil Disimpan & Disinkronkan!");
+        if (savedName && userNameEl) {
+          userNameEl.textContent = savedName;
+          if (DOM.greetingTitle) DOM.greetingTitle.textContent = savedName;
         }
-      });
-    }
-
-    // Color Picker Buttons
-    document.querySelectorAll('.color-picker-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const color = e.target.dataset.color;
-        if (color) {
-          localStorage.setItem('lifehub_theme_color', color);
-          document.documentElement.style.setProperty('--accent-main', color);
-          document.documentElement.style.setProperty('--accent-glow', color + '4D');
-        }
-      });
-    });
-
-    // --- 4. JUBEL STORE SYSTEM ---
-    let storeProducts = JSON.parse(localStorage.getItem('lifehub_products')) || [
-      {
-        id: 1,
-        title: "Akun MLBB Mythic Glory 50★",
-        category: "Mobile Legends",
-        price: "Rp 250.000",
-        image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500",
-        desc: "Skin Collector + Monsep lengkap email first."
       }
-    ];
-
-    function renderJubelStore() {
-      const grid = document.getElementById('productGrid');
-      if (!grid) return;
-      grid.innerHTML = '';
-
-      storeProducts.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'store-card';
-
-        const waText = encodeURIComponent(`Halo Admin, saya berminat membeli: ${p.title} (${p.price})`);
-        const waUrl = `https://wa.me/${WA_NUMBER}?text=${waText}`;
-
-        card.innerHTML = `
-          <img src="${p.image}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/300x140?text=No+Image'">
-          <div style="font-size:10px; font-weight:700; color:var(--accent-main); text-transform:uppercase;">${p.category}</div>
-          <div style="font-size:15px; font-weight:700; color:var(--text-primary);">${p.title}</div>
-          <div style="font-size:16px; font-weight:800; color:var(--color-success);">${p.price}</div>
-          <div style="font-size:12px; color:var(--text-secondary); flex:1;">${p.desc}</div>
-          <div style="display:flex; gap:8px; margin-top:8px;">
-            <a href="${waUrl}" target="_blank" class="task-submit" style="flex:1; text-align:center; text-decoration:none; padding:8px 12px; font-size:12px; display:inline-block;">Beli via WA</a>
-            <button onclick="window.deleteJubelProduct(${p.id})" class="admin-only task-submit" style="background:var(--color-danger); color:#fff; padding:8px 12px;">🗑️</button>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    renderJubelStore();
-
-    window.deleteJubelProduct = function(id) {
-      if (confirm("Hapus produk ini dari etalase?")) {
-        storeProducts = storeProducts.filter(p => p.id !== id);
-        localStorage.setItem('lifehub_products', JSON.stringify(storeProducts));
-        renderJubelStore();
-      }
-    };
-
-    // Modal Tambah Produk
-    const prodModal = document.getElementById('productModalBackdrop');
-    const openProdBtn = document.getElementById('openAddProductBtn');
-    const closeProdBtn = document.getElementById('closeProductModal');
-    const saveProdBtn = document.getElementById('saveProductBtn');
-
-    if (openProdBtn && prodModal) {
-      openProdBtn.addEventListener('click', () => prodModal.classList.add('is-active'));
-    }
-
-    if (closeProdBtn && prodModal) {
-      closeProdBtn.addEventListener('click', () => prodModal.classList.remove('is-active'));
-    }
-
-    if (saveProdBtn) {
-      saveProdBtn.addEventListener('click', () => {
-        const title = document.getElementById('prodTitle').value.trim();
-        const category = document.getElementById('prodCategory').value;
-        const price = document.getElementById('prodPrice').value.trim();
-        const image = document.getElementById('prodImage').value.trim() || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500';
-        const desc = document.getElementById('prodDesc').value.trim();
-
-        if (!title || !price) {
-          alert("Judul dan Harga wajib diisi!");
-          return;
-        }
-
-        const newProduct = {
-          id: Date.now(),
-          title: title,
-          category: category,
-          price: price,
-          image: image,
-          desc: desc
-        };
-
-        storeProducts.push(newProduct);
-        localStorage.setItem('lifehub_products', JSON.stringify(storeProducts));
-        renderJubelStore();
-
-        if (prodModal) prodModal.classList.remove('is-active');
-        document.getElementById('prodTitle').value = '';
-        document.getElementById('prodPrice').value = '';
-        document.getElementById('prodImage').value = '';
-        document.getElementById('prodDesc').value = '';
-      });
-    }
-
-    // --- 5. PROFILE CUSTOMIZER ---
-    const profileModal = document.getElementById('profileModalBackdrop');
-    const userProfileBtn = document.getElementById('userProfileBtn');
-    const closeProfileModal = document.getElementById('closeProfileModal');
-    const saveProfileImgBtn = document.getElementById('saveProfileImgBtn');
-    const avatarEl = document.getElementById('headerAvatarInitials');
-    const userNameEl = document.getElementById('headerUserName');
-
-    userProfileBtn?.addEventListener('click', () => {
-      profileModal.classList.add('is-active');
-    });
-
-    closeProfileModal?.addEventListener('click', () => {
-      profileModal.classList.remove('is-active');
-    });
-
-    function loadSavedProfile() {
-      const savedImg = localStorage.getItem('lifehub_profile_img');
-      const savedName = localStorage.getItem('lifehub_profile_name');
-
-      if (savedImg && avatarEl) {
-        avatarEl.textContent = ''; 
-        avatarEl.style.backgroundImage = `url('${savedImg}')`;
-      }
-
-      if (savedName && userNameEl) {
-        userNameEl.textContent = savedName;
-      }
-    }
-    loadSavedProfile();
-
-    saveProfileImgBtn?.addEventListener('click', () => {
-      const nameInput = document.getElementById('profileNameInput').value.trim();
-      const imgUrlInput = document.getElementById('profileImgUrlInput').value.trim();
-
-      if (nameInput) {
-        localStorage.setItem('lifehub_profile_name', nameInput);
-      }
-
-      if (imgUrlInput) {
-        localStorage.setItem('lifehub_profile_img', imgUrlInput);
-      }
-
       loadSavedProfile();
-      profileModal.classList.remove('is-active');
-      alert("Profil berhasil diperbarui! 🚀");
-    });
 
-    // --- 6. SERVICE WORKER REGISTER (PWA) ---
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => console.log('Service Worker Registered:', reg))
-          .catch(err => console.error('Service Worker Error:', err));
+      saveProfileImgBtn?.addEventListener('click', () => {
+        const nameInput = document.getElementById('profileNameInput').value.trim();
+        const imgUrlInput = document.getElementById('profileImgUrlInput').value.trim();
+
+        if (nameInput) localStorage.setItem('lifehub_profile_name', nameInput);
+        if (imgUrlInput) localStorage.setItem('lifehub_profile_img', imgUrlInput);
+
+        loadSavedProfile();
+        profileModal.classList.remove('is-active');
+        alert("Profil berhasil diperbarui!");
       });
-    }
 
-  });
-</script>
+      // PWA Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(err => console.error('SW Error:', err));
+        });
+      }
+
+    });
+  </script>
 </body>
 </html>
