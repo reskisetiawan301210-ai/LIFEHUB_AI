@@ -268,7 +268,7 @@
     .header-left, .header-right {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
 
     .mobile-brand {
@@ -334,6 +334,40 @@
     .action-btn:hover {
       color: var(--text-primary);
       background: var(--bg-elevated);
+    }
+
+    .action-btn-auth {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition-snappy);
+      border: none;
+      white-space: nowrap;
+    }
+
+    .action-btn-auth.is-guest {
+      background: var(--accent-main);
+      color: #000;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .action-btn-auth.is-guest:hover {
+      background: var(--accent-hover);
+    }
+
+    .action-btn-auth.is-logged {
+      background: rgba(239, 68, 68, 0.12);
+      color: var(--color-danger);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+    .action-btn-auth.is-logged:hover {
+      background: rgba(239, 68, 68, 0.22);
     }
 
     .badge-indicator {
@@ -1045,13 +1079,19 @@
         </div>
 
         <div class="header-right">
+          <!-- Responsive Header Login/Logout Button -->
+          <button class="action-btn-auth is-guest" id="headerAuthBtn">
+            <span id="headerAuthIcon">🔑</span>
+            <span id="headerAuthText">Sign In</span>
+          </button>
+
           <button class="action-btn admin-only" id="openAdminPanelBtn" title="Admin Settings">⚙️</button>
           <button class="action-btn" title="Notifications">
             <svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             <span class="badge-indicator"></span>
           </button>
 
-          <div class="user-profile" id="userProfileBtn" title="Edit Profile">
+          <div class="user-profile" id="userProfileBtn" title="Profile Options">
             <div class="user-avatar" id="headerAvatarInitials">--</div>
             <div class="user-details">
               <span class="user-name" id="headerUserName">User</span>
@@ -1473,16 +1513,17 @@
         console.error('Auth check error:', err);
       }
 
-      const isGuest = localStorage.getItem('lifehub_guest_mode') === 'true';
-      if (isGuest) {
+      // Check if user explicitly chose guest mode on index.html
+      const isGuestExplicit = localStorage.getItem('lifehub_guest_mode') === 'true';
+      if (isGuestExplicit) {
+        localStorage.removeItem('lifehub_logged_in');
         return { state: AUTH_STATES.GUEST, user: null, isGuest: true };
       }
 
-      const isLocalLoggedIn = localStorage.getItem('lifehub_logged_in') === 'true';
-      if (isLocalLoggedIn) {
-        return { state: AUTH_STATES.AUTHENTICATED, user: null, isGuest: false };
-      }
-
+      // NO AUTO-GUEST FALLBACK: Redirect unauthenticated user directly to index.html
+      localStorage.removeItem('lifehub_logged_in');
+      localStorage.removeItem('lifehub_guest_mode');
+      window.location.replace('index.html');
       return { state: AUTH_STATES.UNAUTHENTICATED, user: null, isGuest: false };
     }
 
@@ -1574,36 +1615,48 @@
     document.addEventListener('DOMContentLoaded', async () => {
 
       let currentAuth = await resolveAuthState();
-
-      if (currentAuth.state === AUTH_STATES.UNAUTHENTICATED) {
-        localStorage.removeItem('lifehub_logged_in');
-        localStorage.removeItem('lifehub_guest_mode');
-        window.location.replace('index.html');
-        return;
-      }
-
       const isGuestMode = currentAuth.isGuest;
+
+      const authBtn = document.getElementById('headerAuthBtn');
+      const authIcon = document.getElementById('headerAuthIcon');
+      const authText = document.getElementById('headerAuthText');
+      const logoutBtnText = document.getElementById('logoutText');
 
       if (isGuestMode) {
         document.querySelectorAll('.lock-badge').forEach(el => el.classList.remove('hidden'));
         
-        const logoutText = document.getElementById('logoutText');
-        if (logoutText) logoutText.textContent = 'Exit Guest Mode';
+        if (logoutBtnText) logoutBtnText.textContent = 'Sign In / Login';
 
         const roleEl = document.getElementById('headerUserRole');
         if (roleEl) {
           roleEl.textContent = 'GUEST ACCESS';
           roleEl.style.color = '#f59e0b';
         }
+
+        if (authBtn) {
+          authBtn.className = 'action-btn-auth is-guest';
+          if (authIcon) authIcon.textContent = '🔑';
+          if (authText) authText.textContent = 'Sign In';
+        }
       } else {
         document.querySelectorAll('.lock-badge').forEach(el => el.classList.add('hidden'));
+
+        if (logoutBtnText) logoutBtnText.textContent = 'Logout Session';
+
+        if (authBtn) {
+          authBtn.className = 'action-btn-auth is-logged';
+          if (authIcon) authIcon.textContent = '🚪';
+          if (authText) authText.textContent = 'Logout';
+        }
       }
 
+      // Intercept clicks on all restricted elements using capture phase (prevents touch/click leak on mobile)
       document.querySelectorAll('[data-restricted="true"]').forEach(el => {
         el.addEventListener('click', (e) => {
           if (isGuestMode) {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
             const featureName = el.getAttribute('data-feature-name') || 'this feature';
             showGuestLockModal(featureName);
             return false;
@@ -1613,7 +1666,7 @@
               window.location.href = targetHref;
             }
           }
-        });
+        }, true);
       });
 
       document.querySelectorAll('.workspace-card:not([data-restricted="true"])').forEach(card => {
@@ -2022,22 +2075,43 @@
         if (event === 'SIGNED_OUT') {
           localStorage.removeItem('lifehub_guest_mode');
           localStorage.removeItem('lifehub_logged_in');
+          localStorage.removeItem('lifehub_profile_name');
           window.location.replace('index.html');
         }
       });
 
-      if (DOM.logoutBtn) {
-        DOM.logoutBtn.addEventListener('click', async (e) => {
-          e.preventDefault();
-          const promptMsg = isGuestMode ? "Exit Guest Mode?" : "Logout from LifeHub Secure Workspace?";
-          if (confirm(promptMsg)) {
+      async function performLogoutOrLogin() {
+        if (isGuestMode) {
+          localStorage.removeItem('lifehub_guest_mode');
+          localStorage.removeItem('lifehub_logged_in');
+          localStorage.removeItem('lifehub_profile_name');
+          window.location.replace('index.html');
+        } else {
+          if (confirm("Logout from LifeHub Secure Workspace?")) {
             localStorage.removeItem('lifehub_guest_mode');
             localStorage.removeItem('lifehub_logged_in');
-            if (!isGuestMode) {
+            localStorage.removeItem('lifehub_profile_name');
+            try {
               await supabase.auth.signOut();
+            } catch (err) {
+              console.error("Signout error:", err);
             }
             window.location.replace('index.html');
           }
+        }
+      }
+
+      if (authBtn) {
+        authBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          performLogoutOrLogin();
+        });
+      }
+
+      if (DOM.logoutBtn) {
+        DOM.logoutBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          performLogoutOrLogin();
         });
       }
 

@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head> 
-
 <meta name="google-site-verification" content="6nyjKV19b3uVtRUSEjqsxiXopP1Px8_blnJuxVgt2Nc" />
-
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>LifeHub AI — Your Life, Orchestrated</title>
@@ -89,6 +87,7 @@
         <button id="btn-guest-login" data-provider="guest" class="w-full rounded-lg border border-white/10 py-2.5 text-sm transition-all duration-300 hover:bg-white/5">
           Continue as guest
         </button>
+        <p class="text-center text-[11px] text-lhmuted mt-1">Guest mode gives you limited access to LifeHub.</p>
 
         <div class="flex justify-between text-xs text-lhmuted pt-1">
           <button data-goto="reset" class="hover:text-lhcyan">Forgot password?</button>
@@ -168,14 +167,12 @@
         console.error('Auth check error:', err);
       }
 
-      const isGuest = localStorage.getItem('lifehub_guest_mode') === 'true';
-      if (isGuest) {
-        return { state: AUTH_STATES.GUEST, user: null };
-      }
+      // Supabase session is null/invalid. Clear logged_in state.
+      localStorage.removeItem('lifehub_logged_in');
 
-      const isLocalLoggedIn = localStorage.getItem('lifehub_logged_in') === 'true';
-      if (isLocalLoggedIn) {
-        return { state: AUTH_STATES.AUTHENTICATED, user: null };
+      const isGuestExplicit = localStorage.getItem('lifehub_guest_mode') === 'true';
+      if (isGuestExplicit) {
+        return { state: AUTH_STATES.GUEST, user: null };
       }
 
       return { state: AUTH_STATES.UNAUTHENTICATED, user: null };
@@ -194,9 +191,11 @@
 
     async function initLoginPage() {
       const auth = await resolveAuthState();
+      // Only redirect to dashboard if explicitly authenticated or explicitly guest
       if (auth.state === AUTH_STATES.AUTHENTICATED || auth.state === AUTH_STATES.GUEST) {
         window.location.replace('dashboard.html');
       }
+      // Otherwise stay on index.html login card
     }
 
     initLoginPage();
@@ -267,7 +266,7 @@
     if (guestBtn) {
       guestBtn.addEventListener('click', () => {
         localStorage.setItem('lifehub_guest_mode', 'true');
-        localStorage.setItem('lifehub_logged_in', 'true');
+        localStorage.removeItem('lifehub_logged_in');
         localStorage.setItem('lifehub_profile_name', 'Guest');
         window.location.replace('dashboard.html');
       });
