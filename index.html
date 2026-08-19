@@ -38,7 +38,7 @@
 </script>
 <link rel="stylesheet" href="/css/styles.css" />
 </head>
-<body data-hub="dashboard" class="font-body min-h-screen flex items-center justify-center px-4">
+<body data-hub="dashboard" class="font-body min-h-screen flex items-center justify-center px-4 bg-[#0B0F19] text-white">
 
   <main class="w-full max-w-md">
 
@@ -47,52 +47,74 @@
       <p class="text-lhmuted text-sm mt-2">Finance, tasks, AI, and entertainment — one workspace.</p>
     </div>
 
-    <div id="auth-portal" class="lh-glass p-8" data-view="login">
+    <div id="auth-portal" class="lh-glass p-8 bg-[#141824]/80 border border-white/10 rounded-2xl backdrop-blur-md" data-view="login">
 
+      <!-- Splash Loader -->
       <section data-card="splash" class="space-y-4 hidden" aria-hidden="true">
-        <div class="lh-skeleton h-11 w-full"></div>
-        <div class="lh-skeleton h-11 w-full"></div>
-        <div class="lh-skeleton h-11 w-2/3"></div>
+        <div class="animate-pulse h-11 w-full bg-white/10 rounded-lg"></div>
+        <div class="animate-pulse h-11 w-full bg-white/10 rounded-lg"></div>
+        <div class="animate-pulse h-11 w-2/3 bg-white/10 rounded-lg"></div>
         <p class="text-center text-xs text-lhmuted pt-2">Checking session…</p>
       </section>
 
+      <!-- Login Card -->
       <section data-card="login" class="space-y-4">
         <h1 class="lh-display text-xl font-semibold">Welcome back</h1>
         <form id="login-form" class="space-y-3" novalidate>
-          <label class="block text-sm text-lhmuted" for="login-email">Email</label>
-          <input id="login-email" type="email" required autocomplete="email"
-            class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
-          <label class="block text-sm text-lhmuted" for="login-password">Password</label>
-          <input id="login-password" type="password" required autocomplete="current-password"
-            class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
+          <div>
+            <label class="block text-sm text-lhmuted mb-1" for="login-email">Email</label>
+            <input id="login-email" type="email" required autocomplete="email"
+              class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
+          </div>
+          <div>
+            <label class="block text-sm text-lhmuted mb-1" for="login-password">Password</label>
+            <input id="login-password" type="password" required autocomplete="current-password"
+              class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
+          </div>
           <button type="submit" class="w-full rounded-lg bg-lhviolet text-white py-2.5 text-sm font-medium transition-all duration-300 hover:brightness-110">
             Sign in
           </button>
         </form>
-        <button data-provider="google" class="w-full rounded-lg border border-white/10 py-2.5 text-sm transition-all duration-300 hover:bg-white/5">
+
+        <div class="relative my-4">
+          <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/10"></div></div>
+          <div class="relative flex justify-center text-xs text-lhmuted"><span class="bg-[#141824] px-2">Or continue with</span></div>
+        </div>
+
+        <button id="btn-google-login" data-provider="google" class="w-full flex items-center justify-center gap-2 rounded-lg border border-white/10 py-2.5 text-sm transition-all duration-300 hover:bg-white/5">
+          <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
           Continue with Google
         </button>
-        <button data-provider="guest" class="w-full rounded-lg border border-white/10 py-2.5 text-sm transition-all duration-300 hover:bg-white/5">
+
+        <button id="btn-guest-login" data-provider="guest" class="w-full rounded-lg border border-white/10 py-2.5 text-sm transition-all duration-300 hover:bg-white/5">
           Continue as guest
         </button>
+
         <div class="flex justify-between text-xs text-lhmuted pt-1">
           <button data-goto="reset" class="hover:text-lhcyan">Forgot password?</button>
           <button data-goto="signup" class="hover:text-lhcyan">Create account</button>
         </div>
       </section>
 
+      <!-- Signup Card -->
       <section data-card="signup" class="space-y-4 hidden" aria-hidden="true">
         <h1 class="lh-display text-xl font-semibold">Create your account</h1>
         <form id="signup-form" class="space-y-3" novalidate>
-          <label class="block text-sm text-lhmuted" for="signup-name">Name</label>
-          <input id="signup-name" type="text" required autocomplete="name"
-            class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
-          <label class="block text-sm text-lhmuted" for="signup-email">Email</label>
-          <input id="signup-email" type="email" required autocomplete="email"
-            class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
-          <label class="block text-sm text-lhmuted" for="signup-password">Password</label>
-          <input id="signup-password" type="password" required minlength="8" autocomplete="new-password"
-            class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
+          <div>
+            <label class="block text-sm text-lhmuted mb-1" for="signup-name">Name</label>
+            <input id="signup-name" type="text" required autocomplete="name"
+              class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
+          </div>
+          <div>
+            <label class="block text-sm text-lhmuted mb-1" for="signup-email">Email</label>
+            <input id="signup-email" type="email" required autocomplete="email"
+              class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
+          </div>
+          <div>
+            <label class="block text-sm text-lhmuted mb-1" for="signup-password">Password</label>
+            <input id="signup-password" type="password" required minlength="8" autocomplete="new-password"
+              class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
+          </div>
           <button type="submit" class="w-full rounded-lg bg-lhviolet text-white py-2.5 text-sm font-medium transition-all duration-300 hover:brightness-110">
             Create account
           </button>
@@ -102,12 +124,15 @@
         </p>
       </section>
 
+      <!-- Password Reset Card -->
       <section data-card="reset" class="space-y-4 hidden" aria-hidden="true">
         <h1 class="lh-display text-xl font-semibold">Reset your password</h1>
         <form id="reset-form" class="space-y-3" novalidate>
-          <label class="block text-sm text-lhmuted" for="reset-email">Email</label>
-          <input id="reset-email" type="email" required autocomplete="email"
-            class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
+          <div>
+            <label class="block text-sm text-lhmuted mb-1" for="reset-email">Email</label>
+            <input id="reset-email" type="email" required autocomplete="email"
+              class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2.5 text-sm focus-visible:outline-lhcyan" />
+          </div>
           <button type="submit" class="w-full rounded-lg bg-lhviolet text-white py-2.5 text-sm font-medium transition-all duration-300 hover:brightness-110">
             Send reset link
           </button>
@@ -119,25 +144,71 @@
 
     </div>
 
-    <div id="auth-alert-region" class="lh-toast" aria-live="polite"></div>
+    <div id="auth-alert-region" class="lh-toast mt-4" aria-live="polite"></div>
   </main>
 
   <script type="module">
     import { supabase } from './supabase.js';
 
-    // ⚡ 0. CEK OTOMATIS SESI LOGIN (Jika sudah login, langsung ke dashboard)
-    async function checkExistingSession() {
-      const { data: { session } } = await supabase.auth.getSession();
-      const isLocalLoggedIn = localStorage.getItem('lifehub_logged_in') === 'true';
+    const AUTH_STATES = {
+      AUTHENTICATED: 'AUTHENTICATED',
+      GUEST: 'GUEST',
+      UNAUTHENTICATED: 'UNAUTHENTICATED'
+    };
 
-      if (session || isLocalLoggedIn) {
-        window.location.href = 'dashboard.html';
+    async function resolveAuthState() {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (session && session.user) {
+          localStorage.removeItem('lifehub_guest_mode');
+          localStorage.setItem('lifehub_logged_in', 'true');
+          return { state: AUTH_STATES.AUTHENTICATED, user: session.user };
+        }
+      } catch (err) {
+        console.error('Auth check error:', err);
+      }
+
+      const isGuest = localStorage.getItem('lifehub_guest_mode') === 'true';
+      if (isGuest) {
+        return { state: AUTH_STATES.GUEST, user: null };
+      }
+
+      const isLocalLoggedIn = localStorage.getItem('lifehub_logged_in') === 'true';
+      if (isLocalLoggedIn) {
+        return { state: AUTH_STATES.AUTHENTICATED, user: null };
+      }
+
+      return { state: AUTH_STATES.UNAUTHENTICATED, user: null };
+    }
+
+    async function triggerGoogleOAuth() {
+      const redirectUrl = window.location.origin + window.location.pathname.replace(/index\.html$/, '').replace(/\/$/, '') + '/dashboard.html';
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: redirectUrl
+        }
+      });
+      if (error) throw error;
+    }
+
+    async function initLoginPage() {
+      const auth = await resolveAuthState();
+      if (auth.state === AUTH_STATES.AUTHENTICATED || auth.state === AUTH_STATES.GUEST) {
+        window.location.replace('dashboard.html');
       }
     }
 
-    checkExistingSession();
+    initLoginPage();
 
-    // 1. NAVIGASI PINDAH TAMPILAN (Login <-> Signup <-> Reset Password)
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        localStorage.removeItem('lifehub_guest_mode');
+        localStorage.setItem('lifehub_logged_in', 'true');
+        window.location.replace('dashboard.html');
+      }
+    });
+
     document.querySelectorAll('[data-goto]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -156,14 +227,13 @@
       });
     });
 
-    // 2. LOGIKA FORM LOGIN (#login-form)
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
       loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
+        const email = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value.trim();
 
         if (!email || !password) {
           alert("Silakan isi Email dan Password!");
@@ -175,44 +245,76 @@
         if (error) {
           alert("Login Gagal: " + error.message);
         } else {
+          localStorage.removeItem('lifehub_guest_mode');
           localStorage.setItem('lifehub_logged_in', 'true');
-          window.location.href = 'dashboard.html';
+          window.location.replace('dashboard.html');
         }
       });
     }
 
-    // 3. LOGIKA FORM DAFTAR AKUN (#signup-form)
+    const googleBtn = document.getElementById('btn-google-login');
+    if (googleBtn) {
+      googleBtn.addEventListener('click', async () => {
+        try {
+          await triggerGoogleOAuth();
+        } catch (error) {
+          alert("Google Sign-In Gagal: " + error.message);
+        }
+      });
+    }
+
+    const guestBtn = document.getElementById('btn-guest-login');
+    if (guestBtn) {
+      guestBtn.addEventListener('click', () => {
+        localStorage.setItem('lifehub_guest_mode', 'true');
+        localStorage.setItem('lifehub_logged_in', 'true');
+        localStorage.setItem('lifehub_profile_name', 'Guest');
+        window.location.replace('dashboard.html');
+      });
+    }
+
     const signupForm = document.getElementById('signup-form');
     if (signupForm) {
       signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const email = document.getElementById('signup-email').value;
-        const password = document.getElementById('signup-password').value;
+        const name = document.getElementById('signup-name').value.trim();
+        const email = document.getElementById('signup-email').value.trim();
+        const password = document.getElementById('signup-password').value.trim();
 
-        if (!email || !password) {
-          alert("Silakan isi Email dan Password!");
+        if (!email || !password || !name) {
+          alert("Silakan lengkapi Nama, Email, dan Password!");
           return;
         }
 
-        const { data, error } = await supabase.auth.signUp({ email, password });
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              full_name: name,
+              name: name
+            }
+          }
+        });
 
         if (error) {
           alert("Gagal Daftar: " + error.message);
         } else {
+          localStorage.setItem('lifehub_profile_name', name);
           localStorage.setItem('lifehub_logged_in', 'true');
-          alert("Pendaftaran Berhasil!");
-          window.location.href = 'dashboard.html';
+          localStorage.removeItem('lifehub_guest_mode');
+          alert("Pendaftaran Berhasil! Selamat datang di LifeHub.");
+          window.location.replace('dashboard.html');
         }
       });
     }
 
-    // 4. LOGIKA FORM RESET PASSWORD (#reset-form)
     const resetForm = document.getElementById('reset-form');
     if (resetForm) {
       resetForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById('reset-email').value;
+        const email = document.getElementById('reset-email').value.trim();
 
         if (!email) {
           alert("Masukkan email kamu!");

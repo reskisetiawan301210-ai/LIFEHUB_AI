@@ -1,9 +1,5 @@
 /**
  * auth/controller.js — Auth UI state mutation handling.
- *
- * Owns the index.html portal only: switching between splash/login/signup/
- * reset sub-cards, form submission wiring, and surfacing auth errors as
- * toasts. Business logic itself lives in auth/core.js.
  */
 
 import {
@@ -38,7 +34,7 @@ function showAuthError(message) {
   setTimeout(() => toast.remove(), 5000);
 }
 
-/** Maps Firebase's raw error codes to plain, actionable copy (never expose "auth/..." to users). */
+/** Maps Firebase's raw error codes to plain, actionable copy */
 function friendlyAuthError(err) {
   const code = err?.code ?? '';
   const map = {
@@ -95,7 +91,9 @@ function wireForms() {
     try {
       await signInWithGoogle();
     } catch (err) {
-      showAuthError(friendlyAuthError(err));
+      if (err?.code !== 'auth/popup-closed-by-user') {
+        showAuthError(friendlyAuthError(err));
+      }
     }
   });
 
@@ -108,10 +106,25 @@ function wireForms() {
   });
 }
 
+// Global Auth Observer Listener
 initAuthObserver({
-  onAuthenticated: () => window.location.assign('/dashboard.html'),
-  onGuest: () => window.location.assign('/dashboard.html'),
-  onSignedOut: () => showCard('login'),
+  onAuthenticated: () => {
+    if (!window.location.pathname.includes('dashboard.html')) {
+      window.location.assign('/dashboard.html');
+    }
+  },
+  onGuest: () => {
+    if (!window.location.pathname.includes('dashboard.html')) {
+      window.location.assign('/dashboard.html');
+    }
+  },
+  onSignedOut: () => {
+    if (window.location.pathname.includes('dashboard.html')) {
+      window.location.assign('/index.html');
+    } else {
+      showCard('login');
+    }
+  },
 });
 
 wireNavigation();

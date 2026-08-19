@@ -1,9 +1,5 @@
 /**
  * auth/core.js — Authentication methods service layer.
- *
- * Wraps Firebase Auth so the rest of the app never touches the SDK
- * directly: controllers call these functions and react to store changes,
- * they don't hold Firebase auth objects themselves.
  */
 
 import {
@@ -24,15 +20,22 @@ const googleProvider = new GoogleAuthProvider();
 
 /** Attaches the session observer once at app boot. Call exactly one time. */
 export function initAuthObserver({ onAuthenticated, onGuest, onSignedOut } = {}) {
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (!user) {
       store.set('auth', { user: null, status: 'signed-out' });
       onSignedOut?.();
       return;
     }
+    
     const status = user.isAnonymous ? 'guest' : 'authenticated';
     store.set('auth', { user, status });
-    (status === 'guest' ? onGuest : onAuthenticated)?.();
+
+    if (status === 'authenticated') {
+      await ensureUserProfile(user);
+      onAuthenticated?.(user);
+    } else if (status === 'guest') {
+      onGuest?.(user);
+    }
   });
 }
 
@@ -64,15 +67,26 @@ export async function logOut() {
   return signOut(auth);
 }
 
-/** Creates the /users/{uid} profile document on first sign-in. */
+/** Extracts the first name for greetings (e.g., "Siti Komilah" -> "Siti") */
+export function getFirstName(user) {
+  if (!user) return 'User';
+  const fullName = user.displayName || user.email?.split('@')[0] || 'User';
+  return fullName.trim().split(' ')[0];
+}
+
+/** Creates or updates the /users/{uid} profile document on sign-in. */
 async function ensureUserProfile(user, extra = {}) {
+  if (!user || user.isAnonymous) return;
+  
+  const nameToSave = extra.displayName || user.displayName || user.email?.split('@')[0] || '';
+  
   await setDoc(
     doc(db, 'users', user.uid),
     {
-      displayName: extra.displayName ?? user.displayName ?? '',
+      displayName: nameToSave,
       email: user.email ?? null,
       photoURL: user.photoURL ?? null,
-      createdAt: serverTimestamp(),
+      lastLoginAt: serverTimestamp(),
       role: 'member',
     },
     { merge: true }
