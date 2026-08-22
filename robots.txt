@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://lifehub-ai-nu.vercel.app/sitemap.xml
+Sitemap: https://lifehub-ai.my.id/sitemap.xml

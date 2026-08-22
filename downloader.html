@@ -8,107 +8,30 @@
   <link rel="icon" type="image/png" href="https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png">
   <link rel="apple-touch-icon" href="https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#f59e0b">
+  <meta name="theme-color" content="#5300B7">
 
+  <!-- Anti-FOUC Global Theme Loader -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('lifehub_theme') || 'system';
+      let activeTheme = saved;
+      if (saved === 'system') {
+        activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', activeTheme);
+    })();
+  </script>
+
+  <!-- Google Fonts & Material Symbols -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400..600,0..1,0" rel="stylesheet" />
+
+  <!-- Global Design System Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
 
   <style>
-    /* ==========================================================================
-       OBSIDIAN & AMBER THEME (MATCHES LIFEHUB DASHBOARD)
-       ========================================================================== */
-    :root {
-      --bg-base: #0a0a0c;
-      --bg-sidebar: #101013;
-      --bg-surface: #141418;
-      --bg-elevated: #1a1a20;
-      --bg-highlight: #24242e;
-
-      --border-subtle: rgba(255, 255, 255, 0.05);
-      --border-base: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.16);
-
-      --accent-main: #f59e0b;
-      --accent-hover: #d97706;
-      --accent-dim: rgba(245, 158, 11, 0.12);
-      --accent-glow: rgba(245, 158, 11, 0.25);
-
-      --color-success: #10b981;
-      --color-danger: #ef4444;
-      --color-info: #06b6d4;
-
-      --text-primary: #f4f4f6;
-      --text-secondary: #9e9ea7;
-      --text-tertiary: #62626b;
-
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --radius-xl: 24px;
-
-      --sidebar-width: 240px;
-      --header-height: 64px;
-      --mobile-nav-height: 64px;
-
-      --transition-snappy: 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
-      --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      font-size: 16px;
-      -webkit-font-smoothing: antialiased;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background-color: var(--bg-base);
-      color: var(--text-primary);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      line-height: 1.5;
-      overflow-x: hidden;
-      min-height: 100vh;
-    }
-
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--bg-highlight); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
-
-    a { color: inherit; text-decoration: none; }
-    button { background: none; border: none; font-family: inherit; color: inherit; cursor: pointer; }
-
-    .icon-svg {
-      width: 20px;
-      height: 20px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    #ambientCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-      opacity: 0.3;
-    }
-
-    /* ==========================================================================
-       LAYOUT STRUCTURE
-       ========================================================================== */
     .app-layout {
       display: flex;
       min-height: 100vh;
@@ -116,17 +39,23 @@
       z-index: 1;
     }
 
-    /* Left Sidebar (Desktop) */
+    #ambientCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0; pointer-events: none;
+      opacity: 0.35;
+    }
+
     .sidebar {
       width: var(--sidebar-width);
       background: var(--bg-sidebar);
-      border-right: 1px solid var(--border-subtle);
+      border-right: 1px solid var(--border-base);
       display: flex;
       flex-direction: column;
       position: fixed;
       height: 100vh;
-      left: 0;
-      top: 0;
+      left: 0; top: 0;
       z-index: 50;
       transition: transform var(--transition-smooth);
     }
@@ -135,7 +64,7 @@
       height: var(--header-height);
       display: flex;
       align-items: center;
-      padding: 0 20px;
+      padding: 0 24px;
       border-bottom: 1px solid var(--border-subtle);
     }
 
@@ -143,27 +72,34 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      cursor: pointer;
     }
 
-    .brand-icon {
-      width: 28px;
-      height: 28px;
+    .brand-logo-icon {
+      width: 32px;
+      height: 32px;
       border-radius: var(--radius-sm);
-      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: var(--primary-ultralight);
+      color: var(--primary);
     }
 
-    .brand-text {
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
+    .brand-title-text {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
+    .brand-title-text span { color: var(--primary); }
 
     .sidebar-nav {
       flex: 1;
-      padding: 16px 12px;
+      padding: 20px 14px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -173,57 +109,40 @@
     .nav-label {
       font-size: 10px;
       font-weight: 700;
-      color: var(--text-tertiary);
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin: 16px 0 6px 10px;
+      margin: 16px 0 6px 12px;
     }
 
     .nav-item {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 10px 12px;
-      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
       color: var(--text-secondary);
-      font-weight: 500;
-      font-size: 13px;
-      transition: all var(--transition-snappy);
+      font-weight: 600;
+      font-size: 13.5px;
+      transition: all var(--transition-fast);
+      text-decoration: none;
     }
 
     .nav-item:hover {
-      background: var(--bg-surface);
+      background: var(--bg-surface-secondary);
       color: var(--text-primary);
     }
 
     .nav-item.active {
-      background: var(--bg-elevated);
-      color: var(--text-primary);
-      font-weight: 600;
-      border-left: 2px solid var(--accent-main);
+      background: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px var(--primary-glow);
     }
 
-    .nav-item.active .icon-svg {
-      stroke: var(--accent-main);
-    }
+    .nav-item.active .material-symbols-outlined { color: #FFFFFF; }
+    .nav-item .material-symbols-outlined { font-size: 20px; color: var(--text-tertiary); }
+    .nav-item:hover .material-symbols-outlined { color: var(--text-primary); }
 
-    .sidebar-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(4px);
-      z-index: 40;
-      opacity: 0;
-      visibility: hidden;
-      transition: all var(--transition-smooth);
-    }
-
-    .sidebar-overlay.is-active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    /* Main Content Area */
     .main-content {
       flex: 1;
       margin-left: var(--sidebar-width);
@@ -233,659 +152,199 @@
       padding-bottom: 40px;
     }
 
-    /* Top Navigation Header */
     .top-header {
       height: var(--header-height);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 32px;
+      padding: 0 36px;
       position: sticky;
       top: 0;
-      background: rgba(10, 10, 12, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-base);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-base);
       z-index: 30;
+      transition: background-color var(--transition-smooth);
     }
 
-    .header-left, .header-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .breadcrumbs {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--text-tertiary);
-    }
-
-    .breadcrumbs span.active {
-      color: var(--text-primary);
-      font-weight: 600;
-    }
-
-    .mobile-brand {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      font-weight: 700;
-      font-size: 16px;
-    }
-
-    .mobile-trigger {
-      display: none;
-      color: var(--text-primary);
-      padding: 6px;
-    }
-
-    .search-wrapper {
-      position: relative;
-      width: 260px;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-tertiary);
-      width: 16px;
-      height: 16px;
-    }
-
-    .search-input {
-      width: 100%;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-base);
-      border-radius: var(--radius-sm);
-      padding: 7px 12px 7px 36px;
-      color: var(--text-primary);
-      font-size: 12px;
-      transition: all var(--transition-snappy);
-    }
-
-    .search-input:focus {
-      background: var(--bg-elevated);
-      border-color: var(--border-strong);
-      outline: none;
-    }
-
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 4px 10px 4px 4px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-base);
-      border-radius: 999px;
-      cursor: pointer;
-    }
-
-    .user-avatar {
-      width: 28px;
-      height: 28px;
+    .action-btn {
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      background: var(--accent-main);
-      color: var(--bg-base);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      font-size: 11px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+      box-shadow: var(--shadow-subtle);
+      cursor: pointer;
     }
 
-    /* Container */
+    .action-btn:hover {
+      color: var(--primary);
+      background: var(--primary-ultralight);
+    }
+
     .workspace {
-      padding: 32px;
-      max-width: 1320px;
+      padding: 32px 36px;
+      max-width: 1000px;
       width: 100%;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 28px;
     }
 
-    /* Page Header */
-    .page-title {
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: var(--text-primary);
-    }
-
-    .page-subtitle {
-      font-size: 14px;
-      color: var(--text-secondary);
-      margin-top: 4px;
-    }
-
-    /* Main Grid: Desktop Input Left + Result Right */
-    .downloader-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    /* Card Panels */
-    .downloader-card {
+    .download-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
-      border-radius: var(--radius-lg);
-      padding: 24px;
+      border-radius: var(--radius-xl);
+      padding: 36px;
+      box-shadow: var(--shadow-card);
       display: flex;
       flex-direction: column;
       gap: 20px;
     }
 
-    .card-label {
+    .input-box-wrapper {
+      display: flex;
+      gap: 10px;
+      position: relative;
+    }
+
+    .url-input-field {
+      flex: 1;
+      background: var(--bg-surface-secondary);
+      border: 1.5px solid var(--border-base);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      font-size: 14px;
+      color: var(--text-primary);
+      outline: none;
+      transition: all var(--transition-fast);
+    }
+
+    .url-input-field:focus {
+      background: var(--bg-surface);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .btn-paste {
+      position: absolute;
+      right: 125px;
+      top: 50%;
+      transform: translateY(-50%);
       font-size: 11px;
       font-weight: 700;
-      color: var(--text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    /* URL Input Box */
-    .input-group {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .input-field {
-      width: 100%;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-base);
-      border-radius: var(--radius-md);
-      padding: 14px 90px 14px 16px;
-      color: var(--text-primary);
-      font-size: 13px;
-      transition: border var(--transition-snappy);
-    }
-
-    .input-field:focus {
-      outline: none;
-      border-color: var(--accent-main);
-    }
-
-    .paste-btn {
-      position: absolute;
-      right: 10px;
-      background: var(--bg-highlight);
-      border: 1px solid var(--border-base);
-      color: var(--text-primary);
-      padding: 6px 12px;
+      color: var(--primary);
+      background: var(--primary-ultralight);
+      padding: 4px 10px;
       border-radius: var(--radius-sm);
-      font-size: 12px;
-      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-download-trigger {
+      background: var(--primary);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 0 24px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px var(--primary-glow);
+      transition: all var(--transition-fast);
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: all var(--transition-snappy);
     }
 
-    .paste-btn:hover {
-      background: var(--border-strong);
-      color: #fff;
-    }
-
-    /* Main Action Button (Amber Gold) */
-    .btn-extract {
-      width: 100%;
-      background: var(--accent-main);
-      color: #000;
-      font-weight: 700;
-      font-size: 13px;
-      padding: 14px;
-      border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all var(--transition-snappy);
-      box-shadow: 0 4px 16px var(--accent-glow);
-    }
-
-    .btn-extract:hover {
-      background: var(--accent-hover);
+    .btn-download-trigger:hover {
+      background: var(--primary-hover);
       transform: translateY(-1px);
     }
 
-    /* Supported Platforms Badges */
-    .supports-container {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .support-tag {
-      font-size: 11px;
-      color: var(--text-tertiary);
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .support-tag span {
-      color: var(--text-secondary);
-    }
-
-    /* Loading Spinner */
-    .spinner-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-      gap: 14px;
-    }
-
-    .spinner {
-      width: 36px;
-      height: 36px;
-      border: 3px solid var(--border-base);
-      border-top-color: var(--accent-main);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* Result Card Layout (Stitch Desktop Ref) */
-    .result-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--color-success);
-    }
-
-    .platform-pill {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-base);
-      border-radius: 4px;
-      color: var(--text-secondary);
-    }
-
-    .media-preview-box {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-
-    .media-cover {
-      width: 100px;
-      height: 100px;
-      border-radius: var(--radius-md);
-      object-fit: cover;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-base);
-      flex-shrink: 0;
-    }
-
-    .media-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .media-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-primary);
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .media-author {
-      font-size: 12px;
-      color: var(--text-tertiary);
-      margin-top: 4px;
-    }
-
-    /* Options & Actions */
-    .options-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .select-box {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-base);
-      border-radius: var(--radius-sm);
-      padding: 8px 12px;
-      color: var(--text-primary);
-      font-size: 12px;
-      width: 100%;
-      outline: none;
-    }
-
-    .actions-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .btn-dl-primary {
-      flex: 2;
-      background: var(--accent-main);
-      color: #000;
-      font-weight: 700;
-      font-size: 12px;
-      padding: 10px 16px;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all var(--transition-snappy);
-    }
-
-    .btn-dl-primary:hover {
-      background: var(--accent-hover);
-    }
-
-    .btn-dl-secondary {
-      flex: 1;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-base);
-      color: var(--text-primary);
-      font-weight: 600;
-      font-size: 12px;
-      padding: 10px 16px;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all var(--transition-snappy);
-    }
-
-    .btn-dl-secondary:hover {
-      border-color: var(--border-strong);
-      background: var(--bg-highlight);
-    }
-
-    /* Error Alert */
-    .error-card {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.2);
-      border-radius: var(--radius-md);
-      padding: 12px 16px;
-      color: var(--color-danger);
-      font-size: 12px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    /* Recent Downloads Table (Desktop Ref) */
-    .recent-section {
-      margin-top: 12px;
-    }
-
-    .recent-header-flex {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-
-    .recent-table-card {
-      background: var(--bg-surface);
+    .result-display-card {
+      background: var(--bg-surface-secondary);
       border: 1px solid var(--border-base);
       border-radius: var(--radius-lg);
-      overflow: hidden;
+      padding: 20px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
     }
 
-    .downloads-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      text-align: left;
+    .result-thumb {
+      width: 140px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
     }
 
-    .downloads-table th {
-      padding: 14px 20px;
-      background: var(--bg-elevated);
-      color: var(--text-tertiary);
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .downloads-table td {
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border-subtle);
-      color: var(--text-secondary);
-    }
-
-    .downloads-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .table-item-title {
-      color: var(--text-primary);
-      font-weight: 600;
-    }
-
-    .status-completed {
-      color: var(--color-success);
-      font-weight: 600;
-    }
-
-    .status-failed {
-      color: var(--color-danger);
-      font-weight: 600;
-    }
-
-    /* Mobile Card List View for Downloads (Stitch Mobile Ref) */
-    .mobile-recent-list {
-      display: none;
+    .result-meta {
+      flex: 1;
+      display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 6px;
     }
 
-    .mobile-recent-card {
+    .result-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .result-author {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .result-actions-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .btn-action-dl {
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-action-dl.primary {
+      background: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .btn-action-dl.secondary {
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
-      border-radius: var(--radius-md);
-      padding: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .mobile-recent-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
-
-    .mobile-recent-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: var(--radius-sm);
-      background: var(--bg-elevated);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-secondary);
-      flex-shrink: 0;
-    }
-
-    .mobile-recent-info {
-      min-width: 0;
-    }
-
-    .mobile-recent-title {
-      font-size: 13px;
-      font-weight: 600;
       color: var(--text-primary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .mobile-recent-sub {
-      font-size: 11px;
-      color: var(--text-tertiary);
-      margin-top: 2px;
-    }
-
-    .badge-done {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 4px 10px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius-sm);
-      color: var(--text-secondary);
-    }
-
-    /* Helper Utilities */
-    .hidden { display: none !important; }
-
-    /* Footer */
-    .app-footer {
-      margin-top: 32px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border-subtle);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      color: var(--text-tertiary);
-    }
-
-    /* ==========================================================================
-       MOBILE BOTTOM NAVIGATION (STITCH MOBILE REF)
-       ========================================================================== */
-    .mobile-bottom-nav {
-      display: none;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: var(--mobile-nav-height);
-      background: var(--bg-sidebar);
-      border-top: 1px solid var(--border-base);
-      z-index: 60;
-      padding: 0 16px;
-      justify-content: space-around;
-      align-items: center;
-    }
-
-    .mobile-nav-link {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      color: var(--text-tertiary);
-      font-size: 10px;
-      font-weight: 600;
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-    }
-
-    .mobile-nav-link.active {
-      color: var(--accent-main);
-    }
-
-    .mobile-nav-link .icon-svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    /* RESPONSIVE MEDIA QUERIES */
     @media (max-width: 900px) {
-      .downloader-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 860px) {
-      :root {
-        --sidebar-width: 0px;
-      }
-
-      .sidebar {
-        transform: translateX(-100%);
-        width: 240px;
-      }
-
-      .sidebar.is-active {
-        transform: translateX(0);
-      }
-
-      .mobile-trigger, .mobile-brand {
-        display: flex;
-      }
-
-      .breadcrumbs, .search-wrapper {
-        display: none;
-      }
-
-      .main-content {
-        margin-left: 0;
-        padding-bottom: calc(var(--mobile-nav-height) + 20px);
-      }
-
-      .top-header {
-        padding: 0 16px;
-      }
-
-      .workspace {
-        padding: 20px 16px;
-        gap: 16px;
-      }
-
-      .page-title {
-        font-size: 24px;
-      }
-
-      .mobile-bottom-nav {
-        display: flex;
-      }
-
-      .downloads-table-wrap {
-        display: none;
-      }
-
-      .mobile-recent-list {
-        display: flex;
-      }
-
-      .app-footer {
-        flex-direction: column;
-        gap: 8px;
-        text-align: center;
-      }
+      :root { --sidebar-width: 0px; }
+      .sidebar { transform: translateX(-100%); width: 270px; }
+      .sidebar.is-active { transform: translateX(0); }
+      .main-content { margin-left: 0; }
+      .top-header { padding: 0 18px; }
+      .workspace { padding: 20px 16px; }
+      .input-box-wrapper { flex-direction: column; }
+      .btn-paste { right: 12px; }
+      .btn-download-trigger { padding: 12px; justify-content: center; }
+      .result-display-card { flex-direction: column; text-align: center; }
+      .result-actions-row { justify-content: center; }
     }
   </style>
 </head>
@@ -896,492 +355,254 @@
   <div class="app-layout">
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- Desktop Left Sidebar -->
+    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <div class="brand-combo">
-          <div class="brand-icon">
-            <img src="https://cdn.phototourl.com/free/2026-08-10-e2258c8f-a8af-411b-9efc-aaed64b1e6c9.png" alt="LifeHub" style="width:100%; height:100%; object-fit:cover;">
+        <div class="brand-combo" onclick="location.href='dashboard.html'">
+          <div class="brand-logo-icon">
+            <span class="material-symbols-outlined" style="font-size:22px; font-variation-settings: 'FILL' 1;">widgets</span>
           </div>
-          <div class="brand-text">LifeHub</div>
+          <div class="brand-title-text">LifeHub <span>AI</span></div>
         </div>
       </div>
 
       <nav class="sidebar-nav">
-        <div class="nav-label">WORKSPACE</div>
         <a href="dashboard.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          <span class="material-symbols-outlined">dashboard</span>
           <span class="nav-text">Dashboard</span>
         </a>
         <a href="ai.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
+          <span class="material-symbols-outlined">smart_toy</span>
           <span class="nav-text">AI Assistant</span>
         </a>
         <a href="notes.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          <span class="nav-text">Notes</span>
+          <span class="material-symbols-outlined">edit_note</span>
+          <span class="nav-text">Notes & Tasks</span>
         </a>
         <a href="focus.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span class="material-symbols-outlined">center_focus_strong</span>
           <span class="nav-text">Focus Space</span>
         </a>
+        <a href="finance.html" class="nav-item">
+          <span class="material-symbols-outlined">payments</span>
+          <span class="nav-text">Finance</span>
+        </a>
 
-        <div class="nav-label">MEDIA</div>
+        <div class="nav-label">MEDIA & ENTERTAINMENT</div>
         <a href="music.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          <span class="material-symbols-outlined">library_music</span>
           <span class="nav-text">Music</span>
         </a>
         <a href="movies.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/></svg>
+          <span class="material-symbols-outlined">movie</span>
           <span class="nav-text">Movies</span>
         </a>
+
+        <div class="nav-label">UTILITIES & TOOLS</div>
         <a href="downloader.html" class="nav-item active">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">download</span>
           <span class="nav-text">Downloader</span>
         </a>
-
-        <div class="nav-label">TOOLS</div>
         <a href="mastery.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span class="material-symbols-outlined">code</span>
           <span class="nav-text">Code Mastery</span>
         </a>
         <a href="qr-tools.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><path d="M3 14h7v7H3z"/></svg>
+          <span class="material-symbols-outlined">qr_code_2</span>
           <span class="nav-text">QR Tools</span>
         </a>
       </nav>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
-      <!-- Topbar Header -->
       <header class="top-header">
-        <div class="header-left">
-          <button class="mobile-trigger" id="mobileMenuTrigger">
-            <svg class="icon-svg" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-          </button>
-
-          <div class="mobile-brand">
-            <img src="https://cdn.phototourl.com/free/2026-08-10-e2258c8f-a8af-411b-9efc-aaed64b1e6c9.png" alt="LifeHub" style="width:22px; height:22px; border-radius:4px;">
-            LifeHub AI
-          </div>
-
-          <div class="breadcrumbs">
-            <span>Media Tools</span>
-            <span>›</span>
-            <span class="active">Downloader</span>
-          </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <h2 style="font-size:16px; font-weight:800; color:var(--text-primary);">Universal Media Downloader</h2>
         </div>
 
-        <div class="header-right">
-          <div class="search-wrapper">
-            <svg class="icon-svg search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" class="search-input" placeholder="Quick search...">
-          </div>
-
-          <div class="user-profile">
-            <div class="user-avatar" id="user-avatar">RS</div>
-          </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button class="action-btn" id="themeToggleBtn" title="Toggle Theme">
+            <span class="material-symbols-outlined" id="themeToggleIcon">brightness_auto</span>
+          </button>
+          <button class="action-btn" onclick="location.href='dashboard.html'" title="Dashboard">
+            <span class="material-symbols-outlined">dashboard</span>
+          </button>
         </div>
       </header>
 
-      <!-- Workspace Container -->
       <div class="workspace">
-        <section>
-          <h1 class="page-title">Media Downloader</h1>
-          <p class="page-subtitle">Save video and media from supported platforms directly to your local device or Hub.</p>
-        </section>
+        <div>
+          <h1 style="font-size:30px; font-weight:800; color:var(--text-primary); letter-spacing:-0.6px;">Universal Media Extractor</h1>
+          <p style="font-size:14px; color:var(--text-secondary); margin-top:4px;">Download videos & audio with No Watermark from TikTok, Douyin, YouTube, Instagram & more.</p>
+        </div>
 
-        <!-- Main 2-Column Downloader Grid (Desktop Ref) -->
-        <div class="downloader-grid">
-          <!-- Left Column: Input Card -->
-          <div class="downloader-card">
-            <div class="card-label">PASTE URL</div>
-
-            <form id="download-form" style="display:flex; flex-direction:column; gap:16px;">
-              <div class="input-group">
-                <input id="video-url" type="url" class="input-field" placeholder="https://..." required />
-                <button type="button" onclick="pasteFromClipboard()" class="paste-btn" title="Tempel dari Clipboard">
-                  <span class="material-symbols-outlined" style="font-size:14px;">content_paste</span>
-                  Paste
-                </button>
-              </div>
-
-              <button type="submit" id="btn-process" class="btn-extract">
-                <span class="material-symbols-outlined" style="font-size:18px;">download</span>
-                EXTRACT MEDIA
+        <div class="download-card">
+          <form id="download-form" style="display:flex; flex-direction:column; gap:14px;">
+            <div class="input-box-wrapper">
+              <input type="url" id="video-url" class="url-input-field" placeholder="Paste TikTok, YouTube, or Instagram video link here..." required>
+              <button type="button" class="btn-paste" onclick="pasteFromClipboard()">Paste Link</button>
+              <button type="submit" class="btn-download-trigger">
+                <span class="material-symbols-outlined">download</span>
+                <span>Extract</span>
               </button>
-            </form>
-
-            <div style="border-top:1px solid var(--border-subtle); padding-top:14px;">
-              <div class="card-label" style="margin-bottom:8px;">SUPPORTS:</div>
-              <div class="supports-container">
-                <div class="support-tag">TikTok <span>•</span></div>
-                <div class="support-tag">Douyin <span>•</span></div>
-                <div class="support-tag">YouTube <span>•</span></div>
-                <div class="support-tag">Instagram <span>•</span></div>
-                <div class="support-tag">X (Twitter)</div>
-              </div>
             </div>
+          </form>
+
+          <!-- Loading State -->
+          <div id="loading-spinner" style="display:none; text-align:center; padding:30px 0;">
+            <span class="material-symbols-outlined" style="font-size:32px; color:var(--primary); animation:spin 1s linear infinite;">sync</span>
+            <p style="font-size:13px; font-weight:700; color:var(--text-secondary); margin-top:8px;">Extracting high quality video stream...</p>
           </div>
 
-          <!-- Right Column: Result Card / Output Container -->
-          <div class="downloader-card" style="justify-content: center;">
-            <!-- Initial Empty State -->
-            <div id="empty-state" style="text-align:center; padding:30px 10px; color:var(--text-tertiary);">
-              <span class="material-symbols-outlined" style="font-size:40px; margin-bottom:8px; opacity:0.5;">cloud_download</span>
-              <p style="font-size:13px; font-weight:500;">Enter a video link on the left to extract media.</p>
-            </div>
+          <!-- Error Alert -->
+          <div id="error-msg" style="display:none; background:var(--color-danger-bg); border:1px solid rgba(239,68,68,0.2); border-radius:var(--radius-md); padding:14px; text-align:center;">
+            <p id="error-text" style="font-size:13px; font-weight:600; color:var(--color-danger);"></p>
+          </div>
 
-            <!-- Loading Spinner (Preserved ID) -->
-            <div id="loading-spinner" class="hidden spinner-box">
-              <div class="spinner"></div>
-              <p style="font-size:13px; font-weight:600; color:var(--text-secondary);">Extracting media stream, please wait...</p>
-            </div>
-
-            <!-- Download Result Card (Preserved ID & All Sub-IDs) -->
-            <div id="result-card" class="hidden" style="display:flex; flex-direction:column; gap:16px;">
-              <div class="result-header">
-                <div class="status-badge">
-                  <span class="material-symbols-outlined" style="font-size:16px;">check_circle</span>
-                  Ready to download
-                </div>
-                <span id="res-platform" class="platform-pill">TikTok</span>
-              </div>
-
-              <div class="media-preview-box">
-                <img id="res-cover" src="" alt="Media Cover" class="media-cover" />
-                <div class="media-info">
-                  <div id="res-title" class="media-title">Video Title</div>
-                  <div id="res-author" class="media-author">By: Creator</div>
-                </div>
-              </div>
-
-              <div class="options-row">
-                <div>
-                  <label class="card-label" style="margin-bottom:4px; display:block;">Quality</label>
-                  <select class="select-box">
-                    <option>1080p (HD)</option>
-                    <option>720p (SD)</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="card-label" style="margin-bottom:4px; display:block;">Format</label>
-                  <select class="select-box">
-                    <option>MP4</option>
-                    <option>MP3</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="actions-group">
-                <a id="btn-dl-no-wm" href="#" target="_blank" download class="btn-dl-primary">
-                  <span class="material-symbols-outlined" style="font-size:16px;">download</span>
-                  Save to Device
+          <!-- Result Display Card -->
+          <div id="result-card" class="result-display-card" style="display:none;">
+            <img id="res-cover" class="result-thumb" src="" alt="Thumbnail">
+            <div class="result-meta">
+              <span id="res-platform" style="font-size:10px; font-weight:800; color:var(--primary); text-transform:uppercase;">TikTok</span>
+              <h3 id="res-title" class="result-title">Video Title</h3>
+              <span id="res-author" class="result-author">By: Creator</span>
+              <div class="result-actions-row">
+                <a id="btn-dl-no-wm" href="#" target="_blank" class="btn-action-dl primary">
+                  <span class="material-symbols-outlined" style="font-size:16px;">file_download</span>
+                  <span>Download Video (HD No-WM)</span>
                 </a>
-                <a id="btn-dl-audio" href="#" target="_blank" download class="btn-dl-secondary">
+                <a id="btn-dl-audio" href="#" target="_blank" class="btn-action-dl secondary">
                   <span class="material-symbols-outlined" style="font-size:16px;">music_note</span>
-                  Audio MP3
+                  <span>Audio MP3</span>
                 </a>
               </div>
-            </div>
-
-            <!-- Error Message Alert (Preserved ID) -->
-            <div id="error-msg" class="hidden error-card">
-              <span class="material-symbols-outlined" style="font-size:18px;">error</span>
-              <span id="error-text">Gagal memproses URL. Pastikan tautan video publik & valid.</span>
             </div>
           </div>
         </div>
-
-        <!-- Recent Downloads Section -->
-        <section class="recent-section">
-          <div class="recent-header-flex">
-            <div class="card-label" style="font-size:12px; color:var(--text-primary);">RECENT DOWNLOADS</div>
-            <a href="#" style="font-size:11px; font-weight:700; color:var(--accent-main);">VIEW ALL</a>
-          </div>
-
-          <!-- Desktop Table View -->
-          <div class="downloads-table-wrap recent-table-card">
-            <table class="downloads-table">
-              <thead>
-                <tr>
-                  <th>ITEM</th>
-                  <th>PLATFORM</th>
-                  <th>FORMAT</th>
-                  <th>SIZE</th>
-                  <th>DATE</th>
-                  <th>STATUS</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="table-item-title">Lo-Fi Beats to Relax/Study To</td>
-                  <td>YouTube</td>
-                  <td>MP3 (320k)</td>
-                  <td>42 MB</td>
-                  <td>Today, 09:41</td>
-                  <td><span class="status-completed">• Completed</span></td>
-                </tr>
-                <tr>
-                  <td class="table-item-title">Quick Guide: Notion Setup</td>
-                  <td>TikTok</td>
-                  <td>MP4 (1080p)</td>
-                  <td>18 MB</td>
-                  <td>Yesterday, 14:22</td>
-                  <td><span class="status-completed">• Completed</span></td>
-                </tr>
-                <tr>
-                  <td class="table-item-title">Street Photography POV</td>
-                  <td>Instagram</td>
-                  <td>MP4 (720p)</td>
-                  <td>12 MB</td>
-                  <td>Oct 24, 2026</td>
-                  <td><span class="status-failed">• Failed</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Mobile Card List View (Stitch Mobile Ref) -->
-          <div class="mobile-recent-list">
-            <div class="mobile-recent-card">
-              <div class="mobile-recent-left">
-                <div class="mobile-recent-icon">
-                  <span class="material-symbols-outlined">smart_display</span>
-                </div>
-                <div class="mobile-recent-info">
-                  <div class="mobile-recent-title">Lo-Fi Beats to Relax/Study To</div>
-                  <div class="mobile-recent-sub">YouTube • MP3 • 42MB</div>
-                </div>
-              </div>
-              <span class="badge-done">DONE</span>
-            </div>
-
-            <div class="mobile-recent-card">
-              <div class="mobile-recent-left">
-                <div class="mobile-recent-icon">
-                  <span class="material-symbols-outlined">movie</span>
-                </div>
-                <div class="mobile-recent-info">
-                  <div class="mobile-recent-title">Quick Guide: Notion Setup</div>
-                  <div class="mobile-recent-sub">TikTok • MP4 • 18MB</div>
-                </div>
-              </div>
-              <span class="badge-done">DONE</span>
-            </div>
-
-            <div class="mobile-recent-card">
-              <div class="mobile-recent-left">
-                <div class="mobile-recent-icon">
-                  <span class="material-symbols-outlined">photo_camera</span>
-                </div>
-                <div class="mobile-recent-info">
-                  <div class="mobile-recent-title">Street Photography POV</div>
-                  <div class="mobile-recent-sub">Instagram • MP4 • 12MB</div>
-                </div>
-              </div>
-              <span class="badge-done" style="color:var(--color-danger)">FAILED</span>
-            </div>
-          </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="app-footer">
-          <div>© 2026 <span style="color:var(--text-secondary); font-weight:600;">LifeHub AI</span>. All rights reserved.</div>
-          <div>Developed by <a href="https://github.com/reskisetiawan301210-ai" target="_blank" style="color:var(--accent-main); font-weight:600;">Reski X legacyy403</a></div>
-        </footer>
       </div>
     </main>
   </div>
 
-  <!-- Mobile Bottom Navigation (Stitch Mobile Design Reference) -->
-  <nav class="mobile-bottom-nav">
-    <a href="dashboard.html" class="mobile-nav-link">
-      <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      DASHBOARD
-    </a>
-    <a href="music.html" class="mobile-nav-link">
-      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-      MEDIA
-    </a>
-    <a href="downloader.html" class="mobile-nav-link active">
-      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-      DOWNLOAD
-    </a>
-    <a href="#" class="mobile-nav-link" id="mobileMenuOpenBtn" onclick="document.getElementById('sidebar').classList.toggle('is-active'); document.getElementById('sidebarOverlay').classList.toggle('is-active'); return false;">
-      <svg class="icon-svg" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      SETTINGS
-    </a>
-  </nav>
+  <div class="lh-toast-container" id="toastContainer"></div>
 
-  <!-- Ambient Canvas Background Engine -->
   <script>
-    class AmbientEngine {
-      constructor(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        if (!this.canvas) return;
-        this.ctx = this.canvas.getContext('2d');
-        this.particles = [];
-        this.resize();
-        window.addEventListener('resize', () => this.resize());
-        this.initParticles();
-        this.animate();
-      }
+    // Toast helper
+    window.showToast = function(msg, icon = 'check_circle') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const el = document.createElement('div');
+      el.className = 'lh-toast';
+      el.innerHTML = `<span class="material-symbols-outlined" style="font-size:18px; color:var(--primary);">${icon}</span> <span>${msg}</span>`;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.animation = 'toastOut 0.25s forwards';
+        setTimeout(() => el.remove(), 250);
+      }, 3000);
+    };
 
-      resize() {
-        this.width = this.canvas.width = window.innerWidth;
-        this.height = this.canvas.height = window.innerHeight;
-      }
-
-      initParticles() {
-        const count = window.innerWidth < 768 ? 20 : 40;
-        this.particles = [];
-        for (let i = 0; i < count; i++) {
-          this.particles.push({
-            x: Math.random() * this.width,
-            y: Math.random() * this.height,
-            radius: Math.random() * 1.5 + 0.5,
-            vx: (Math.random() - 0.5) * 0.3,
-            vy: (Math.random() - 0.5) * 0.3,
-            alpha: Math.random() * 0.4 + 0.1
-          });
-        }
-      }
-
-      animate() {
-        this.ctx.clearRect(0, 0, this.width, this.height);
-        this.particles.forEach(p => {
-          p.x += p.vx;
-          p.y += p.vy;
-
-          if (p.x < 0) p.x = this.width;
-          if (p.x > this.width) p.x = 0;
-          if (p.y < 0) p.y = this.height;
-          if (p.y > this.height) p.y = 0;
-
-          this.ctx.beginPath();
-          this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          this.ctx.fillStyle = `rgba(245, 158, 11, ${p.alpha})`;
-          this.ctx.fill();
-        });
-        requestAnimationFrame(() => this.animate());
-      }
+    // Theme Switcher
+    function updateThemeUI(theme) {
+      const iconEl = document.getElementById('themeToggleIcon');
+      if (!iconEl) return;
+      if (theme === 'light') iconEl.textContent = 'light_mode';
+      else if (theme === 'dark') iconEl.textContent = 'dark_mode';
+      else iconEl.textContent = 'brightness_auto';
     }
 
-    new AmbientEngine('ambientCanvas');
-
-    // Mobile Sidebar Navigation Toggle
-    const mobileTrigger = document.getElementById('mobileMenuTrigger');
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-    if (mobileTrigger) {
-      mobileTrigger.addEventListener('click', () => {
-        sidebar.classList.add('is-active');
-        sidebarOverlay.classList.add('is-active');
-      });
+    function setTheme(themeMode) {
+      localStorage.setItem('lifehub_theme', themeMode);
+      let activeTheme = themeMode;
+      if (themeMode === 'system') {
+        activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', activeTheme);
+      updateThemeUI(themeMode);
+      window.showToast(`Theme set to ${themeMode.toUpperCase()}`, 'palette');
     }
 
-    if (sidebarOverlay) {
-      sidebarOverlay.addEventListener('click', () => {
-        sidebar.classList.remove('is-active');
-        sidebarOverlay.classList.remove('is-active');
-      });
-    }
-  </script>
-
-  <!-- EXISTING DOWNLOADER LOGIC (EXACT UNTOUCHED CODE & APIS) -->
-  <script>
-    const currentUserName = localStorage.getItem('lifehub_user_name') || 'Reski';
-    const avatarEl = document.getElementById('user-avatar');
-    if (avatarEl) avatarEl.textContent = currentUserName.charAt(0).toUpperCase();
+    updateThemeUI(localStorage.getItem('lifehub_theme') || 'system');
+    document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
+      const cur = localStorage.getItem('lifehub_theme') || 'system';
+      const next = cur === 'light' ? 'dark' : cur === 'dark' ? 'system' : 'light';
+      setTheme(next);
+    });
 
     async function pasteFromClipboard() {
-        try {
-            const text = await navigator.clipboard.readText();
-            if (text) document.getElementById('video-url').value = text;
-        } catch (err) {
-            alert("Silakan tempel URL secara manual.");
-        }
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) document.getElementById('video-url').value = text;
+      } catch (err) {
+        alert("Please paste link manually.");
+      }
     }
     window.pasteFromClipboard = pasteFromClipboard;
 
     document.getElementById('download-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const urlInput = document.getElementById('video-url').value.trim();
-        if (!urlInput) return;
+      e.preventDefault();
+      const urlInput = document.getElementById('video-url').value.trim();
+      if (!urlInput) return;
 
-        const spinner = document.getElementById('loading-spinner');
-        const resultCard = document.getElementById('result-card');
-        const errorMsg = document.getElementById('error-msg');
-        const emptyState = document.getElementById('empty-state');
+      const spinner = document.getElementById('loading-spinner');
+      const resultCard = document.getElementById('result-card');
+      const errorMsg = document.getElementById('error-msg');
 
-        spinner.classList.remove('hidden');
-        if (emptyState) emptyState.classList.add('hidden');
-        resultCard.classList.add('hidden');
-        errorMsg.classList.add('hidden');
+      spinner.style.display = 'block';
+      resultCard.style.display = 'none';
+      errorMsg.style.display = 'none';
 
-        try {
-            // DETEKSI TIKTOK / DOUYIN SECARA KHUSUS via TikWM API
-            if (urlInput.includes('tiktok.com') || urlInput.includes('douyin.com') || urlInput.includes('vt.tiktok.com')) {
-                const res = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(urlInput)}`);
-                const data = await res.json();
+      try {
+        if (urlInput.includes('tiktok.com') || urlInput.includes('douyin.com') || urlInput.includes('vt.tiktok.com')) {
+          const res = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(urlInput)}`);
+          const data = await res.json();
 
-                if (data.code === 0 && data.data) {
-                    document.getElementById('res-cover').src = data.data.cover || data.data.origin_cover;
-                    document.getElementById('res-title').textContent = data.data.title || 'TikTok / Douyin Video';
-                    document.getElementById('res-author').textContent = `By: @${data.data.author?.unique_id || data.data.author?.nickname || 'creator'}`;
-                    document.getElementById('res-platform').textContent = urlInput.includes('douyin') ? 'Douyin' : 'TikTok';
-                    
-                    document.getElementById('btn-dl-no-wm').href = data.data.play;
-                    document.getElementById('btn-dl-audio').href = data.data.music;
+          if (data.code === 0 && data.data) {
+            document.getElementById('res-cover').src = data.data.cover || data.data.origin_cover;
+            document.getElementById('res-title').textContent = data.data.title || 'TikTok / Douyin Video';
+            document.getElementById('res-author').textContent = `By: @${data.data.author?.unique_id || data.data.author?.nickname || 'creator'}`;
+            document.getElementById('res-platform').textContent = urlInput.includes('douyin') ? 'Douyin' : 'TikTok';
+            
+            document.getElementById('btn-dl-no-wm').href = data.data.play;
+            document.getElementById('btn-dl-audio').href = data.data.music;
 
-                    spinner.classList.add('hidden');
-                    resultCard.classList.remove('hidden');
-                    return;
-                }
-            }
-
-            // FALLBACK UNIVERSAL API EXTRACTOR (Cobalt Engine)
-            const cobaltRes = await fetch('https://api.cobalt.tools/', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    url: urlInput,
-                    videoQuality: 'max'
-                })
-            });
-
-            const cobaltData = await cobaltRes.json();
-
-            if (cobaltData.url || cobaltData.picker) {
-                const downloadLink = cobaltData.url || (cobaltData.picker && cobaltData.picker[0]?.url);
-                
-                document.getElementById('res-cover').src = 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop';
-                document.getElementById('res-title').textContent = 'Video Siap Di-download';
-                document.getElementById('res-author').textContent = 'Universal Media Extractor';
-                document.getElementById('res-platform').textContent = 'Multi-Platform';
-
-                document.getElementById('btn-dl-no-wm').href = downloadLink;
-                document.getElementById('btn-dl-audio').href = downloadLink;
-
-                spinner.classList.add('hidden');
-                resultCard.classList.remove('hidden');
-            } else {
-                throw new Error("Gagal mengambil media. Pastikan tautan dapat diakses publik.");
-            }
-
-        } catch (err) {
-            spinner.classList.add('hidden');
-            document.getElementById('error-text').textContent = err.message || "Gagal memproses video. Periksa koneksi atau tautan kamu.";
-            errorMsg.classList.remove('hidden');
+            spinner.style.display = 'none';
+            resultCard.style.display = 'flex';
+            window.showToast("Media extracted successfully!");
+            return;
+          }
         }
+
+        // Universal Cobalt Extractor Fallback
+        const cobaltRes = await fetch('https://api.cobalt.tools/', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ url: urlInput, videoQuality: 'max' })
+        });
+        const cobaltData = await cobaltRes.json();
+
+        if (cobaltData.url || cobaltData.picker) {
+          const downloadLink = cobaltData.url || (cobaltData.picker && cobaltData.picker[0]?.url);
+          document.getElementById('res-cover').src = 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500';
+          document.getElementById('res-title').textContent = 'Video Ready for Download';
+          document.getElementById('res-author').textContent = 'Universal Extractor';
+          document.getElementById('res-platform').textContent = 'Multi-Platform';
+          document.getElementById('btn-dl-no-wm').href = downloadLink;
+          document.getElementById('btn-dl-audio').href = downloadLink;
+
+          spinner.style.display = 'none';
+          resultCard.style.display = 'flex';
+          window.showToast("Media extracted successfully!");
+        } else {
+          throw new Error("Could not extract stream. Please verify that the media is public.");
+        }
+      } catch (err) {
+        spinner.style.display = 'none';
+        document.getElementById('error-text').textContent = err.message || "Failed to process video link.";
+        errorMsg.style.display = 'block';
+      }
     });
   </script>
-
 </body>
 </html>

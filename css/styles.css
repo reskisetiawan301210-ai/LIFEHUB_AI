@@ -1,210 +1,274 @@
 /* =========================================================================
-   LIFEHUB AI — CORE STYLESHEET
-   Design language: "Orbit Glass" — a dark control-room surface where each
-   hub (Finance / AI / Music / Movies) casts its own ambient hue behind the
-   same glass chrome, so the shell always feels like one app while each
-   room has a distinct atmosphere.
+   LIFEHUB AI — GLOBAL DESIGN SYSTEM STYLESHEET
+   Brand: Royal Purple (#5300B7) & Clean Modern Luxury
+   Supports: Light Mode (Warm Off-White), Dark Mode (Deep Obsidian Charcoal), and System Mode.
    ========================================================================= */
 
-/* ---- Design Tokens ---------------------------------------------------- */
+/* ---- Global Design Tokens (Root Defaults / Light Mode) ----------------- */
+:root, [data-theme='light'] {
+  /* Color Palette: Light Mode */
+  --bg-base: #FCF9F8;
+  --bg-surface: #FFFFFF;
+  --bg-surface-secondary: #F8F6F7;
+  --bg-sidebar: #FFFFFF;
+  --bg-elevated: #FFFFFF;
+  --bg-highlight: #F0ECF4;
+  
+  /* Text & Typography */
+  --text-primary: #1C1B1B;
+  --text-secondary: #5E5C6E;
+  --text-tertiary: #8B8999;
+  --text-muted: #A3A1AF;
+  
+  /* Primary Royal Purple Brand */
+  --primary: #5300B7;
+  --primary-hover: #450099;
+  --primary-container: #6D28D9;
+  --primary-light: #EBDDFF;
+  --primary-ultralight: #F6F0FE;
+  --primary-glow: rgba(83, 0, 183, 0.16);
+
+  /* Functional & Semantic */
+  --color-success: #10B981;
+  --color-success-bg: #ECFDF5;
+  --color-danger: #EF4444;
+  --color-danger-bg: #FEF2F2;
+  --color-info: #06B6D4;
+  --color-info-bg: #ECFEFF;
+  --color-amber: #F59E0B;
+  --color-amber-bg: #FFFBEB;
+
+  /* Borders & Dividers */
+  --border-subtle: rgba(0, 0, 0, 0.04);
+  --border-base: rgba(0, 0, 0, 0.07);
+  --border-strong: rgba(0, 0, 0, 0.12);
+
+  /* Shadows */
+  --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.02);
+  --shadow-card: 0 4px 20px -2px rgba(28, 27, 27, 0.04);
+  --shadow-hover: 0 10px 30px -4px rgba(83, 0, 183, 0.08);
+  --shadow-pop: 0 20px 40px -10px rgba(83, 0, 183, 0.12);
+
+  /* Scrollbars */
+  --scrollbar-thumb: #E2DFE5;
+  --scrollbar-thumb-hover: #CBC7D2;
+}
+
+/* ---- Dark Mode Token Overrides ---------------------------------------- */
+[data-theme='dark'] {
+  /* Color Palette: Dark Mode (Deep Obsidian Charcoal) */
+  --bg-base: #0E0D12;
+  --bg-surface: #16151D;
+  --bg-surface-secondary: #1E1D26;
+  --bg-sidebar: #121118;
+  --bg-elevated: #24222E;
+  --bg-highlight: #2A2836;
+  
+  /* Text & Typography */
+  --text-primary: #F4F3F7;
+  --text-secondary: #A6A4B2;
+  --text-tertiary: #6E6C7C;
+  --text-muted: #535160;
+  
+  /* Primary Royal Purple Brand in Dark Mode */
+  --primary: #7C5CFC;
+  --primary-hover: #9075FC;
+  --primary-container: #5300B7;
+  --primary-light: rgba(124, 92, 252, 0.25);
+  --primary-ultralight: rgba(124, 92, 252, 0.12);
+  --primary-glow: rgba(124, 92, 252, 0.25);
+
+  /* Functional & Semantic (Dark adjustments) */
+  --color-success: #34D399;
+  --color-success-bg: rgba(52, 211, 153, 0.12);
+  --color-danger: #F87171;
+  --color-danger-bg: rgba(248, 113, 113, 0.12);
+  --color-info: #38BDF8;
+  --color-info-bg: rgba(56, 189, 248, 0.12);
+  --color-amber: #FBBF24;
+  --color-amber-bg: rgba(251, 191, 36, 0.12);
+
+  /* Borders & Dividers in Dark Mode */
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-base: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.15);
+
+  /* Shadows in Dark Mode */
+  --shadow-subtle: 0 2px 10px rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 4px 24px -2px rgba(0, 0, 0, 0.45);
+  --shadow-hover: 0 10px 30px -4px rgba(124, 92, 252, 0.15);
+  --shadow-pop: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
+
+  /* Scrollbars in Dark Mode */
+  --scrollbar-thumb: #2C2A38;
+  --scrollbar-thumb-hover: #403D50;
+}
+
+/* ---- Shared System Constants ------------------------------------------ */
 :root {
-  /* Color: deep space navy base + a signature "orbit" gradient per hub */
-  --lh-bg: #0B0F19;
-  --lh-surface: #141824;
-  --lh-surface-glass: rgba(20, 24, 36, 0.62);
-  --lh-border-glow: rgba(255, 255, 255, 0.08);
-  --lh-text-primary: #F1F3F9;
-  --lh-text-muted: #8B93A7;
-
-  --lh-accent-violet: #7C5CFC;   /* AI Assistant hub */
-  --lh-accent-cyan: #22D3EE;     /* Dashboard / default */
-  --lh-accent-emerald: #34D399;  /* Finance hub */
-  --lh-accent-amber: #FBBF24;    /* Movies hub */
-  --lh-accent-rose: #FB7185;     /* Music hub */
-  --lh-danger: #EF4444;
-
-  /* Type: three roles, deliberately distinct from each other */
-  --lh-font-display: 'Space Grotesk', 'Segoe UI', sans-serif;
-  --lh-font-body: 'Inter', 'Segoe UI', sans-serif;
-  --lh-font-mono: 'JetBrains Mono', 'Courier New', monospace;
-
-  /* Layout */
-  --lh-sidebar-w: 264px;
-  --lh-sidebar-w-collapsed: 84px;
-  --lh-topbar-h: 72px;
-  --lh-radius-lg: 20px;
-  --lh-radius-md: 14px;
-  --lh-radius-sm: 8px;
-  --lh-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 26px;
+  --radius-full: 9999px;
+  
+  --sidebar-width: 250px;
+  --header-height: 72px;
+  --mobile-nav-height: 68px;
+  
+  --transition-fast: 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Light mode overrides (toggled via [data-theme="light"] on <html>) */
-[data-theme='light'] {
-  --lh-bg: #F3F4F8;
-  --lh-surface: #FFFFFF;
-  --lh-surface-glass: rgba(255, 255, 255, 0.65);
-  --lh-border-glow: rgba(15, 23, 42, 0.08);
-  --lh-text-primary: #10131C;
-  --lh-text-muted: #5B6270;
-}
-
-* { box-sizing: border-box; }
-
-html, body {
-  height: 100%;
+/* ---- Base Resets & Global Behavior ------------------------------------ */
+*, *::before, *::after {
+  box-sizing: border-box;
   margin: 0;
-  background: var(--lh-bg);
-  color: var(--lh-text-primary);
-  font-family: var(--lh-font-body);
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-size: 16px;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
 }
 
 body {
-  /* Ambient orbit glow behind everything — the signature element.
-     Hue shifts per-hub via the [data-hub] attribute on <body>. */
-  background-image:
-    radial-gradient(ellipse 60% 50% at 15% -10%, var(--lh-hub-glow, var(--lh-accent-cyan)) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 100% 0%, var(--lh-accent-violet) 0%, transparent 55%);
-  background-attachment: fixed;
-  background-color: var(--lh-bg);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.5;
+  transition: background-color var(--transition-smooth), color var(--transition-smooth);
 }
 
-body[data-hub='finance']   { --lh-hub-glow: var(--lh-accent-emerald); }
-body[data-hub='ai']        { --lh-hub-glow: var(--lh-accent-violet); }
-body[data-hub='music']     { --lh-hub-glow: var(--lh-accent-rose); }
-body[data-hub='movies']    { --lh-hub-glow: var(--lh-accent-amber); }
-body[data-hub='dashboard'] { --lh-hub-glow: var(--lh-accent-cyan); }
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
 
-h1, h2, h3, h4, .lh-display {
-  font-family: var(--lh-font-display);
-  letter-spacing: -0.01em;
-  margin: 0;
-}
-
-.lh-mono { font-family: var(--lh-font-mono); font-variant-numeric: tabular-nums; }
-
-/* ---- Glass surface primitive ------------------------------------------ */
-.lh-glass {
-  background: var(--lh-surface-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--lh-border-glow);
-  border-radius: var(--lh-radius-lg);
-  transition: var(--lh-transition);
-}
-
-.lh-glass:hover { border-color: rgba(255, 255, 255, 0.16); }
-
-/* ---- App Shell --------------------------------------------------------- */
-.lh-shell {
-  display: grid;
-  grid-template-columns: var(--lh-sidebar-w) 1fr;
-  min-height: 100vh;
-  transition: var(--lh-transition);
-}
-
-.lh-shell[data-sidebar='collapsed'] {
-  grid-template-columns: var(--lh-sidebar-w-collapsed) 1fr;
-}
-
-.lh-sidebar {
-  grid-row: 1 / -1;
-  padding: 20px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  border-right: 1px solid var(--lh-border-glow);
-}
-
-.lh-topbar {
-  height: var(--lh-topbar-h);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 28px;
-  border-bottom: 1px solid var(--lh-border-glow);
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: var(--lh-surface-glass);
-  backdrop-filter: blur(16px);
-}
-
-.lh-canvas {
-  padding: 28px;
-  max-width: 1400px;
-  width: 100%;
-}
-
-.lh-nav-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 14px;
-  border-radius: var(--lh-radius-sm);
-  color: var(--lh-text-muted);
-  text-decoration: none;
-  font-size: 0.92rem;
-  transition: var(--lh-transition);
-}
-
-.lh-nav-item:hover { background: rgba(255, 255, 255, 0.05); color: var(--lh-text-primary); }
-.lh-nav-item[aria-current='page'] {
-  background: rgba(124, 92, 252, 0.14);
-  color: var(--lh-text-primary);
-  box-shadow: inset 0 0 0 1px rgba(124, 92, 252, 0.3);
-}
-
-/* ---- Widget grid -------------------------------------------------------- */
-.lh-grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 20px;
-}
-
-/* ---- Skeleton loading states -------------------------------------------- */
-.lh-skeleton {
-  position: relative;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: var(--lh-radius-sm);
-}
-.lh-skeleton::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-  animation: lh-shimmer 1.6s infinite;
-}
-@keyframes lh-shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-
-/* ---- Focus visibility (accessibility floor) ----------------------------- */
+/* Universal Focus States */
 :focus-visible {
-  outline: 2px solid var(--lh-accent-cyan);
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+/* Global Toast Notification System */
+.lh-toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
 }
 
-/* ---- Responsive: mobile-first shell collapse ---------------------------- */
-@media (max-width: 768px) {
-  .lh-shell { grid-template-columns: 1fr; }
-  .lh-sidebar {
-    position: fixed; inset: 0 auto 0 0; width: var(--lh-sidebar-w);
-    transform: translateX(-100%); z-index: 40;
-  }
-  .lh-shell[data-sidebar='open'] .lh-sidebar { transform: translateX(0); }
-  .lh-canvas { padding: 16px; }
-}
-
-/* ---- Toast / alert primitives ------------------------------------------- */
 .lh-toast {
-  position: fixed; bottom: 24px; right: 24px; z-index: 100;
-  display: flex; flex-direction: column; gap: 10px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-base);
+  padding: 10px 18px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: var(--shadow-pop);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+  animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-.lh-toast-item {
-  min-width: 260px; max-width: 360px;
-  padding: 14px 16px; border-radius: var(--lh-radius-md);
-  font-size: 0.88rem;
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(12px) scale(0.95); }
+}
+
+/* Command Palette Modal */
+.cmd-palette-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 13, 18, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14vh;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-fast);
+}
+
+.cmd-palette-backdrop.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.cmd-palette-box {
+  width: 100%;
+  max-width: 560px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-pop);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cmd-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-base);
+}
+
+.cmd-input-row input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 15px;
+  outline: none;
+}
+
+.cmd-results-list {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cmd-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.cmd-item:hover, .cmd-item.selected {
+  background: var(--bg-surface-secondary);
+  color: var(--primary);
 }

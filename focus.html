@@ -2,282 +2,456 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Focus Space - LifeHub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>LifeHub AI — Focus Space</title>
   
+  <link rel="icon" type="image/png" href="https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png">
+  <link rel="apple-touch-icon" href="https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5300B7">
+
+  <!-- Anti-FOUC Global Theme Loader -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('lifehub_theme') || 'system';
+      let activeTheme = saved;
+      if (saved === 'system') {
+        activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', activeTheme);
+    })();
+  </script>
+
+  <!-- Google Fonts & Material Symbols -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <style>
-    :root {
-      --bg-base: #09090b;
-      --bg-surface: #18181b;
-      --bg-elevated: #27272a;
-      --border-base: rgba(255, 255, 255, 0.1);
-      --accent-main: #f59e0b;
-      --accent-hover: #d97706;
-      --accent-dim: rgba(245, 158, 11, 0.15);
-      --text-primary: #f4f4f5;
-      --text-secondary: #a1a1aa;
-      --text-tertiary: #71717a;
-      --radius-lg: 20px;
-      --radius-md: 12px;
-    }
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400..600,0..1,0" rel="stylesheet" />
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
+  <!-- Global Design System Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <style>
     body {
-      background-color: var(--bg-base);
-      color: var(--text-primary);
-      font-family: 'Inter', sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 24px;
+      position: relative;
     }
 
-    /* Top Back Bar */
-    .nav-back {
+    .nav-top-bar {
       position: absolute;
-      top: 30px;
-      left: 30px;
+      top: 24px;
+      left: 24px;
+      right: 24px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-back-btn {
+      display: inline-flex;
+      align-items: center;
       gap: 8px;
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
       padding: 8px 16px;
+      border-radius: var(--radius-full);
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
-      border-radius: var(--radius-md);
-      transition: all 0.2s;
-    }
-
-    .nav-back:hover {
       color: var(--text-primary);
-      border-color: var(--accent-main);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: var(--shadow-subtle);
+      transition: all var(--transition-fast);
     }
 
-    /* Main Container */
-    .focus-card {
+    .nav-back-btn:hover {
+      background: var(--bg-surface-secondary);
+      border-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .theme-toggle-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
-      border-radius: var(--radius-lg);
-      padding: 40px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      box-shadow: var(--shadow-subtle);
+      transition: all var(--transition-fast);
+    }
+
+    .theme-toggle-btn:hover {
+      color: var(--primary);
+      background: var(--primary-ultralight);
+    }
+
+    .focus-container-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-xl);
+      padding: 44px 36px;
       width: 100%;
-      max-width: 480px;
+      max-width: 460px;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      box-shadow: var(--shadow-pop);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+    }
+
+    .focus-header-badge {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: var(--primary);
+      background: var(--primary-ultralight);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
     }
 
     .focus-title {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 8px;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
     }
 
     .focus-subtitle {
-      font-size: 13px;
-      color: var(--text-tertiary);
-      margin-bottom: 24px;
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      max-width: 320px;
+      line-height: 1.45;
     }
 
-    /* Mode Selector */
-    .mode-switch {
+    .mode-switch-row {
       display: flex;
-      background: var(--bg-elevated);
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-subtle);
       padding: 4px;
-      border-radius: var(--radius-md);
-      margin-bottom: 30px;
+      border-radius: var(--radius-full);
       gap: 4px;
+      width: 100%;
     }
 
     .mode-btn {
       flex: 1;
-      padding: 8px 0;
+      padding: 9px 0;
       border: none;
-      background: none;
+      background: transparent;
       color: var(--text-secondary);
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      border-radius: var(--radius-full);
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all var(--transition-fast);
     }
 
     .mode-btn.active {
-      background: var(--accent-main);
-      color: var(--bg-base);
+      background: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 2px 10px var(--primary-glow);
     }
 
-    /* Timer Display */
-    .timer-display {
-      font-size: 72px;
+    .timer-ring-container {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 8px 0;
+    }
+
+    .timer-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .timer-circle-bg {
+      fill: none;
+      stroke: var(--bg-surface-secondary);
+      stroke-width: 8;
+    }
+
+    .timer-circle-progress {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 628;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 1s linear;
+    }
+
+    .timer-number-overlay {
+      position: absolute;
+      font-size: 48px;
       font-weight: 800;
-      letter-spacing: -2px;
+      letter-spacing: -1.5px;
       color: var(--text-primary);
-      margin-bottom: 30px;
       font-variant-numeric: tabular-nums;
     }
 
-    /* Controls */
-    .timer-controls {
+    .timer-controls-row {
       display: flex;
       gap: 12px;
-      justify-content: center;
-      margin-bottom: 30px;
+      width: 100%;
     }
 
-    .btn-main {
-      padding: 14px 36px;
-      font-size: 16px;
-      font-weight: 700;
-      border-radius: var(--radius-md);
-      border: none;
-      background: var(--accent-main);
-      color: var(--bg-base);
-      cursor: pointer;
-      transition: transform 0.2s, background 0.2s;
-    }
-
-    .btn-main:hover {
-      background: var(--accent-hover);
-      transform: scale(1.02);
-    }
-
-    .btn-sec {
-      padding: 14px 20px;
+    .btn-timer-primary {
+      flex: 2;
+      padding: 13px;
+      border-radius: var(--radius-full);
+      background: var(--primary);
+      color: #FFFFFF;
       font-size: 14px;
-      font-weight: 600;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-base);
-      background: var(--bg-elevated);
-      color: var(--text-secondary);
+      font-weight: 700;
+      border: none;
       cursor: pointer;
-      transition: all 0.2s;
+      box-shadow: 0 4px 16px var(--primary-glow);
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
-    .btn-sec:hover {
+    .btn-timer-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-timer-secondary {
+      flex: 1;
+      padding: 13px;
+      border-radius: var(--radius-full);
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-base);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-timer-secondary:hover {
       color: var(--text-primary);
-      border-color: var(--text-tertiary);
+      border-color: var(--border-strong);
     }
 
-    /* Focus Goal Input */
     .goal-box {
+      width: 100%;
       border-top: 1px solid var(--border-base);
-      padding-top: 20px;
+      padding-top: 18px;
       text-align: left;
     }
 
     .goal-label {
-      font-size: 12px;
+      font-size: 11px;
+      font-weight: 800;
       color: var(--text-tertiary);
       text-transform: uppercase;
-      font-weight: 600;
-      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
       display: block;
     }
 
     .goal-input {
       width: 100%;
-      background: var(--bg-elevated);
+      background: var(--bg-surface-secondary);
       border: 1px solid var(--border-base);
-      padding: 12px;
-      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
       color: var(--text-primary);
-      font-size: 14px;
+      font-size: 13px;
       outline: none;
+      transition: all var(--transition-fast);
     }
 
     .goal-input:focus {
-      border-color: var(--accent-main);
+      background: var(--bg-surface);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
     }
 
-    /* Footer Credits */
-    .app-footer {
-      margin-top: 30px;
+    .focus-footer {
+      margin-top: 24px;
       font-size: 12px;
       color: var(--text-tertiary);
-    }
-
-    .app-footer span {
-      color: var(--accent-main);
-      font-weight: 600;
     }
   </style>
 </head>
 <body>
 
-  <a href="dashboard.html" class="nav-back">
-    ← Dashboard
-  </a>
+  <!-- Top Navigation Bar -->
+  <div class="nav-top-bar">
+    <a href="dashboard.html" class="nav-back-btn">
+      <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span>
+      <span>Dashboard</span>
+    </a>
 
-  <div class="focus-card">
+    <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Theme">
+      <span class="material-symbols-outlined" id="themeToggleIcon">brightness_auto</span>
+    </button>
+  </div>
+
+  <!-- Focus Space Container -->
+  <div class="focus-container-card">
+    <span class="focus-header-badge">Deep Work Zone</span>
     <h1 class="focus-title">Focus Space</h1>
-    <p class="focus-subtitle">Masuk ke zona bebas gangguan & tuntaskan tugasmu.</p>
+    <p class="focus-subtitle">Enter your distraction-free zone and crush your daily objectives.</p>
 
-    <div class="mode-switch">
+    <!-- Mode Selector -->
+    <div class="mode-switch-row">
       <button class="mode-btn active" id="btnFocus">Focus (25m)</button>
-      <button class="mode-btn" id="btnShort">Rest (5m)</button>
-      <button class="mode-btn" id="btnLong">Break (15m)</button>
+      <button class="mode-btn" id="btnShort">Short Rest (5m)</button>
+      <button class="mode-btn" id="btnLong">Long Break (15m)</button>
     </div>
 
-    <div class="timer-display" id="timer">25:00</div>
-
-    <div class="timer-controls">
-      <button class="btn-main" id="btnStart">START</button>
-      <button class="btn-sec" id="btnReset">RESET</button>
+    <!-- Circular Progress Timer -->
+    <div class="timer-ring-container">
+      <svg class="timer-svg" viewBox="0 0 220 220">
+        <circle class="timer-circle-bg" cx="110" cy="110" r="100"/>
+        <circle class="timer-circle-progress" id="progressRing" cx="110" cy="110" r="100"/>
+      </svg>
+      <div class="timer-number-overlay" id="timer">25:00</div>
     </div>
 
+    <!-- Controls -->
+    <div class="timer-controls-row">
+      <button class="btn-timer-primary" id="btnStart">
+        <span class="material-symbols-outlined" id="playIcon">play_arrow</span>
+        <span id="startBtnText">START</span>
+      </button>
+      <button class="btn-timer-secondary" id="btnReset">RESET</button>
+    </div>
+
+    <!-- Goal Input -->
     <div class="goal-box">
-      <label class="goal-label">Target Sesi Ini:</label>
-      <input type="text" class="goal-input" placeholder="Misal: Selesaikan Bab 3 Fisika..." id="goalInput">
+      <label class="goal-label">Session Objective:</label>
+      <input type="text" class="goal-input" placeholder="e.g., Complete Chapter 3 Physics..." id="goalInput">
     </div>
   </div>
 
-  <footer class="app-footer">
-    © 2026 <span>LifeHub AI</span>. Developed with  by Reski X Legacyy403
-  </footer>
+  <div class="focus-footer">
+    © 2026 <strong>LifeHub AI</strong>. Deep Work Productivity Engine.
+  </div>
+
+  <div class="lh-toast-container" id="toastContainer"></div>
 
   <script>
-    let timeLeft = 25 * 60;
+    // Toast helper
+    window.showToast = function(msg, icon = 'check_circle') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const el = document.createElement('div');
+      el.className = 'lh-toast';
+      el.innerHTML = `<span class="material-symbols-outlined" style="font-size:18px; color:var(--primary);">${icon}</span> <span>${msg}</span>`;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.animation = 'toastOut 0.25s forwards';
+        setTimeout(() => el.remove(), 250);
+      }, 3000);
+    };
+
+    // Theme Switcher
+    function updateThemeUI(theme) {
+      const iconEl = document.getElementById('themeToggleIcon');
+      if (!iconEl) return;
+      if (theme === 'light') iconEl.textContent = 'light_mode';
+      else if (theme === 'dark') iconEl.textContent = 'dark_mode';
+      else iconEl.textContent = 'brightness_auto';
+    }
+
+    function setTheme(themeMode) {
+      localStorage.setItem('lifehub_theme', themeMode);
+      let activeTheme = themeMode;
+      if (themeMode === 'system') {
+        activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', activeTheme);
+      updateThemeUI(themeMode);
+      window.showToast(`Theme set to ${themeMode.toUpperCase()}`, 'palette');
+    }
+
+    updateThemeUI(localStorage.getItem('lifehub_theme') || 'system');
+    document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
+      const cur = localStorage.getItem('lifehub_theme') || 'system';
+      const next = cur === 'light' ? 'dark' : cur === 'dark' ? 'system' : 'light';
+      setTheme(next);
+    });
+
+    // Timer State
+    let totalDuration = 25 * 60;
+    let timeLeft = totalDuration;
     let timerId = null;
     let isRunning = false;
+    let currentModeMinutes = 25;
 
     const timerDisplay = document.getElementById('timer');
     const btnStart = document.getElementById('btnStart');
+    const startBtnText = document.getElementById('startBtnText');
+    const playIcon = document.getElementById('playIcon');
     const btnReset = document.getElementById('btnReset');
     const btnFocus = document.getElementById('btnFocus');
     const btnShort = document.getElementById('btnShort');
     const btnLong = document.getElementById('btnLong');
+    const progressRing = document.getElementById('progressRing');
+    const circumference = 2 * Math.PI * 100; // 628.318
 
     function updateDisplay() {
       const minutes = Math.floor(timeLeft / 60);
       const seconds = timeLeft % 60;
       timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-      document.title = `(${timerDisplay.textContent}) Focus Space - LifeHub`;
+      document.title = `(${timerDisplay.textContent}) Focus Space — LifeHub AI`;
+
+      // Update ring offset
+      const progressFraction = (totalDuration - timeLeft) / totalDuration;
+      const offset = circumference * (1 - progressFraction);
+      progressRing.style.strokeDashoffset = offset;
     }
 
     function startTimer() {
       if (isRunning) {
         clearInterval(timerId);
-        btnStart.textContent = 'START';
+        startBtnText.textContent = 'RESUME';
+        playIcon.textContent = 'play_arrow';
         isRunning = false;
       } else {
         isRunning = true;
-        btnStart.textContent = 'PAUSE';
+        startBtnText.textContent = 'PAUSE';
+        playIcon.textContent = 'pause';
         timerId = setInterval(() => {
           if (timeLeft > 0) {
             timeLeft--;
             updateDisplay();
           } else {
             clearInterval(timerId);
-            alert("Sesi Selesai! Saatnya Istirahat 🎉");
+            isRunning = false;
+            startBtnText.textContent = 'START';
+            playIcon.textContent = 'play_arrow';
+
+            // Accumulate real focus minutes in localStorage
+            if (currentModeMinutes === 25) {
+              let curMin = parseInt(localStorage.getItem('lifehub_focus_total_min') || '0', 10);
+              curMin += 25;
+              localStorage.setItem('lifehub_focus_total_min', curMin);
+            }
+
+            window.showToast("Focus session completed! Great job! 🎉", "celebration");
             resetTimer();
           }
         }, 1000);
@@ -287,17 +461,18 @@
     function resetTimer() {
       clearInterval(timerId);
       isRunning = false;
-      btnStart.textContent = 'START';
-      if (btnFocus.classList.contains('active')) timeLeft = 25 * 60;
-      if (btnShort.classList.contains('active')) timeLeft = 5 * 60;
-      if (btnLong.classList.contains('active')) timeLeft = 15 * 60;
+      startBtnText.textContent = 'START';
+      playIcon.textContent = 'play_arrow';
+      timeLeft = totalDuration;
       updateDisplay();
     }
 
     function setMode(duration, activeBtn) {
       [btnFocus, btnShort, btnLong].forEach(btn => btn.classList.remove('active'));
       activeBtn.classList.add('active');
-      timeLeft = duration * 60;
+      currentModeMinutes = duration;
+      totalDuration = duration * 60;
+      timeLeft = totalDuration;
       resetTimer();
     }
 

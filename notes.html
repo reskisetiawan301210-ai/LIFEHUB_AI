@@ -3,97 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>LifeHub AI — Notes & Workspace</title>
+  <title>LifeHub AI — Notes & Tasks</title>
 
   <link rel="icon" type="image/png" href="https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png">
   <link rel="apple-touch-icon" href="https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#f59e0b">
+  <meta name="theme-color" content="#5300B7">
 
+  <!-- Anti-FOUC Global Theme Loader -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('lifehub_theme') || 'system';
+      let activeTheme = saved;
+      if (saved === 'system') {
+        activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', activeTheme);
+    })();
+  </script>
+
+  <!-- Google Fonts & Material Symbols -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400..600,0..1,0" rel="stylesheet" />
+
+  <!-- Global Design System Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
 
   <style>
     /* ==========================================================================
-       OBSIDIAN & AMBER DESIGN SYSTEM (LIFEHUB AI ECOSYSTEM)
+       NOTES & TASKS WORKSPACE STYLES
        ========================================================================== */
-    :root {
-      --bg-base: #0a0a0c;
-      --bg-sidebar: #101013;
-      --bg-surface: #141418;
-      --bg-elevated: #1a1a20;
-      --bg-highlight: #24242e;
-
-      --border-subtle: rgba(255, 255, 255, 0.05);
-      --border-base: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.16);
-
-      --accent-main: #f59e0b;
-      --accent-hover: #d97706;
-      --accent-dim: rgba(245, 158, 11, 0.12);
-      --accent-glow: rgba(245, 158, 11, 0.25);
-
-      --color-success: #10b981;
-      --color-danger: #ef4444;
-      --color-info: #06b6d4;
-      --color-purple: #8b5cf6;
-
-      --text-primary: #f4f4f6;
-      --text-secondary: #9e9ea7;
-      --text-tertiary: #62626b;
-
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --radius-xl: 24px;
-
-      --sidebar-width: 240px;
-      --header-height: 64px;
-      --mobile-nav-height: 64px;
-
-      --transition-snappy: 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
-      --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      font-size: 16px;
-      -webkit-font-smoothing: antialiased;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background-color: var(--bg-base);
-      color: var(--text-primary);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      line-height: 1.5;
-      overflow-x: hidden;
+    .app-layout {
+      display: flex;
       min-height: 100vh;
-    }
-
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--bg-highlight); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
-
-    a { color: inherit; text-decoration: none; }
-    button { background: none; border: none; font-family: inherit; color: inherit; cursor: pointer; }
-
-    .icon-svg {
-      width: 20px;
-      height: 20px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+      position: relative;
+      z-index: 1;
     }
 
     #ambientCanvas {
@@ -104,24 +50,14 @@
       height: 100%;
       z-index: 0;
       pointer-events: none;
-      opacity: 0.3;
-    }
-
-    /* ==========================================================================
-       LAYOUT STRUCTURE & DESKTOP SHELL
-       ========================================================================== */
-    .app-layout {
-      display: flex;
-      min-height: 100vh;
-      position: relative;
-      z-index: 1;
+      opacity: 0.35;
     }
 
     /* Left Sidebar */
     .sidebar {
       width: var(--sidebar-width);
       background: var(--bg-sidebar);
-      border-right: 1px solid var(--border-subtle);
+      border-right: 1px solid var(--border-base);
       display: flex;
       flex-direction: column;
       position: fixed;
@@ -136,7 +72,7 @@
       height: var(--header-height);
       display: flex;
       align-items: center;
-      padding: 0 20px;
+      padding: 0 24px;
       border-bottom: 1px solid var(--border-subtle);
     }
 
@@ -144,27 +80,35 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      cursor: pointer;
     }
 
-    .brand-icon {
-      width: 28px;
-      height: 28px;
+    .brand-logo-icon {
+      width: 32px;
+      height: 32px;
       border-radius: var(--radius-sm);
-      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: var(--primary-ultralight);
+      color: var(--primary);
     }
 
-    .brand-text {
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
+    .brand-title-text {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
+
+    .brand-title-text span { color: var(--primary); }
 
     .sidebar-nav {
       flex: 1;
-      padding: 16px 12px;
+      padding: 20px 14px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -174,53 +118,49 @@
     .nav-label {
       font-size: 10px;
       font-weight: 700;
-      color: var(--text-tertiary);
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin: 16px 0 6px 10px;
+      margin: 16px 0 6px 12px;
     }
 
     .nav-item {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 10px 12px;
-      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
       color: var(--text-secondary);
-      font-weight: 500;
-      font-size: 13px;
-      transition: all var(--transition-snappy);
+      font-weight: 600;
+      font-size: 13.5px;
+      transition: all var(--transition-fast);
+      text-decoration: none;
     }
 
     .nav-item:hover {
-      background: var(--bg-surface);
+      background: var(--bg-surface-secondary);
       color: var(--text-primary);
     }
 
     .nav-item.active {
-      background: var(--bg-elevated);
-      color: var(--text-primary);
-      font-weight: 600;
-      border-left: 2px solid var(--accent-main);
+      background: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px var(--primary-glow);
     }
 
-    .nav-item.active .icon-svg { stroke: var(--accent-main); }
+    .nav-item.active .material-symbols-outlined { color: #FFFFFF; }
+    .nav-item .material-symbols-outlined { font-size: 20px; color: var(--text-tertiary); }
+    .nav-item:hover .material-symbols-outlined { color: var(--text-primary); }
 
     .sidebar-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.4);
       backdrop-filter: blur(4px);
-      z-index: 40;
-      opacity: 0;
-      visibility: hidden;
-      transition: all var(--transition-smooth);
+      z-index: 49;
+      display: none;
     }
-
-    .sidebar-overlay.is-active {
-      opacity: 1;
-      visibility: visible;
-    }
+    .sidebar-overlay.is-active { display: block; }
 
     /* Main Content Area */
     .main-content {
@@ -232,33 +172,33 @@
       padding-bottom: 40px;
     }
 
-    /* Top Navigation Header */
     .top-header {
       height: var(--header-height);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 32px;
+      padding: 0 36px;
       position: sticky;
       top: 0;
-      background: rgba(10, 10, 12, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-base);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-base);
       z-index: 30;
+      transition: background-color var(--transition-smooth);
     }
 
     .header-left, .header-right {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
     }
 
     .mobile-brand {
       display: none;
       align-items: center;
       gap: 8px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 16px;
     }
 
@@ -266,6 +206,7 @@
       display: none;
       color: var(--text-primary);
       padding: 6px;
+      border-radius: var(--radius-sm);
     }
 
     .search-wrapper {
@@ -275,123 +216,131 @@
 
     .search-icon {
       position: absolute;
-      left: 12px;
+      left: 14px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-tertiary);
-      width: 16px;
-      height: 16px;
+      font-size: 18px;
     }
 
     .search-input {
       width: 100%;
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
-      border-radius: 999px;
-      padding: 7px 14px 7px 36px;
+      border-radius: var(--radius-full);
+      padding: 9px 18px 9px 40px;
       color: var(--text-primary);
-      font-size: 12px;
-      transition: all var(--transition-snappy);
+      font-size: 13.5px;
+      transition: all var(--transition-fast);
+      box-shadow: var(--shadow-subtle);
     }
 
     .search-input:focus {
-      background: var(--bg-elevated);
-      border-color: var(--border-strong);
+      background: var(--bg-surface);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
       outline: none;
     }
 
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 4px 10px 4px 4px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-base);
-      border-radius: 999px;
-    }
-
-    .user-avatar {
-      width: 28px;
-      height: 28px;
+    .action-btn {
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      background: var(--accent-main);
-      color: var(--bg-base);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      font-size: 11px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+      box-shadow: var(--shadow-subtle);
+      cursor: pointer;
     }
 
-    /* Workspace Container */
+    .action-btn:hover {
+      color: var(--primary);
+      background: var(--primary-ultralight);
+      border-color: var(--primary-light);
+    }
+
     .workspace {
-      padding: 32px;
-      max-width: 1360px;
+      padding: 32px 36px;
+      max-width: 1320px;
       width: 100%;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 28px;
     }
 
-    /* Header Banner */
     .workspace-hero {
       display: flex;
-      align-items: flex-end;
       justify-content: space-between;
-      gap: 16px;
+      align-items: flex-end;
       flex-wrap: wrap;
+      gap: 16px;
     }
 
-    .hero-title-group .category-pill {
-      font-size: 10px;
+    .hero-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .category-pill {
+      font-size: 11px;
       font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--primary);
+      background: var(--primary-ultralight);
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      display: inline-block;
+      width: fit-content;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--accent-main);
-      margin-bottom: 4px;
     }
 
     .hero-title-group h1 {
       font-size: 32px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
       color: var(--text-primary);
     }
 
     .hero-title-group p {
-      font-size: 13px;
+      font-size: 14.5px;
       color: var(--text-secondary);
-      margin-top: 2px;
     }
 
     .tab-switch-group {
-      display: inline-flex;
+      display: flex;
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
+      border-radius: var(--radius-full);
       padding: 4px;
-      border-radius: var(--radius-md);
       gap: 4px;
+      box-shadow: var(--shadow-subtle);
     }
 
     .tab-btn {
-      padding: 6px 14px;
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 700;
       color: var(--text-secondary);
-      transition: all var(--transition-snappy);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+      border: none;
+      background: transparent;
     }
 
     .tab-btn.active {
-      background: var(--accent-main);
-      color: #000;
-      font-weight: 700;
+      background: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 2px 10px var(--primary-glow);
     }
 
-    /* ==========================================================================
-       METRICS / OVERVIEW CARDS (DESKTOP REFERENCE SCREEN 2)
-       ========================================================================== */
+    /* Metric Cards Grid */
     .metrics-summary-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -401,135 +350,125 @@
     .summary-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
-      border-radius: var(--radius-md);
-      padding: 16px;
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      transition: all var(--transition-snappy);
+      gap: 6px;
+      box-shadow: var(--shadow-card);
+      transition: all var(--transition-fast);
     }
 
     .summary-card:hover {
-      background: var(--bg-elevated);
-      border-color: var(--border-strong);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--primary-light);
     }
 
     .summary-card-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       color: var(--text-tertiary);
-    }
-
-    .summary-card-title {
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 1px;
+      font-size: 12px;
+      font-weight: 700;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .summary-card-value {
       font-size: 28px;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--text-primary);
-      line-height: 1;
+      letter-spacing: -0.5px;
     }
 
     .summary-card-sub {
-      font-size: 11px;
-      color: var(--text-tertiary);
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
     }
 
-    .summary-card-sub.highlight { color: var(--accent-main); font-weight: 600; }
+    .summary-card-sub.highlight { color: var(--primary); }
 
-    /* ==========================================================================
-       MAIN WORKSPACE GRID (DESKTOP)
-       ========================================================================== */
+    /* Main 2-Column Grid */
     .notes-workspace-grid {
       display: grid;
-      grid-template-columns: 4fr 5fr 3fr;
-      gap: 20px;
+      grid-template-columns: 380px 1fr;
+      gap: 24px;
+      align-items: start;
     }
 
     .panel-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
       border-radius: var(--radius-lg);
-      padding: 20px;
+      padding: 24px;
+      box-shadow: var(--shadow-card);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 18px;
     }
 
     .panel-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border-subtle);
+      align-items: center;
     }
 
     .panel-title {
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 800;
       color: var(--text-primary);
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .panel-title .material-symbols-outlined {
-      font-size: 18px;
-      color: var(--accent-main);
-    }
+    .panel-title .material-symbols-outlined { color: var(--primary); }
 
-    /* Quick Capture Pill Bar (Screen 1 & 2 Ref) */
     .quick-capture-box {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-base);
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 14px;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
     .quick-capture-title {
-      font-size: 11px;
-      color: var(--text-tertiary);
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
     }
 
     .chips-row {
       display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .chip-btn {
-      padding: 5px 10px;
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
-      border-radius: var(--radius-sm);
-      font-size: 11px;
-      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      font-size: 11.5px;
+      font-weight: 700;
       color: var(--text-secondary);
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 4px;
-      transition: all var(--transition-snappy);
+      cursor: pointer;
+      transition: all var(--transition-fast);
     }
 
     .chip-btn:hover, .chip-btn.active {
-      border-color: var(--accent-main);
-      color: var(--text-primary);
-      background: var(--accent-dim);
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
     }
 
-    /* Form Fields */
     .form-group {
       display: flex;
       flex-direction: column;
@@ -537,77 +476,131 @@
     }
 
     .form-label {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
-      color: var(--text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      color: var(--text-secondary);
     }
 
     .form-input, .form-select, .form-textarea {
-      width: 100%;
-      background: var(--bg-elevated);
+      background: var(--bg-surface-secondary);
       border: 1px solid var(--border-base);
       border-radius: var(--radius-sm);
-      padding: 10px 12px;
+      padding: 10px 14px;
       color: var(--text-primary);
       font-size: 13px;
       font-family: inherit;
-      transition: border var(--transition-snappy);
+      transition: all var(--transition-fast);
+      width: 100%;
     }
 
     .form-input:focus, .form-select:focus, .form-textarea:focus {
       outline: none;
-      border-color: var(--accent-main);
+      background: var(--bg-surface);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
     }
 
-    .btn-submit-gold {
-      width: 100%;
-      background: var(--accent-main);
-      color: #000;
+    .btn-submit-primary {
+      background: var(--primary);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 12px;
+      font-size: 13.5px;
       font-weight: 700;
-      font-size: 13px;
-      padding: 11px;
-      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .btn-submit-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .filter-pills-row {
+      display: flex;
       gap: 6px;
-      transition: all var(--transition-snappy);
-      box-shadow: 0 4px 14px var(--accent-glow);
     }
 
-    .btn-submit-gold:hover {
-      background: var(--accent-hover);
+    .filter-btn {
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
     }
 
-    /* Task & Note List Render Areas */
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+    }
+
     .items-scroll-list {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      max-height: 440px;
+      max-height: 480px;
       overflow-y: auto;
-      padding-right: 4px;
     }
 
     .task-item-card {
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-base);
-      border-radius: var(--radius-md);
-      transition: all var(--transition-snappy);
+      gap: 12px;
+      transition: all var(--transition-fast);
     }
 
     .task-item-card:hover {
       border-color: var(--border-strong);
+      transform: translateY(-1px);
     }
 
-    .task-item-card.completed {
-      opacity: 0.5;
+    .task-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .task-checkbox {
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid var(--text-tertiary);
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-surface);
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .task-item-card.completed .task-checkbox {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .task-item-card.completed .task-checkbox::after {
+      content: '✓';
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 800;
     }
 
     .task-item-card.completed .task-item-title {
@@ -615,234 +608,97 @@
       color: var(--text-tertiary);
     }
 
-    .task-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .task-checkbox {
-      width: 18px;
-      height: 18px;
-      border: 1.5px solid var(--text-tertiary);
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .task-item-card.completed .task-checkbox {
-      background: var(--accent-main);
-      border-color: var(--accent-main);
-    }
-
-    .task-item-card.completed .task-checkbox::after {
-      content: '✓';
-      color: #000;
-      font-size: 11px;
-      font-weight: 800;
-    }
-
     .task-item-title {
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 600;
       color: var(--text-primary);
+      line-height: 1.35;
     }
 
     .task-meta {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 10px;
+      gap: 8px;
+      font-size: 11px;
       color: var(--text-tertiary);
       margin-top: 2px;
     }
 
     .tag-badge {
-      font-size: 9px;
-      font-weight: 800;
-      padding: 2px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
       border-radius: 4px;
-      text-transform: uppercase;
     }
 
-    .tag-high { background: rgba(239, 68, 68, 0.15); color: var(--color-danger); }
-    .tag-medium { background: rgba(245, 158, 11, 0.15); color: var(--accent-main); }
-    .tag-low { background: rgba(16, 185, 129, 0.15); color: var(--color-success); }
+    .tag-high { background: var(--color-danger-bg); color: var(--color-danger); }
+    .tag-medium { background: var(--color-amber-bg); color: var(--color-amber); }
+    .tag-low { background: var(--color-success-bg); color: var(--color-success); }
+
+    /* Notes Grid */
+    .notes-masonry-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      max-height: 480px;
+      overflow-y: auto;
+    }
 
     .note-card-item {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-base);
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 14px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 120px;
-      transition: all var(--transition-snappy);
+      gap: 12px;
+      transition: all var(--transition-fast);
     }
 
     .note-card-item:hover {
-      border-color: var(--accent-dim);
-      transform: translateY(-1px);
+      border-color: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
     }
 
     .note-card-title {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
       color: var(--text-primary);
+      margin-bottom: 6px;
     }
 
     .note-card-body {
-      font-size: 11px;
+      font-size: 12.5px;
       color: var(--text-secondary);
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      margin-top: 4px;
-      line-height: 1.4;
+      line-height: 1.5;
+      white-space: pre-wrap;
     }
 
     .note-card-date {
-      font-size: 10px;
-      color: var(--text-tertiary);
-      margin-top: 10px;
-    }
-
-    /* Filters row */
-    .filter-pills-row {
-      display: flex;
-      gap: 4px;
-    }
-
-    .filter-btn {
-      padding: 4px 10px;
       font-size: 11px;
-      font-weight: 600;
-      border-radius: var(--radius-sm);
       color: var(--text-tertiary);
-      background: var(--bg-elevated);
-    }
-
-    .filter-btn.active {
-      background: var(--accent-dim);
-      color: var(--accent-main);
-      font-weight: 700;
-    }
-
-    /* Code Snippets Preview Box (Reference Screen 2) */
-    .snippet-preview-box {
-      background: #0d0d10;
-      border: 1px solid var(--border-base);
-      border-radius: var(--radius-md);
-      padding: 12px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--text-secondary);
-      line-height: 1.5;
-      overflow-x: auto;
-    }
-
-    .snippet-preview-box span.kw { color: #f472b6; }
-    .snippet-preview-box span.fn { color: #60a5fa; }
-    .snippet-preview-box span.str { color: #34d399; }
-
-    /* ==========================================================================
-       MOBILE EXCLUSIVE INTERFACE (SCREEN 1 REFERENCE)
-       ========================================================================== */
-    .mobile-bottom-nav {
-      display: none;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: var(--mobile-nav-height);
-      background: var(--bg-sidebar);
-      border-top: 1px solid var(--border-base);
-      z-index: 60;
-      padding: 0 16px;
-      justify-content: space-around;
-      align-items: center;
-    }
-
-    .mobile-nav-link {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      color: var(--text-tertiary);
-      font-size: 10px;
       font-weight: 600;
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 8px;
+      margin-top: 6px;
     }
 
-    .mobile-nav-link.active { color: var(--accent-main); }
-
-    /* ==========================================================================
-       RESPONSIVE BREAKPOINTS & LAYOUT ADAPTATION
-       ========================================================================== */
-    @media (max-width: 1120px) {
-      .notes-workspace-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-      .col-right-sidebar {
-        grid-column: span 2;
-      }
-      .metrics-summary-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 860px) {
-      :root {
-  --sidebar-width: 0px;
-}
-
+    @media (max-width: 900px) {
+      .notes-workspace-grid { grid-template-columns: 1fr; }
+      .metrics-summary-grid { grid-template-columns: repeat(2, 1fr); }
+      :root { --sidebar-width: 0px; }
       .sidebar {
         transform: translateX(-100%);
-        width: 240px;
+        width: 270px;
       }
-
       .sidebar.is-active { transform: translateX(0); }
-
       .mobile-trigger, .mobile-brand { display: flex; }
-
-      .search-wrapper { display: none; }
-
-      .main-content {
-        margin-left: 0;
-        padding-bottom: calc(var(--mobile-nav-height) + 20px);
-      }
-
-      .top-header { padding: 0 16px; }
-
-      .workspace {
-        padding: 16px;
-        gap: 16px;
-      }
-
-      .hero-title-group h1 { font-size: 24px; }
-
-      .metrics-summary-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-      }
-
-      .notes-workspace-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
-
-      .col-right-sidebar {
-        grid-column: span 1;
-      }
-
-      .mobile-bottom-nav { display: flex; }
+      .top-header .search-wrapper { display: none; }
+      .main-content { margin-left: 0; }
+      .top-header { padding: 0 18px; }
+      .workspace { padding: 20px 16px; }
     }
   </style>
 </head>
@@ -853,57 +709,60 @@
   <div class="app-layout">
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- Global Desktop Sidebar -->
+    <!-- Sidebar Navigation -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <div class="brand-combo">
-          <div class="brand-icon">
-            <img src="https://cdn.phototourl.com/free/2026-08-10-e2258c8f-a8af-411b-9efc-aaed64b1e6c9.png" alt="LifeHub" style="width:100%; height:100%; object-fit:cover;">
+        <div class="brand-combo" onclick="location.href='dashboard.html'">
+          <div class="brand-logo-icon">
+            <span class="material-symbols-outlined" style="font-size:22px; font-variation-settings: 'FILL' 1;">widgets</span>
           </div>
-          <div class="brand-text">LifeHub</div>
+          <div class="brand-title-text">LifeHub <span>AI</span></div>
         </div>
       </div>
 
       <nav class="sidebar-nav">
-        <div class="nav-label">WORKSPACE</div>
         <a href="dashboard.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          <span class="material-symbols-outlined">dashboard</span>
           <span class="nav-text">Dashboard</span>
         </a>
         <a href="ai.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
+          <span class="material-symbols-outlined">smart_toy</span>
           <span class="nav-text">AI Assistant</span>
         </a>
         <a href="notes.html" class="nav-item active">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">edit_note</span>
           <span class="nav-text">Notes & Tasks</span>
         </a>
         <a href="focus.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span class="material-symbols-outlined">center_focus_strong</span>
           <span class="nav-text">Focus Space</span>
         </a>
+        <a href="finance.html" class="nav-item">
+          <span class="material-symbols-outlined">payments</span>
+          <span class="nav-text">Finance</span>
+        </a>
 
-        <div class="nav-label">MEDIA</div>
+        <div class="nav-label">MEDIA & ENTERTAINMENT</div>
         <a href="music.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          <span class="material-symbols-outlined">library_music</span>
           <span class="nav-text">Music</span>
         </a>
         <a href="movies.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/></svg>
+          <span class="material-symbols-outlined">movie</span>
           <span class="nav-text">Movies</span>
         </a>
+
+        <div class="nav-label">UTILITIES & TOOLS</div>
         <a href="downloader.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          <span class="material-symbols-outlined">download</span>
           <span class="nav-text">Downloader</span>
         </a>
-
-        <div class="nav-label">TOOLS</div>
         <a href="mastery.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          <span class="material-symbols-outlined">code</span>
           <span class="nav-text">Code Mastery</span>
         </a>
         <a href="qr-tools.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><path d="M3 14h7v7H3z"/></svg>
+          <span class="material-symbols-outlined">qr_code_2</span>
           <span class="nav-text">QR Tools</span>
         </a>
       </nav>
@@ -911,43 +770,43 @@
 
     <!-- Main Workspace Frame -->
     <main class="main-content">
-      <!-- Top Header Navigation -->
       <header class="top-header">
         <div class="header-left">
-          <button class="mobile-trigger" id="mobileMenuTrigger">
-            <svg class="icon-svg" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <button class="mobile-trigger" id="mobileMenuTrigger" aria-label="Open Menu">
+            <span class="material-symbols-outlined">menu</span>
           </button>
 
           <div class="mobile-brand">
-            <img src="https://cdn.phototourl.com/free/2026-08-10-e2258c8f-a8af-411b-9efc-aaed64b1e6c9.png" alt="LifeHub" style="width:22px; height:22px; border-radius:4px;">
+            <span class="material-symbols-outlined" style="color:var(--primary); font-variation-settings: 'FILL' 1;">widgets</span>
             LifeHub AI
           </div>
 
-          <!-- Preserved Search Input -->
           <div class="search-wrapper">
-            <svg class="icon-svg search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span class="material-symbols-outlined search-icon">search</span>
             <input id="search-input" class="search-input" placeholder="Search notes & tasks..." type="text"/>
           </div>
         </div>
 
         <div class="header-right">
-          <div class="user-profile">
-            <div class="user-avatar" id="user-avatar">RS</div>
-          </div>
+          <!-- Global Theme Mode Selector Button -->
+          <button class="action-btn" id="themeToggleBtn" title="Toggle Light / Dark / System Mode">
+            <span class="material-symbols-outlined" id="themeToggleIcon">brightness_auto</span>
+          </button>
+          <button class="action-btn" onclick="location.href='dashboard.html'" title="Dashboard">
+            <span class="material-symbols-outlined">dashboard</span>
+          </button>
         </div>
       </header>
 
-      <!-- Main Content Container -->
       <div class="workspace">
         <!-- Hero Header & Tab Switcher -->
         <div class="workspace-hero">
           <div class="hero-title-group">
             <div class="category-pill">WORKSPACE</div>
             <h1>Notes & Task Workspace</h1>
-            <p>Organize your notes, tasks, ideas, code snippets, and study plans in one place.</p>
+            <p>Organize your notes, tasks, ideas, code snippets, and daily agenda in one place.</p>
           </div>
 
-          <!-- Preserved Tab Switch Buttons & Counts -->
           <div class="tab-switch-group">
             <button id="tab-btn-tasks" onclick="switchTab('tasks')" class="tab-btn active">
               Tasks (<span id="task-count">0</span>)
@@ -958,46 +817,46 @@
           </div>
         </div>
 
-        <!-- Metric Overview Cards (Reference Screen 2) -->
+        <!-- Metric Overview Cards -->
         <div class="metrics-summary-grid">
           <div class="summary-card">
             <div class="summary-card-header">
               <span class="summary-card-title">Tasks</span>
-              <span class="material-symbols-outlined" style="font-size:18px;">check_circle</span>
+              <span class="material-symbols-outlined">check_circle</span>
             </div>
-            <div class="summary-card-value" id="metric-task-val">8</div>
-            <div class="summary-card-sub highlight">• 3 due today</div>
+            <div class="summary-card-value" id="metric-task-val">0</div>
+            <div class="summary-card-sub highlight">• Active Checklist</div>
           </div>
 
           <div class="summary-card">
             <div class="summary-card-header">
               <span class="summary-card-title">Notes</span>
-              <span class="material-symbols-outlined" style="font-size:18px;">description</span>
+              <span class="material-symbols-outlined">description</span>
             </div>
-            <div class="summary-card-value" id="metric-note-val">24</div>
-            <div class="summary-card-sub">+4 this week</div>
+            <div class="summary-card-value" id="metric-note-val">0</div>
+            <div class="summary-card-sub">Saved Documents</div>
           </div>
 
           <div class="summary-card">
             <div class="summary-card-header">
-              <span class="summary-card-title">Snippets</span>
-              <span class="material-symbols-outlined" style="font-size:18px;">code</span>
+              <span class="summary-card-title">Storage</span>
+              <span class="material-symbols-outlined">cloud_done</span>
             </div>
-            <div class="summary-card-value">12</div>
-            <div class="summary-card-sub">JavaScript</div>
+            <div class="summary-card-value">Local</div>
+            <div class="summary-card-sub">Real-Time Sync</div>
           </div>
 
           <div class="summary-card">
             <div class="summary-card-header">
-              <span class="summary-card-title">Ideas</span>
-              <span class="material-symbols-outlined" style="font-size:18px;">lightbulb</span>
+              <span class="summary-card-title">Status</span>
+              <span class="material-symbols-outlined">bolt</span>
             </div>
-            <div class="summary-card-value">7</div>
-            <div class="summary-card-sub highlight">💡 2 new</div>
+            <div class="summary-card-value">Ready</div>
+            <div class="summary-card-sub highlight">⚡ Instant Save</div>
           </div>
         </div>
 
-        <!-- Main Workspace Grid (3-Column SaaS Layout) -->
+        <!-- Main Workspace Grid -->
         <div class="notes-workspace-grid">
           
           <!-- Column 1: Quick Capture & Creator Forms -->
@@ -1009,23 +868,19 @@
               </div>
             </div>
 
-            <!-- Quick Capture Bar (Reference Screen 1 & 2) -->
             <div class="quick-capture-box">
-              <div class="quick-capture-title">What do you want to save?</div>
+              <div class="quick-capture-title">What do you want to create?</div>
               <div class="chips-row">
-                <button type="button" class="chip-btn active" onclick="switchTab('tasks')">
+                <button type="button" class="chip-btn active" id="chip-task-btn" onclick="switchTab('tasks')">
                   <span class="material-symbols-outlined" style="font-size:14px;">check_box</span> TASK
                 </button>
-                <button type="button" class="chip-btn" onclick="switchTab('notes')">
+                <button type="button" class="chip-btn" id="chip-note-btn" onclick="switchTab('notes')">
                   <span class="material-symbols-outlined" style="font-size:14px;">description</span> NOTE
-                </button>
-                <button type="button" class="chip-btn" onclick="switchTab('notes')">
-                  <span class="material-symbols-outlined" style="font-size:14px;">lightbulb</span> IDEA
                 </button>
               </div>
             </div>
 
-            <!-- Task Form (Preserved IDs) -->
+            <!-- Task Form -->
             <div id="tasks-form-wrap">
               <form id="task-form" style="display:flex; flex-direction:column; gap:14px;">
                 <div class="form-group">
@@ -1053,18 +908,18 @@
                   </div>
                 </div>
 
-                <button type="submit" class="btn-submit-gold">
-                  <span class="material-symbols-outlined" style="font-size:16px;">add</span> Save Task
+                <button type="submit" class="btn-submit-primary">
+                  <span class="material-symbols-outlined" style="font-size:18px;">add</span> Save Task
                 </button>
               </form>
             </div>
 
-            <!-- Note Form (Preserved IDs) -->
+            <!-- Note Form -->
             <div id="notes-form-wrap" style="display:none;">
               <form id="note-form" style="display:flex; flex-direction:column; gap:14px;">
                 <div class="form-group">
                   <label class="form-label">Note Title</label>
-                  <input id="note-title" type="text" class="form-input" placeholder="e.g., Quantum Computing Primer..." required/>
+                  <input id="note-title" type="text" class="form-input" placeholder="e.g., Ideas for next project..." required/>
                 </div>
 
                 <div class="form-group">
@@ -1072,21 +927,21 @@
                   <textarea id="note-content" rows="4" class="form-textarea" placeholder="Type your note details or ideas here..." required></textarea>
                 </div>
 
-                <button type="submit" class="btn-submit-gold">
-                  <span class="material-symbols-outlined" style="font-size:16px;">add</span> Save Note
+                <button type="submit" class="btn-submit-primary">
+                  <span class="material-symbols-outlined" style="font-size:18px;">add</span> Save Note
                 </button>
               </form>
             </div>
           </div>
 
-          <!-- Column 2: Items List View (Preserved Sections & Filters) -->
+          <!-- Column 2: Items List View -->
           <div class="panel-card">
-            <!-- Tasks Section View (Preserved ID) -->
+            <!-- Tasks Section View -->
             <div id="tasks-section">
               <div class="panel-header" style="margin-bottom:12px;">
                 <div class="panel-title">
                   <span class="material-symbols-outlined">checklist</span>
-                  Today's Focus
+                  Tasks Checklist
                 </div>
 
                 <div class="filter-pills-row">
@@ -1096,388 +951,309 @@
                 </div>
               </div>
 
-              <!-- Preserved Task Container ID -->
               <div id="task-list" class="items-scroll-list"></div>
             </div>
 
-            <!-- Notes Section View (Preserved ID) -->
+            <!-- Notes Section View -->
             <div id="notes-section" style="display:none;">
               <div class="panel-header" style="margin-bottom:12px;">
                 <div class="panel-title">
-                  <span class="material-symbols-outlined">folder_open</span>
-                  Saved Notes & Ideas
+                  <span class="material-symbols-outlined">description</span>
+                  Saved Notes
                 </div>
               </div>
 
-              <!-- Preserved Notes Container ID -->
-              <div id="notes-grid" class="items-scroll-list"></div>
-            </div>
-          </div>
-
-          <!-- Column 3: Pinned, Activity & Snippets (Reference Screen 2) -->
-          <div class="panel-card col-right-sidebar">
-            <div class="panel-header">
-              <div class="panel-title">
-                <span class="material-symbols-outlined">push_pin</span>
-                Pinned Flow
-              </div>
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:10px;">
-              <div class="task-item-card" style="padding:10px;">
-                <div>
-                  <div class="task-item-title" style="font-size:12px;">API Gemini Docs</div>
-                  <div class="task-meta">Reference for integration</div>
-                </div>
-                <span class="material-symbols-outlined" style="font-size:14px; color:var(--accent-main);">star</span>
-              </div>
-
-              <div class="task-item-card" style="padding:10px;">
-                <div>
-                  <div class="task-item-title" style="font-size:12px;">Project Ideas</div>
-                  <div class="task-meta">App concepts Q3</div>
-                </div>
-                <span class="material-symbols-outlined" style="font-size:14px; color:var(--text-tertiary);">star</span>
-              </div>
-            </div>
-
-            <div class="panel-header" style="margin-top:8px;">
-              <div class="panel-title">
-                <span class="material-symbols-outlined">code</span>
-                Snippets
-              </div>
-            </div>
-
-            <div class="snippet-preview-box">
-              <div><span class="kw">const</span> <span class="fn">fetchData</span> = <span class="kw">async</span> () => {</div>
-              <div style="padding-left:10px;"><span class="kw">try</span> {</div>
-              <div style="padding-left:20px;"><span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'/api'</span>);</div>
-              <div style="padding-left:20px;"><span class="kw">return await</span> res.<span class="fn">json</span>();</div>
-              <div style="padding-left:10px;">} <span class="kw">catch</span>(e) {}</div>
-              <div>};</div>
+              <div id="notes-grid" class="notes-masonry-grid"></div>
             </div>
           </div>
 
         </div>
-
-        <!-- Footer -->
-        <footer style="margin-top:32px; padding-top:20px; border-top:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--text-tertiary);">
-          <div>© 2026 <span style="color:var(--text-secondary); font-weight:600;">LifeHub AI</span>. All rights reserved.</div>
-          <div>Developed by <a href="https://github.com/reskisetiawan301210-ai" target="_blank" style="color:var(--accent-main); font-weight:600;">Reski X legacyy403</a></div>
-        </footer>
-
       </div>
     </main>
   </div>
 
-  <!-- Mobile Bottom Navigation (Reference Screen 1) -->
-  <nav class="mobile-bottom-nav">
-    <a href="dashboard.html" class="mobile-nav-link">
-      <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Workspace
-    </a>
-    <a href="notes.html" class="mobile-nav-link active">
-      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      Notes
-    </a>
-    <a href="ai.html" class="mobile-nav-link">
-      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
-      AI Hub
-    </a>
-    <a href="#" class="mobile-nav-link" id="mobileMenuOpenBtn" onclick="document.getElementById('sidebar').classList.toggle('is-active'); document.getElementById('sidebarOverlay').classList.toggle('is-active'); return false;">
-      <svg class="icon-svg" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      Menu
-    </a>
-  </nav>
+  <div class="lh-toast-container" id="toastContainer"></div>
 
-  <!-- Ambient Dust Engine Script -->
+  <!-- JavaScript Logic -->
   <script>
-    class AmbientEngine {
-      constructor(canvasId) {
-        this.canvas = document.getElementById(canvasId);
-        if (!this.canvas) return;
-        this.ctx = this.canvas.getContext('2d');
-        this.particles = [];
-        this.resize();
-        window.addEventListener('resize', () => this.resize());
-        this.initParticles();
-        this.animate();
-      }
+    // Toast helper
+    window.showToast = function(msg, icon = 'check_circle') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const el = document.createElement('div');
+      el.className = 'lh-toast';
+      el.innerHTML = `<span class="material-symbols-outlined" style="font-size:18px; color:var(--primary);">${icon}</span> <span>${msg}</span>`;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.animation = 'toastOut 0.25s forwards';
+        setTimeout(() => el.remove(), 250);
+      }, 3000);
+    };
 
-      resize() {
-        this.width = this.canvas.width = window.innerWidth;
-        this.height = this.canvas.height = window.innerHeight;
-      }
-
-      initParticles() {
-        const count = window.innerWidth < 768 ? 20 : 40;
-        this.particles = [];
-        for (let i = 0; i < count; i++) {
-          this.particles.push({
-            x: Math.random() * this.width,
-            y: Math.random() * this.height,
-            radius: Math.random() * 1.5 + 0.5,
-            vx: (Math.random() - 0.5) * 0.3,
-            vy: (Math.random() - 0.5) * 0.3,
-            alpha: Math.random() * 0.4 + 0.1
-          });
-        }
-      }
-
-      animate() {
-        this.ctx.clearRect(0, 0, this.width, this.height);
-        this.particles.forEach(p => {
-          p.x += p.vx;
-          p.y += p.vy;
-
-          if (p.x < 0) p.x = this.width;
-          if (p.x > this.width) p.x = 0;
-          if (p.y < 0) p.y = this.height;
-          if (p.y > this.height) p.y = 0;
-
-          this.ctx.beginPath();
-          this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          this.ctx.fillStyle = `rgba(245, 158, 11, ${p.alpha})`;
-          this.ctx.fill();
-        });
-        requestAnimationFrame(() => this.animate());
-      }
+    // Global Theme Switcher
+    function updateThemeUI(theme) {
+      const iconEl = document.getElementById('themeToggleIcon');
+      if (!iconEl) return;
+      if (theme === 'light') iconEl.textContent = 'light_mode';
+      else if (theme === 'dark') iconEl.textContent = 'dark_mode';
+      else iconEl.textContent = 'brightness_auto';
     }
-    new AmbientEngine('ambientCanvas');
 
-    // Mobile Sidebar Nav Toggle
+    function setTheme(themeMode) {
+      localStorage.setItem('lifehub_theme', themeMode);
+      let activeTheme = themeMode;
+      if (themeMode === 'system') {
+        activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', activeTheme);
+      updateThemeUI(themeMode);
+      window.showToast(`Theme changed to ${themeMode.toUpperCase()}`, 'palette');
+    }
+
+    const currentSavedTheme = localStorage.getItem('lifehub_theme') || 'system';
+    updateThemeUI(currentSavedTheme);
+
+    document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
+      const cur = localStorage.getItem('lifehub_theme') || 'system';
+      const next = cur === 'light' ? 'dark' : cur === 'dark' ? 'system' : 'light';
+      setTheme(next);
+    });
+
+    // Mobile Sidebar
     const mobileTrigger = document.getElementById('mobileMenuTrigger');
     const sidebar = document.getElementById('sidebar');
     const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-    if (mobileTrigger) {
+    if (mobileTrigger && sidebar && sidebarOverlay) {
       mobileTrigger.addEventListener('click', () => {
         sidebar.classList.add('is-active');
         sidebarOverlay.classList.add('is-active');
       });
-    }
-
-    if (sidebarOverlay) {
       sidebarOverlay.addEventListener('click', () => {
         sidebar.classList.remove('is-active');
         sidebarOverlay.classList.remove('is-active');
       });
     }
-  </script>
 
-  <!-- EXISTING LOGIC & LOCALSTORAGE (EXACT UNTOUCHED JS) -->
-  <script>
-    let tasks = JSON.parse(localStorage.getItem('lifehub_tasks')) || [];
-    let notes = JSON.parse(localStorage.getItem('lifehub_notes')) || [];
+    // STATE INITIALIZATION
+    let tasks = JSON.parse(localStorage.getItem('lifehub_tasks')) || [
+      { title: "Review LifeHub AI Architecture", category: "Work", priority: "High", completed: false, date: "21 Aug" },
+      { title: "Test light & dark mode switcher", category: "Work", priority: "Medium", completed: true, date: "21 Aug" }
+    ];
+
+    let notes = JSON.parse(localStorage.getItem('lifehub_notes')) || [
+      { title: "Design System Tokens", content: "Royal Purple (#5300B7) in light mode and Lilac (#7C5CFC) in dark mode.", date: "21 Aug 2026" }
+    ];
+
     let currentFilter = 'all';
 
-    const currentUserName = localStorage.getItem('lifehub_user_name') || 'Reski';
-    const avatarEl = document.getElementById('user-avatar');
-    if (avatarEl) avatarEl.textContent = currentUserName.charAt(0).toUpperCase();
+    // TAB SWITCHER
+    function switchTab(type) {
+      const btnTasks = document.getElementById('tab-btn-tasks');
+      const btnNotes = document.getElementById('tab-btn-notes');
+      const formTasks = document.getElementById('tasks-form-wrap');
+      const formNotes = document.getElementById('notes-form-wrap');
+      const sectionTasks = document.getElementById('tasks-section');
+      const sectionNotes = document.getElementById('notes-section');
+      const chipTask = document.getElementById('chip-task-btn');
+      const chipNote = document.getElementById('chip-note-btn');
 
-    // TAB SWITCHER LOGIC
-    function switchTab(tab) {
-        const tasksSection = document.getElementById('tasks-section');
-        const notesSection = document.getElementById('notes-section');
-        const tasksFormWrap = document.getElementById('tasks-form-wrap');
-        const notesFormWrap = document.getElementById('notes-form-wrap');
-        const btnTasks = document.getElementById('tab-btn-tasks');
-        const btnNotes = document.getElementById('tab-btn-notes');
+      if (type === 'tasks') {
+        formTasks.style.display = 'block';
+        formNotes.style.display = 'none';
+        sectionTasks.style.display = 'block';
+        sectionNotes.style.display = 'none';
 
-        if (tab === 'tasks') {
-            tasksSection.style.display = 'block';
-            notesSection.style.display = 'none';
-            tasksFormWrap.style.display = 'block';
-            notesFormWrap.style.display = 'none';
+        btnTasks?.classList.add('active');
+        btnNotes?.classList.remove('active');
+        chipTask?.classList.add('active');
+        chipNote?.classList.remove('active');
+      } else {
+        formTasks.style.display = 'none';
+        formNotes.style.display = 'block';
+        sectionTasks.style.display = 'none';
+        sectionNotes.style.display = 'block';
 
-            btnTasks.classList.add('active');
-            btnNotes.classList.remove('active');
-        } else {
-            notesSection.style.display = 'block';
-            tasksSection.style.display = 'none';
-            notesFormWrap.style.display = 'block';
-            tasksFormWrap.style.display = 'none';
-
-            btnNotes.classList.add('active');
-            btnTasks.classList.remove('active');
-        }
+        btnNotes?.classList.add('active');
+        btnTasks?.classList.remove('active');
+        chipNote?.classList.add('active');
+        chipTask?.classList.remove('active');
+      }
     }
     window.switchTab = switchTab;
 
     // TASKS RENDER LOGIC
     function renderTasks() {
-        const taskList = document.getElementById('task-list');
-        const taskCountEl = document.getElementById('task-count');
-        const metricTaskEl = document.getElementById('metric-task-val');
+      const taskList = document.getElementById('task-list');
+      const taskCountEl = document.getElementById('task-count');
+      const metricTaskEl = document.getElementById('metric-task-val');
 
-        const activeCount = tasks.filter(t => !t.completed).length;
-        if (taskCountEl) taskCountEl.textContent = activeCount;
-        if (metricTaskEl) metricTaskEl.textContent = tasks.length;
+      const activeCount = tasks.filter(t => !t.completed).length;
+      if (taskCountEl) taskCountEl.textContent = activeCount;
+      if (metricTaskEl) metricTaskEl.textContent = tasks.length;
 
-        let filtered = tasks;
-        if (currentFilter === 'active') filtered = tasks.filter(t => !t.completed);
-        if (currentFilter === 'completed') filtered = tasks.filter(t => t.completed);
+      let filtered = tasks;
+      if (currentFilter === 'active') filtered = tasks.filter(t => !t.completed);
+      if (currentFilter === 'completed') filtered = tasks.filter(t => t.completed);
 
-        // Search Filter
-        const query = document.getElementById('search-input')?.value.toLowerCase().trim();
-        if (query) {
-          filtered = filtered.filter(t => t.title.toLowerCase().includes(query) || t.category.toLowerCase().includes(query));
-        }
+      const query = document.getElementById('search-input')?.value.toLowerCase().trim();
+      if (query) {
+        filtered = filtered.filter(t => t.title.toLowerCase().includes(query) || t.category.toLowerCase().includes(query));
+      }
 
-        taskList.innerHTML = '';
+      taskList.innerHTML = '';
 
-        if (filtered.length === 0) {
-            taskList.innerHTML = `<div style="text-align:center; padding:30px 10px; color:var(--text-tertiary); font-size:12px;">No tasks available in this filter.</div>`;
-            return;
-        }
+      if (filtered.length === 0) {
+        taskList.innerHTML = `<div style="text-align:center; padding:30px 10px; color:var(--text-tertiary); font-size:13px;">No tasks in this view.</div>`;
+        return;
+      }
 
-        filtered.forEach((task, index) => {
-            const realIndex = tasks.indexOf(task);
-            const tagClass = task.priority === 'High' ? 'tag-high' : task.priority === 'Medium' ? 'tag-medium' : 'tag-low';
+      filtered.forEach((task) => {
+        const realIndex = tasks.indexOf(task);
+        const tagClass = task.priority === 'High' ? 'tag-high' : task.priority === 'Medium' ? 'tag-medium' : 'tag-low';
 
-            const div = document.createElement('div');
-            div.className = `task-item-card ${task.completed ? 'completed' : ''}`;
+        const div = document.createElement('div');
+        div.className = `task-item-card ${task.completed ? 'completed' : ''}`;
 
-            div.innerHTML = `
-                <div class="task-left">
-                    <div class="task-checkbox" onclick="toggleTask(${realIndex})"></div>
-                    <div>
-                        <div class="task-item-title">${task.title}</div>
-                        <div class="task-meta">
-                            <span class="tag-badge ${tagClass}">${task.priority}</span>
-                            <span>${task.category} • ${task.date}</span>
-                        </div>
-                    </div>
-                </div>
-                <button onclick="deleteTask(${realIndex})" style="color:var(--text-tertiary);" title="Delete">
-                    <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
-                </button>
-            `;
-            taskList.appendChild(div);
-        });
+        div.innerHTML = `
+          <div class="task-left">
+            <div class="task-checkbox" onclick="toggleTask(${realIndex})"></div>
+            <div>
+              <div class="task-item-title">${task.title}</div>
+              <div class="task-meta">
+                <span class="tag-badge ${tagClass}">${task.priority}</span>
+                <span>${task.category} • ${task.date}</span>
+              </div>
+            </div>
+          </div>
+          <button onclick="deleteTask(${realIndex})" style="color:var(--text-tertiary);" title="Delete">
+            <span class="material-symbols-outlined" style="font-size:18px;">delete</span>
+          </button>
+        `;
+        taskList.appendChild(div);
+      });
     }
 
     document.getElementById('task-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const title = document.getElementById('task-title').value.trim();
-        const category = document.getElementById('task-category').value;
-        const priority = document.getElementById('task-priority').value;
+      e.preventDefault();
+      const title = document.getElementById('task-title').value.trim();
+      const category = document.getElementById('task-category').value;
+      const priority = document.getElementById('task-priority').value;
 
-        if (!title) return;
+      if (!title) return;
 
-        tasks.unshift({
-            title,
-            category,
-            priority,
-            completed: false,
-            date: new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short' })
-        });
+      tasks.unshift({
+        title,
+        category,
+        priority,
+        completed: false,
+        date: new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short' })
+      });
 
-        localStorage.setItem('lifehub_tasks', JSON.stringify(tasks));
-        document.getElementById('task-form').reset();
-        renderTasks();
+      localStorage.setItem('lifehub_tasks', JSON.stringify(tasks));
+      document.getElementById('task-form').reset();
+      renderTasks();
+      window.showToast("Task saved successfully");
     });
 
     window.toggleTask = function(index) {
-        tasks[index].completed = !tasks[index].completed;
-        localStorage.setItem('lifehub_tasks', JSON.stringify(tasks));
-        renderTasks();
+      tasks[index].completed = !tasks[index].completed;
+      localStorage.setItem('lifehub_tasks', JSON.stringify(tasks));
+      renderTasks();
     };
 
     window.deleteTask = function(index) {
-        tasks.splice(index, 1);
-        localStorage.setItem('lifehub_tasks', JSON.stringify(tasks));
-        renderTasks();
+      tasks.splice(index, 1);
+      localStorage.setItem('lifehub_tasks', JSON.stringify(tasks));
+      renderTasks();
+      window.showToast("Task deleted");
     };
 
     window.filterTasks = function(filter) {
-        currentFilter = filter;
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-
-        const activeBtn = document.getElementById(`filter-${filter}`);
-        if (activeBtn) activeBtn.classList.add('active');
-
-        renderTasks();
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`filter-${filter}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      renderTasks();
     };
 
     // NOTES RENDER LOGIC
     function renderNotes() {
-        const notesGrid = document.getElementById('notes-grid');
-        const noteCountEl = document.getElementById('note-count');
-        const metricNoteEl = document.getElementById('metric-note-val');
+      const notesGrid = document.getElementById('notes-grid');
+      const noteCountEl = document.getElementById('note-count');
+      const metricNoteEl = document.getElementById('metric-note-val');
 
-        if (noteCountEl) noteCountEl.textContent = notes.length;
-        if (metricNoteEl) metricNoteEl.textContent = notes.length;
+      if (noteCountEl) noteCountEl.textContent = notes.length;
+      if (metricNoteEl) metricNoteEl.textContent = notes.length;
 
-        let filteredNotes = notes;
-        const query = document.getElementById('search-input')?.value.toLowerCase().trim();
-        if (query) {
-          filteredNotes = filteredNotes.filter(n => n.title.toLowerCase().includes(query) || n.content.toLowerCase().includes(query));
-        }
+      let filteredNotes = notes;
+      const query = document.getElementById('search-input')?.value.toLowerCase().trim();
+      if (query) {
+        filteredNotes = filteredNotes.filter(n => n.title.toLowerCase().includes(query) || n.content.toLowerCase().includes(query));
+      }
 
-        notesGrid.innerHTML = '';
+      notesGrid.innerHTML = '';
 
-        if (filteredNotes.length === 0) {
-            notesGrid.innerHTML = `<div style="text-align:center; padding:30px 10px; color:var(--text-tertiary); font-size:12px;">No notes saved yet.</div>`;
-            return;
-        }
+      if (filteredNotes.length === 0) {
+        notesGrid.innerHTML = `<div style="text-align:center; grid-column:1/-1; padding:30px 10px; color:var(--text-tertiary); font-size:13px;">No notes saved yet.</div>`;
+        return;
+      }
 
-        filteredNotes.forEach((note, index) => {
-            const realIndex = notes.indexOf(note);
-            const card = document.createElement('div');
-            card.className = 'note-card-item';
-            
-            card.innerHTML = `
-                <div>
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                        <div class="note-card-title">${note.title}</div>
-                        <button onclick="deleteNote(${realIndex})" style="color:var(--text-tertiary);" title="Delete">
-                            <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
-                        </button>
-                    </div>
-                    <div class="note-card-body">${note.content}</div>
-                </div>
-                <div class="note-card-date">${note.date}</div>
-            `;
+      filteredNotes.forEach((note) => {
+        const realIndex = notes.indexOf(note);
+        const card = document.createElement('div');
+        card.className = 'note-card-item';
+        
+        card.innerHTML = `
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div class="note-card-title">${note.title}</div>
+              <button onclick="deleteNote(${realIndex})" style="color:var(--text-tertiary);" title="Delete">
+                <span class="material-symbols-outlined" style="font-size:18px;">delete</span>
+              </button>
+            </div>
+            <div class="note-card-body">${note.content}</div>
+          </div>
+          <div class="note-card-date">${note.date}</div>
+        `;
 
-            notesGrid.appendChild(card);
-        });
+        notesGrid.appendChild(card);
+      });
     }
 
     document.getElementById('note-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const title = document.getElementById('note-title').value.trim();
-        const content = document.getElementById('note-content').value.trim();
+      e.preventDefault();
+      const title = document.getElementById('note-title').value.trim();
+      const content = document.getElementById('note-content').value.trim();
 
-        if (!title || !content) return;
+      if (!title || !content) return;
 
-        notes.unshift({
-            title,
-            content,
-            date: new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
-        });
+      notes.unshift({
+        title,
+        content,
+        date: new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+      });
 
-        localStorage.setItem('lifehub_notes', JSON.stringify(notes));
-        document.getElementById('note-form').reset();
-        renderNotes();
+      localStorage.setItem('lifehub_notes', JSON.stringify(notes));
+      document.getElementById('note-form').reset();
+      renderNotes();
+      window.showToast("Note saved successfully");
     });
 
     window.deleteNote = function(index) {
-        notes.splice(index, 1);
-        localStorage.setItem('lifehub_notes', JSON.stringify(notes));
-        renderNotes();
+      notes.splice(index, 1);
+      localStorage.setItem('lifehub_notes', JSON.stringify(notes));
+      renderNotes();
+      window.showToast("Note deleted");
     };
 
-    // Live Search Event Listener
     document.getElementById('search-input')?.addEventListener('input', () => {
       renderTasks();
       renderNotes();
     });
 
-    // INITIAL RENDER
     renderTasks();
     renderNotes();
   </script>
-
 </body>
 </html>

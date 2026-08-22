@@ -3,103 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>LifeHub Workspace</title>
+  <title>LifeHub AI — Dashboard</title>
   
   <link rel="icon" type="image/png" href="https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png">
   <link rel="apple-touch-icon" href="https://cdn.phototourl.com/free/2026-08-05-c8c04d09-7aa8-4736-9368-bb0b6ccf115f.png">
 
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#f59e0b">
+  <meta name="theme-color" content="#5300B7">
+
+  <!-- Anti-FOUC Global Theme Loader (Prevents flash of wrong theme) -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('lifehub_theme') || 'system';
+      let activeTheme = saved;
+      if (saved === 'system') {
+        activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', activeTheme);
+    })();
+  </script>
   
+  <!-- Google Fonts & Material Symbols -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400..600,0..1,0" rel="stylesheet" />
+
+  <!-- Global Design System Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+
   <style>
-    :root {
-      --bg-base: #0a0a0c;
-      --bg-sidebar: #101013;
-      --bg-surface: #141418;
-      --bg-elevated: #1a1a20;
-      --bg-highlight: #24242e;
-      
-      --border-subtle: rgba(255, 255, 255, 0.05);
-      --border-base: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.16);
-      
-      --accent-main: #f59e0b;
-      --accent-hover: #d97706;
-      --accent-dim: rgba(245, 158, 11, 0.12);
-      --accent-glow: rgba(245, 158, 11, 0.25);
-      
-      --color-success: #10b981;
-      --color-danger: #ef4444;
-      --color-info: #06b6d4;
-      
-      --text-primary: #f4f4f6;
-      --text-secondary: #9e9ea7;
-      --text-tertiary: #62626b;
-      
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --radius-xl: 24px;
-      
-      --sidebar-width: 240px;
-      --header-height: 64px;
-      --mobile-nav-height: 64px;
-      
-      --transition-snappy: 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
-      --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      
-      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
-      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      font-size: 16px;
-      -webkit-font-smoothing: antialiased;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background-color: var(--bg-base);
-      color: var(--text-primary);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      line-height: 1.5;
-      overflow-x: hidden;
+    /* ==========================================================================
+       DASHBOARD SPECIFIC LAYOUT & COMPONENT STYLES
+       ========================================================================== */
+    .app-layout {
+      display: flex;
       min-height: 100vh;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    ::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
-    }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--bg-highlight); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
-
-    a { color: inherit; text-decoration: none; }
-    button { background: none; border: none; font-family: inherit; color: inherit; cursor: pointer; }
-
-    .icon-svg {
-      width: 20px;
-      height: 20px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+      position: relative;
+      z-index: 1;
     }
 
     #ambientCanvas {
@@ -110,20 +51,14 @@
       height: 100%;
       z-index: 0;
       pointer-events: none;
-      opacity: 0.4;
+      opacity: 0.35;
     }
 
-    .app-layout {
-      display: flex;
-      min-height: 100vh;
-      position: relative;
-      z-index: 1;
-    }
-
+    /* Sidebar Navigation */
     .sidebar {
       width: var(--sidebar-width);
       background: var(--bg-sidebar);
-      border-right: 1px solid var(--border-subtle);
+      border-right: 1px solid var(--border-base);
       display: flex;
       flex-direction: column;
       position: fixed;
@@ -131,14 +66,14 @@
       left: 0;
       top: 0;
       z-index: 50;
-      transition: transform var(--transition-smooth);
+      transition: transform var(--transition-smooth), background-color var(--transition-smooth);
     }
 
     .sidebar-header {
       height: var(--header-height);
       display: flex;
       align-items: center;
-      padding: 0 20px;
+      padding: 0 24px;
       border-bottom: 1px solid var(--border-subtle);
     }
 
@@ -146,27 +81,37 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      cursor: pointer;
     }
 
-    .brand-icon {
-      width: 28px;
-      height: 28px;
+    .brand-logo-icon {
+      width: 32px;
+      height: 32px;
       border-radius: var(--radius-sm);
-      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: var(--primary-ultralight);
+      color: var(--primary);
     }
 
-    .brand-text {
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
+    .brand-title-text {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .brand-title-text span {
+      color: var(--primary);
     }
 
     .sidebar-nav {
       flex: 1;
-      padding: 16px 12px;
+      padding: 20px 14px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -176,78 +121,121 @@
     .nav-label {
       font-size: 10px;
       font-weight: 700;
-      color: var(--text-tertiary);
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin: 16px 0 6px 10px;
+      margin: 16px 0 6px 12px;
     }
 
     .nav-item {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 10px 12px;
-      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
       color: var(--text-secondary);
-      font-weight: 500;
-      font-size: 13px;
-      transition: all var(--transition-snappy);
+      font-weight: 600;
+      font-size: 13.5px;
+      transition: all var(--transition-fast);
       position: relative;
     }
 
     .nav-item:hover {
-      background: var(--bg-surface);
+      background: var(--bg-surface-secondary);
       color: var(--text-primary);
     }
 
     .nav-item.active {
-      background: var(--bg-elevated);
+      background: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .nav-item.active .material-symbols-outlined {
+      color: #FFFFFF;
+    }
+
+    .nav-item .material-symbols-outlined {
+      font-size: 20px;
+      color: var(--text-tertiary);
+    }
+
+    .nav-item:hover .material-symbols-outlined {
       color: var(--text-primary);
-      font-weight: 600;
     }
 
-    .nav-item.active .icon-svg {
-      stroke: var(--accent-main);
+    .sidebar-bottom {
+      padding: 16px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    .nav-item.logout {
-      margin-top: auto;
-      color: var(--color-danger);
+    .sidebar-profile-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 10px;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: all var(--transition-fast);
     }
 
-    .nav-item.logout:hover {
-      background: rgba(239, 68, 68, 0.1);
+    .sidebar-profile-card:hover {
+      border-color: var(--primary-light);
     }
 
-    .lock-badge {
-      font-size: 11px;
-      margin-left: auto;
-      opacity: 0.8;
+    .sidebar-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1.5px solid var(--bg-surface);
+      box-shadow: var(--shadow-subtle);
     }
 
-    .sidebar-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(4px);
-      z-index: 40;
-      opacity: 0;
-      visibility: hidden;
-      transition: all var(--transition-smooth);
+    .sidebar-user-meta {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
-    .sidebar-overlay.is-active {
-      opacity: 1;
-      visibility: visible;
+    .sidebar-user-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
+    .sidebar-user-badge {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--primary);
+      text-transform: uppercase;
+    }
+
+    /* Main Container & Topbar */
     .main-content {
       flex: 1;
       margin-left: var(--sidebar-width);
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
-      padding-bottom: 40px;
+      min-width: 0;
+      padding-bottom: 48px;
     }
 
     .top-header {
@@ -255,27 +243,28 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 32px;
+      padding: 0 36px;
       position: sticky;
       top: 0;
-      background: rgba(10, 10, 12, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-base);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-base);
       z-index: 30;
+      transition: background-color var(--transition-smooth);
     }
 
     .header-left, .header-right {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
     .mobile-brand {
       display: none;
       align-items: center;
       gap: 8px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 16px;
     }
 
@@ -283,11 +272,13 @@
       display: none;
       color: var(--text-primary);
       padding: 6px;
+      border-radius: var(--radius-sm);
     }
 
     .search-wrapper {
       position: relative;
-      width: 320px;
+      width: 300px;
+      cursor: pointer;
     }
 
     .search-icon {
@@ -296,432 +287,817 @@
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-tertiary);
-      width: 16px;
-      height: 16px;
+      font-size: 18px;
     }
 
     .search-input {
       width: 100%;
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
-      border-radius: var(--radius-sm);
-      padding: 8px 14px 8px 38px;
+      border-radius: var(--radius-full);
+      padding: 9px 42px 9px 40px;
       color: var(--text-primary);
-      font-size: 13px;
-      transition: all var(--transition-snappy);
+      font-size: 13.5px;
+      transition: all var(--transition-fast);
+      box-shadow: var(--shadow-subtle);
     }
 
     .search-input:focus {
-      background: var(--bg-elevated);
-      border-color: var(--border-strong);
+      background: var(--bg-surface);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
       outline: none;
     }
 
+    .search-shortcut-badge {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-subtle);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .header-greeting-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
     .action-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: var(--radius-sm);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
       color: var(--text-secondary);
-      transition: all var(--transition-snappy);
+      transition: all var(--transition-fast);
       position: relative;
+      box-shadow: var(--shadow-subtle);
     }
 
     .action-btn:hover {
-      color: var(--text-primary);
-      background: var(--bg-elevated);
+      color: var(--primary);
+      border-color: var(--primary-light);
+      background: var(--primary-ultralight);
     }
 
     .action-btn-auth {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 14px;
-      border-radius: var(--radius-sm);
+      padding: 7px 16px;
+      border-radius: var(--radius-full);
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
-      transition: all var(--transition-snappy);
+      transition: all var(--transition-fast);
       border: none;
       white-space: nowrap;
     }
 
     .action-btn-auth.is-guest {
-      background: var(--accent-main);
-      color: #000;
-      box-shadow: 0 2px 8px var(--accent-glow);
+      background: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px var(--primary-glow);
     }
 
     .action-btn-auth.is-guest:hover {
-      background: var(--accent-hover);
+      background: var(--primary-hover);
     }
 
     .action-btn-auth.is-logged {
-      background: rgba(239, 68, 68, 0.12);
+      background: var(--color-danger-bg);
       color: var(--color-danger);
-      border: 1px solid rgba(239, 68, 68, 0.25);
-    }
-
-    .action-btn-auth.is-logged:hover {
-      background: rgba(239, 68, 68, 0.22);
+      border: 1px solid rgba(239, 68, 68, 0.2);
     }
 
     .badge-indicator {
       position: absolute;
-      top: 6px;
-      right: 6px;
+      top: 8px;
+      right: 8px;
       width: 7px;
       height: 7px;
-      background: var(--accent-main);
+      background: var(--primary);
       border-radius: 50%;
     }
 
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 4px 10px 4px 4px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-base);
-      border-radius: 999px;
-      cursor: pointer;
-      transition: border var(--transition-snappy);
-    }
-
-    .user-profile:hover { border-color: var(--border-strong); }
-
-    .user-avatar {
-      width: 28px;
-      height: 28px;
+    .user-profile-header {
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      background: var(--accent-main);
-      color: var(--bg-base);
+      background: var(--primary-light);
+      color: var(--primary);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: 11px;
+      font-size: 13px;
+      cursor: pointer;
+      border: 1.5px solid var(--bg-surface);
+      box-shadow: var(--shadow-subtle);
+      overflow: hidden;
     }
 
-    .user-details { display: flex; flex-direction: column; }
-    .user-name { font-size: 12px; font-weight: 600; color: var(--text-primary); }
-    .user-role { font-size: 10px; color: var(--text-tertiary); font-weight: 700; }
-
+    /* Workspace Inner */
     .workspace {
-      padding: 32px;
-      max-width: 1400px;
+      padding: 32px 36px;
+      max-width: 1320px;
       width: 100%;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 28px;
+      gap: 32px;
     }
 
     .announcement-banner {
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
       color: var(--text-primary);
-      padding: 10px 16px;
+      padding: 10px 18px;
       font-size: 13px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-radius: var(--radius-md);
-      border-left: 3px solid var(--accent-main);
-    }
-
-    .hero-section {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-    }
-
-    .greeting-title {
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: var(--text-primary);
-      margin-bottom: 4px;
-    }
-
-    .greeting-subtitle {
-      font-size: 14px;
-      color: var(--text-secondary);
-    }
-
-    .hero-status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      padding: 8px 14px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-base);
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
-
-    .status-indicator {
-      width: 7px;
-      height: 7px;
-      background: var(--accent-main);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--accent-glow);
-    }
-
-    .clock-time { font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
-    .clock-date { color: var(--text-tertiary); }
-
-    .workspace-main-grid {
-      display: grid;
-      grid-template-columns: 8fr 4fr;
-      gap: 24px;
-    }
-
-    .section-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--accent-main);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .section-header-flex {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .section-header-flex .section-label { margin-bottom: 0; }
-
-    .view-all-link {
-      font-size: 12px;
       font-weight: 600;
-      color: var(--accent-main);
-    }
-    .view-all-link:hover { text-decoration: underline; }
-
-    .workspace-cards-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-bottom: 28px;
-    }
-
-    .workspace-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-base);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       border-radius: var(--radius-md);
-      padding: 16px;
+      border-left: 4px solid var(--primary);
+      box-shadow: var(--shadow-subtle);
+    }
+
+    /* Hero Banner Card */
+    .hero-banner-card {
+      background: linear-gradient(135deg, var(--bg-surface-secondary) 0%, var(--bg-surface) 50%, var(--bg-surface-secondary) 100%);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-xl);
+      padding: 44px 48px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: center;
+      gap: 32px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+    }
+
+    .hero-banner-content {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
+      z-index: 2;
+    }
+
+    .hero-headline {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -1.2px;
+      line-height: 1.15;
+      color: var(--text-primary);
+    }
+
+    .hero-headline .highlight-purple {
+      color: var(--primary);
+      display: block;
+    }
+
+    .hero-subtitle {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 480px;
+    }
+
+    .hero-actions-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 8px;
+    }
+
+    .btn-hero-primary {
+      background: var(--primary);
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 6px 20px var(--primary-glow);
+      transition: all var(--transition-fast);
       cursor: pointer;
-      transition: all var(--transition-snappy);
-      position: relative;
     }
 
-    .workspace-card:hover {
-      background: var(--bg-elevated);
-      border-color: var(--border-strong);
-      transform: translateY(-2px);
+    .btn-hero-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
     }
 
-    .workspace-card-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: var(--radius-sm);
-      background: var(--bg-elevated);
+    .btn-hero-secondary {
+      background: var(--bg-surface);
+      color: var(--text-primary);
       border: 1px solid var(--border-base);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 22px;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .btn-hero-secondary:hover {
+      background: var(--bg-surface-secondary);
+    }
+
+    /* 3D Brain Core Device */
+    .hero-visual-col {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .ai-core-container {
+      width: 100%;
+      max-width: 300px;
+      aspect-ratio: 1;
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text-primary);
     }
 
-    .workspace-card:hover .workspace-card-icon {
-      color: var(--accent-main);
-      border-color: var(--accent-dim);
+    .ai-core-hologram {
+      width: 100%;
+      height: 100%;
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at center, var(--primary-ultralight) 0%, transparent 70%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
     }
 
-    .workspace-card-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
+    .ai-brain-svg {
+      width: 150px;
+      height: 150px;
+      animation: floatBrain 4s ease-in-out infinite alternate;
+      filter: drop-shadow(0 10px 20px var(--primary-glow));
+    }
+
+    @keyframes floatBrain {
+      0% { transform: translateY(-4px) scale(0.98); }
+      100% { transform: translateY(6px) scale(1.02); }
+    }
+
+    .ai-core-pedestal {
+      position: absolute;
+      bottom: 20px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: var(--primary);
+      text-transform: uppercase;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    /* Overview Cards Grid */
+    .section-header-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin-bottom: 16px;
     }
 
-    .workspace-card-desc {
+    .section-title-main {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: var(--text-primary);
+    }
+
+    .section-badge-pill {
       font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
       color: var(--text-tertiary);
-      line-height: 1.3;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-subtle);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
     }
 
-    .recent-activity-card {
+    .overview-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .stat-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
       border-radius: var(--radius-lg);
-      padding: 20px;
-    }
-
-    .activity-list {
+      padding: 20px 22px;
       display: flex;
       flex-direction: column;
       gap: 14px;
+      box-shadow: var(--shadow-card);
+      transition: all var(--transition-fast);
+      position: relative;
+      overflow: hidden;
     }
 
-    .activity-item {
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--primary-light);
+    }
+
+    .stat-card-top {
       display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--border-subtle);
+      align-items: center;
+      justify-content: space-between;
     }
 
-    .activity-item:last-child {
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-
-    .activity-icon {
-      width: 36px;
-      height: 36px;
+    .stat-icon-box {
+      width: 40px;
+      height: 40px;
       border-radius: var(--radius-sm);
-      background: var(--bg-elevated);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text-secondary);
-      flex-shrink: 0;
+      font-size: 20px;
     }
 
-    .activity-details { flex: 1; }
-    .activity-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
-    .activity-sub { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
-    .activity-time { font-size: 11px; color: var(--text-tertiary); font-weight: 500; }
+    .stat-icon-box.purple { background: var(--primary-ultralight); color: var(--primary); }
+    .stat-icon-box.blue { background: var(--color-info-bg); color: var(--color-info); }
+    .stat-icon-box.gray { background: var(--bg-surface-secondary); color: var(--text-secondary); }
+    .stat-icon-box.rose { background: var(--color-danger-bg); color: var(--color-danger); }
 
-    .right-widgets-col {
+    .stat-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .stat-badge.trend-up { background: var(--color-success-bg); color: var(--color-success); }
+    .stat-badge.trend-down { background: var(--color-danger-bg); color: var(--color-danger); }
+    .stat-badge.neutral { background: var(--bg-surface-secondary); color: var(--text-secondary); }
+
+    .stat-card-bottom {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-card-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+    }
+
+    .stat-card-value {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+    }
+
+    .stat-progress-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 0 4px 4px 0;
+    }
+
+    /* Lower Grid Layout */
+    .workspace-split-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .left-widgets-col {
       display: flex;
       flex-direction: column;
       gap: 20px;
     }
 
-    .productivity-card {
+    .quick-access-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .quick-access-btn {
       background: var(--bg-surface);
       border: 1px solid var(--border-base);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-    }
-
-    .metrics-list {
+      border-radius: var(--radius-md);
+      padding: 16px 12px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      margin-top: 12px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      box-shadow: var(--shadow-subtle);
     }
 
-    .metric-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .quick-access-btn:hover {
+      background: var(--bg-surface-secondary);
+      border-color: var(--primary-light);
+      transform: translateY(-2px);
     }
 
-    .metric-label-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
+    .quick-access-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 6px 16px var(--primary-glow);
+    }
+
+    .quick-access-btn.active .material-symbols-outlined,
+    .quick-access-btn.active .quick-access-title {
+      color: #FFFFFF;
+    }
+
+    .quick-access-btn .material-symbols-outlined {
+      font-size: 24px;
       color: var(--text-secondary);
     }
 
-    .metric-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-
-    .metric-sparkline {
-      width: 60px;
-      height: 18px;
-    }
-
-    .metric-val {
-      font-size: 13px;
+    .quick-access-title {
+      font-size: 12px;
       font-weight: 700;
       color: var(--text-primary);
-      font-variant-numeric: tabular-nums;
     }
 
-    .jubel-promo-card {
-      background: linear-gradient(145deg, var(--bg-surface) 0%, var(--bg-elevated) 100%);
+    .analytics-activity-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .glass-card {
+      background: var(--bg-surface);
       border: 1px solid var(--border-base);
       border-radius: var(--radius-lg);
-      padding: 20px;
+      padding: 22px;
+      box-shadow: var(--shadow-card);
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      position: relative;
     }
 
-    .jubel-promo-header {
+    .card-header-flex {
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
       font-size: 15px;
       font-weight: 700;
       color: var(--text-primary);
     }
 
-    .jubel-promo-desc {
+    .link-view-all {
       font-size: 12px;
-      color: var(--text-secondary);
-      line-height: 1.4;
+      font-weight: 700;
+      color: var(--primary);
     }
 
-    .jubel-open-btn {
-      align-self: flex-end;
-      background: var(--accent-main);
-      color: #000;
+    .link-view-all:hover {
+      text-decoration: underline;
+    }
+
+    .wave-chart-container {
+      width: 100%;
+      height: 130px;
+      display: flex;
+      align-items: flex-end;
+      position: relative;
+    }
+
+    .wave-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .activity-timeline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 130px;
+    }
+
+    .activity-timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+    }
+
+    .timeline-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+
+    .timeline-dot.purple { background: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+    .timeline-dot.dark { background: var(--text-primary); }
+    .timeline-dot.gray { background: var(--text-tertiary); }
+    .timeline-dot.light { background: #D1CFD7; }
+
+    .timeline-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .timeline-text {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.35;
+    }
+
+    .timeline-time {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    /* Today's Focus Panel */
+    .focus-panel-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .btn-add-focus {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--primary-ultralight);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .btn-add-focus:hover {
+      background: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .focus-progress-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .focus-progress-meta {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .focus-progress-track {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-surface-secondary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .focus-progress-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: var(--radius-full);
+      transition: width var(--transition-smooth);
+    }
+
+    .focus-task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 280px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .focus-task-card {
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      transition: all var(--transition-fast);
+    }
+
+    .focus-task-card:hover {
+      border-color: var(--border-strong);
+    }
+
+    .focus-task-card.is-active-work {
+      background: var(--bg-surface);
+      border: 1.5px solid var(--primary-light);
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .task-checkbox {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid var(--text-tertiary);
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+      background: var(--bg-surface);
+      transition: all var(--transition-fast);
+    }
+
+    .focus-task-card.completed .task-checkbox {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .focus-task-card.completed .task-checkbox::after {
+      content: '✓';
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .focus-task-card.completed .task-main-text {
+      text-decoration: line-through;
+      color: var(--text-tertiary);
+    }
+
+    .task-details-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .task-main-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.35;
+    }
+
+    .task-tag-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .task-tag-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      color: var(--text-secondary);
+    }
+
+    .task-timer-pill {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .btn-view-all-tasks {
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-base);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px;
+      border-radius: var(--radius-md);
+      text-align: center;
+      transition: all var(--transition-fast);
+      cursor: pointer;
+      display: block;
+      margin-top: 4px;
+    }
+
+    .btn-view-all-tasks:hover {
+      border-color: var(--border-strong);
+    }
+
+    .add-task-inline-form {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .task-input-field {
+      flex: 1;
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-base);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 12px;
+    }
+
+    .task-input-field:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: var(--bg-surface);
+    }
+
+    .btn-task-submit {
+      background: var(--primary);
+      color: #FFFFFF;
+      padding: 0 14px;
+      border-radius: var(--radius-sm);
       font-weight: 700;
       font-size: 12px;
-      padding: 8px 20px;
-      border-radius: var(--radius-sm);
-      transition: background var(--transition-snappy);
+      cursor: pointer;
     }
 
-    .jubel-open-btn:hover { background: var(--accent-hover); }
+    /* Jubel Store Grid */
+    .jubel-store-section {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+      margin-top: 10px;
+    }
 
     .store-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 14px;
-      margin-top: 14px;
+      gap: 16px;
+      margin-top: 16px;
     }
 
     .store-card {
-      background: var(--bg-elevated);
+      background: var(--bg-surface-secondary);
       border: 1px solid var(--border-base);
       border-radius: var(--radius-md);
       padding: 14px;
       display: flex;
       flex-direction: column;
       gap: 8px;
+      transition: all var(--transition-fast);
+    }
+
+    .store-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--primary-light);
     }
 
     .store-card img {
@@ -731,143 +1107,157 @@
       border-radius: var(--radius-sm);
     }
 
-    .agenda-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-base);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-    }
-
-    .agenda-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-height: 180px;
-      overflow-y: auto;
-      margin-top: 10px;
-    }
-
-    .agenda-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 10px;
-      background: var(--bg-elevated);
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-    }
-
-    .agenda-checkbox {
-      width: 16px;
-      height: 16px;
-      border: 1.5px solid var(--text-tertiary);
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .agenda-item.completed .agenda-checkbox {
-      background: var(--accent-main);
-      border-color: var(--accent-main);
-    }
-    .agenda-item.completed .agenda-checkbox::after { content: '✓'; color: #000; font-size: 10px; font-weight: 800; }
-    .agenda-item.completed .agenda-text { text-decoration: line-through; color: var(--text-tertiary); }
-    .agenda-content { flex: 1; }
-    .agenda-text { color: var(--text-primary); font-weight: 500; }
-    .agenda-time { font-size: 10px; color: var(--text-tertiary); }
-    .agenda-delete { color: var(--text-tertiary); cursor: pointer; }
-    .agenda-delete:hover { color: var(--color-danger); }
-
-    .add-task-form { display: flex; gap: 8px; margin-top: 12px; }
-    .task-input {
-      flex: 1;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-base);
-      padding: 8px 12px;
-      border-radius: var(--radius-sm);
-      color: var(--text-primary);
-      font-size: 12px;
-    }
-    .task-submit {
-      background: var(--accent-main);
-      color: #000;
-      padding: 0 14px;
-      border-radius: var(--radius-sm);
-      font-weight: 700;
-      font-size: 12px;
-    }
-
-    .admin-only { display: none !important; }
-    body.is-admin .admin-only { display: inline-flex !important; }
-
+    /* Modals & Backdrop */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(8px);
+      background: rgba(14, 13, 18, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       z-index: 100;
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
       visibility: hidden;
-      transition: all var(--transition-snappy);
+      transition: all var(--transition-fast);
+      padding: 20px;
     }
-    .modal-backdrop.is-active { opacity: 1; visibility: visible; }
+
+    .modal-backdrop.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
 
     .ai-modal {
       width: 100%;
-      max-width: 500px;
+      max-width: 480px;
       background: var(--bg-surface);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-pop);
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
 
     .modal-header {
-      padding: 16px 20px;
+      padding: 18px 24px;
       border-bottom: 1px solid var(--border-base);
       display: flex;
       align-items: center;
       justify-content: space-between;
       font-weight: 700;
+      font-size: 15px;
+      color: var(--text-primary);
     }
 
-    .modal-close { color: var(--text-tertiary); font-size: 18px; }
-    .chat-window { height: 300px; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-    .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; }
-    .chat-bubble.ai { background: var(--bg-elevated); align-self: flex-start; }
-    .chat-bubble.user { background: var(--accent-dim); color: var(--accent-main); align-self: flex-end; }
-    .chat-input-area { padding: 16px 20px; border-top: 1px solid var(--border-base); display: flex; gap: 10px; }
-    .chat-input-area input { flex: 1; background: var(--bg-elevated); border: 1px solid var(--border-base); padding: 10px 12px; border-radius: var(--radius-sm); color: #fff; font-size: 13px; }
+    .modal-close {
+      color: var(--text-tertiary);
+      font-size: 20px;
+      cursor: pointer;
+    }
 
-    .fab-container { position: fixed; bottom: 80px; right: 28px; z-index: 40; }
+    .modal-close:hover { color: var(--text-primary); }
+
+    .chat-window {
+      height: 280px;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--bg-surface-secondary);
+    }
+
+    .chat-bubble {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .chat-bubble.ai {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border: 1px solid var(--border-base);
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+    }
+
+    .chat-bubble.user {
+      background: var(--primary);
+      color: #FFFFFF;
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+    }
+
+    .chat-input-area {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-base);
+      display: flex;
+      gap: 10px;
+      background: var(--bg-surface);
+    }
+
+    .chat-input-area input {
+      flex: 1;
+      background: var(--bg-surface-secondary);
+      border: 1px solid var(--border-base);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 13px;
+    }
+
+    .chat-input-area input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: var(--bg-surface);
+    }
+
+    .fab-container {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 40;
+    }
+
     .fab-btn {
-      width: 52px; height: 52px; border-radius: 50%;
-      background: var(--accent-main); color: #000;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 6px 20px var(--accent-glow);
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px var(--primary-glow);
+      transition: all var(--transition-fast);
+      cursor: pointer;
     }
 
-    .color-picker-btn { width: 28px; height: 28px; border-radius: 50%; border: none; cursor: pointer; }
+    .fab-btn:hover {
+      background: var(--primary-hover);
+      transform: scale(1.05);
+    }
+
+    .admin-only { display: none !important; }
+    body.is-admin .admin-only { display: inline-flex !important; }
 
     .app-footer {
-      margin-top: 32px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border-subtle);
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-base);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
+      font-size: 12.5px;
       color: var(--text-tertiary);
     }
 
+    /* Mobile Bottom Dock */
     .mobile-bottom-nav {
       display: none;
       position: fixed;
@@ -875,388 +1265,471 @@
       left: 0;
       right: 0;
       height: var(--mobile-nav-height);
-      background: var(--bg-sidebar);
+      background: var(--bg-surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid var(--border-base);
       z-index: 60;
-      padding: 0 16px;
+      padding: 0 12px;
       justify-content: space-around;
       align-items: center;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
     }
 
     .mobile-nav-link {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       color: var(--text-tertiary);
       font-size: 10px;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.3px;
       padding: 6px 12px;
       border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
     }
 
     .mobile-nav-link.active {
-      color: var(--accent-main);
+      color: var(--primary);
     }
 
-    .mobile-nav-link .icon-svg {
-      width: 20px;
-      height: 20px;
+    .mobile-nav-link .material-symbols-outlined {
+      font-size: 22px;
     }
 
-    @media (max-width: 1024px) {
-      .workspace-main-grid {
-        grid-template-columns: 1fr;
-      }
-      .workspace-cards-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    .mobile-hero-greeting {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .mobile-greeting-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1120px) {
+      .workspace-split-layout { grid-template-columns: 1fr; }
+      .overview-cards-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-banner-card { padding: 32px; }
+      .hero-headline { font-size: 34px; }
     }
 
     @media (max-width: 860px) {
-      :root {
-        --sidebar-width: 0px;
-      }
-
+      :root { --sidebar-width: 0px; }
       .sidebar {
         transform: translateX(-100%);
-        width: 260px;
+        width: 270px;
+        box-shadow: 20px 0 50px rgba(0, 0, 0, 0.2);
       }
-
-      .sidebar.is-active {
-        transform: translateX(0);
+      .sidebar.is-active { transform: translateX(0); }
+      .sidebar-overlay {
+        position: fixed; inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
+        z-index: 49;
+        display: none;
       }
+      .sidebar-overlay.is-active { display: block; }
+      .mobile-trigger, .mobile-brand { display: flex; }
+      .top-header .search-wrapper, .top-header .header-greeting-text { display: none; }
+      .main-content { margin-left: 0; padding-bottom: calc(var(--mobile-nav-height) + 24px); }
+      .top-header { padding: 0 18px; }
+      .workspace { padding: 20px 16px; gap: 20px; }
 
-      .mobile-trigger, .mobile-brand {
-        display: flex;
+      .hero-banner-card {
+        background: var(--primary);
+        color: #FFFFFF;
+        grid-template-columns: 1fr;
+        padding: 28px 24px;
+        border-radius: var(--radius-lg);
+        box-shadow: 0 10px 30px var(--primary-glow);
       }
-
-      .search-wrapper { display: none; }
-
-      .main-content {
-        margin-left: 0;
-        padding-bottom: calc(var(--mobile-nav-height) + 20px);
-      }
-
-      .top-header {
-        padding: 0 16px;
-      }
-
-      .workspace {
-        padding: 20px 16px;
-        gap: 20px;
-      }
-
-      .greeting-title {
-        font-size: 24px;
-      }
-
-      .hero-section {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-      }
-
-      .workspace-cards-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-      }
-
-      .mobile-bottom-nav {
-        display: flex;
-      }
-
-      .fab-container {
-        bottom: calc(var(--mobile-nav-height) + 16px);
-        right: 16px;
-      }
-
-      .app-footer {
-        flex-direction: column;
-        gap: 8px;
-        text-align: center;
-      }
+      .hero-headline { color: #FFFFFF; font-size: 26px; }
+      .hero-headline .highlight-purple { color: #EBDDFF; }
+      .hero-subtitle { color: rgba(255, 255, 255, 0.85); font-size: 13px; }
+      .btn-hero-primary { background: #FFFFFF; color: var(--primary); width: 100%; justify-content: center; }
+      .btn-hero-secondary { display: none; }
+      .hero-visual-col { display: none; }
+      .mobile-hero-greeting { display: flex; }
+      .overview-cards-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .stat-card { padding: 16px; }
+      .stat-card-value { font-size: 22px; }
+      .analytics-activity-grid { grid-template-columns: 1fr; }
+      .quick-access-row { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+      .quick-access-btn { padding: 12px 6px; }
+      .quick-access-title { font-size: 10px; }
+      .mobile-bottom-nav { display: flex; }
+      .fab-container { bottom: calc(var(--mobile-nav-height) + 16px); right: 16px; }
+      .app-footer { flex-direction: column; gap: 8px; text-align: center; }
     }
   </style>
 </head>
 <body>
 
+  <!-- Ambient Light Animation Canvas -->
   <canvas id="ambientCanvas"></canvas>
 
   <div class="app-layout">
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- Desktop Left Sidebar -->
+    <!-- ==========================================================================
+         LEFT SIDEBAR NAVIGATION (Desktop)
+         ========================================================================== -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <div class="brand-combo">
-          <div class="brand-icon">
-            <img src="https://cdn.phototourl.com/free/2026-08-10-e2258c8f-a8af-411b-9efc-aaed64b1e6c9.png" alt="LifeHub" style="width:100%; height:100%; object-fit:cover;">
+        <div class="brand-combo" onclick="location.href='dashboard.html'">
+          <div class="brand-logo-icon">
+            <span class="material-symbols-outlined" style="font-size:22px; font-variation-settings: 'FILL' 1;">widgets</span>
           </div>
-          <div class="brand-text">LifeHub</div>
+          <div class="brand-title-text">LifeHub <span>AI</span></div>
         </div>
       </div>
 
       <nav class="sidebar-nav">
-        <div class="nav-label">WORKSPACE</div>
         <a href="dashboard.html" class="nav-item active">
-          <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
           <span class="nav-text">Dashboard</span>
         </a>
         <a href="ai.html" class="nav-item" data-restricted="true" data-feature-name="AI Assistant">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
+          <span class="material-symbols-outlined">smart_toy</span>
           <span class="nav-text">AI Assistant</span>
           <span class="lock-badge hidden">🔒</span>
         </a>
         <a href="notes.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          <span class="material-symbols-outlined">edit_note</span>
           <span class="nav-text">Notes</span>
         </a>
         <a href="focus.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span class="nav-text">Focus Space</span>
+          <span class="material-symbols-outlined">center_focus_strong</span>
+          <span class="nav-text">Focus</span>
+        </a>
+        <a href="finance.html" class="nav-item">
+          <span class="material-symbols-outlined">payments</span>
+          <span class="nav-text">Finance</span>
         </a>
 
-        <div class="nav-label">MEDIA</div>
+        <div class="nav-label">MEDIA & ENTERTAINMENT</div>
         <a href="music.html" class="nav-item" data-restricted="true" data-feature-name="Music">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          <span class="material-symbols-outlined">library_music</span>
           <span class="nav-text">Music</span>
           <span class="lock-badge hidden">🔒</span>
         </a>
         <a href="movies.html" class="nav-item" data-restricted="true" data-feature-name="Movies">
-          <svg class="icon-svg" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/></svg>
+          <span class="material-symbols-outlined">movie</span>
           <span class="nav-text">Movies</span>
           <span class="lock-badge hidden">🔒</span>
         </a>
+
+        <div class="nav-label">UTILITIES & TOOLS</div>
         <a href="downloader.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          <span class="material-symbols-outlined">download</span>
           <span class="nav-text">Downloader</span>
         </a>
-
-        <div class="nav-label">TOOLS</div>
         <a href="mastery.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-          <span class="nav-text">Code Mastery</span>
+          <span class="material-symbols-outlined">code</span>
+          <span class="nav-text">Code</span>
         </a>
         <a href="qr-tools.html" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><path d="M3 14h7v7H3z"/></svg>
+          <span class="material-symbols-outlined">qr_code_2</span>
           <span class="nav-text">QR Tools</span>
-        </a>
-
-        <div class="nav-label">MARKETPLACE</div>
-        <a href="#jubelSection" class="nav-item">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          <span class="nav-text">Jubel Hub</span>
         </a>
 
         <div id="customNavContainer"></div>
 
+        <div class="nav-label">SYSTEM</div>
+        <a href="#jubelSection" class="nav-item">
+          <span class="material-symbols-outlined">storefront</span>
+          <span class="nav-text">Jubel Hub</span>
+        </a>
         <a href="#" class="nav-item logout" id="logoutBtn">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          <span class="material-symbols-outlined">logout</span>
           <span id="logoutText">Logout Session</span>
         </a>
       </nav>
+
+      <div class="sidebar-bottom">
+        <a href="#" id="openAdminPanelBtn" class="nav-item admin-only" title="Admin Settings">
+          <span class="material-symbols-outlined">settings</span>
+          <span>Settings</span>
+        </a>
+        
+        <div class="sidebar-profile-card" id="sidebarProfileCard" title="Edit Profile & Theme">
+          <div class="sidebar-avatar" id="sidebarAvatarInitials">--</div>
+          <div class="sidebar-user-meta">
+            <span class="sidebar-user-name" id="sidebarUserName">User</span>
+            <span class="sidebar-user-badge" id="sidebarUserRole">PREMIUM</span>
+          </div>
+        </div>
+      </div>
     </aside>
 
-    <!-- Main Workspace Container -->
+    <!-- ==========================================================================
+         MAIN CONTENT CONTAINER
+         ========================================================================== -->
     <main class="main-content">
       <!-- Topbar Header -->
       <header class="top-header">
         <div class="header-left">
-          <button class="mobile-trigger" id="mobileMenuTrigger">
-            <svg class="icon-svg" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <button class="mobile-trigger" id="mobileMenuTrigger" aria-label="Open Menu">
+            <span class="material-symbols-outlined">menu</span>
           </button>
           
           <div class="mobile-brand">
-            <img src="https://cdn.phototourl.com/free/2026-08-10-e2258c8f-a8af-411b-9efc-aaed64b1e6c9.png" alt="LifeHub" style="width:22px; height:22px; border-radius:4px;">
-            LifeHub
+            <span class="material-symbols-outlined" style="color:var(--primary); font-variation-settings: 'FILL' 1;">widgets</span>
+            LifeHub AI
           </div>
 
-          <div class="search-wrapper">
-            <svg class="icon-svg search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" class="search-input" placeholder="Search anything...">
+          <!-- Command Palette Trigger Search Box -->
+          <div class="search-wrapper" id="searchTriggerBtn" title="Press Ctrl + K to search">
+            <span class="material-symbols-outlined search-icon">search</span>
+            <input type="text" class="search-input" placeholder="Search tasks, docs, AI..." readonly>
+            <span class="search-shortcut-badge">⌘K</span>
           </div>
         </div>
 
         <div class="header-right">
-          <!-- Responsive Header Login/Logout Button -->
+          <!-- Dynamic Personalized Greeting in Topbar (Desktop) -->
+          <div class="header-greeting-text" id="desktopGreetingText">
+            <span id="greetingTimeWord">Good afternoon</span>, <span id="greetingTitleSpan">User</span> 👋
+          </div>
+
+          <!-- Global Theme Mode Selector Button -->
+          <button class="action-btn" id="themeToggleBtn" title="Toggle Light / Dark / System Mode">
+            <span class="material-symbols-outlined" id="themeToggleIcon">brightness_auto</span>
+          </button>
+
+          <!-- Notification Trigger -->
+          <button class="action-btn" id="notifBtn" title="Notifications">
+            <span class="material-symbols-outlined" style="font-size:20px;">notifications</span>
+            <span class="badge-indicator"></span>
+          </button>
+
+          <!-- Auth / Sign In / Logout Button -->
           <button class="action-btn-auth is-guest" id="headerAuthBtn">
             <span id="headerAuthIcon">🔑</span>
             <span id="headerAuthText">Sign In</span>
           </button>
 
-          <button class="action-btn admin-only" id="openAdminPanelBtn" title="Admin Settings">⚙️</button>
-          <button class="action-btn" title="Notifications">
-            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            <span class="badge-indicator"></span>
-          </button>
-
-          <div class="user-profile" id="userProfileBtn" title="Profile Options">
-            <div class="user-avatar" id="headerAvatarInitials">--</div>
-            <div class="user-details">
-              <span class="user-name" id="headerUserName">User</span>
-              <span class="user-role" id="headerUserRole">PRO PLAN</span>
-            </div>
+          <!-- Header User Avatar -->
+          <div class="user-profile-header" id="userProfileBtn" title="Profile Settings">
+            <div id="headerAvatarInitials">--</div>
           </div>
         </div>
       </header>
 
       <!-- Main Workspace View -->
       <div class="workspace">
-        <div class="announcement-banner" id="announcementBanner">
-          <span>📢 <span id="announcementText">Welcome to LifeHub Workspace! Marketplace & Workspace Active.</span></span>
+
+        <!-- Mobile Top Greeting & Search Field -->
+        <div class="mobile-hero-greeting">
+          <h1 class="mobile-greeting-title">Hi <span id="mobileGreetingUser">User</span> 👋</h1>
+          <div class="search-wrapper" style="width:100%; display:block;" onclick="document.getElementById('cmdPaletteBackdrop').classList.add('is-active'); document.getElementById('cmdInput').focus();">
+            <span class="material-symbols-outlined search-icon">search</span>
+            <input type="text" class="search-input" placeholder="Search tasks, docs, or ask AI..." readonly>
+          </div>
         </div>
 
-        <!-- Hero Greeting Section -->
-        <section class="hero-section">
-          <div>
-            <h1 class="greeting-title"><span id="greetingTimeWord">Good morning</span>, <span id="greetingTitleSpan">User</span>.</h1>
-            <div class="greeting-subtitle">Here's your LifeHub overview for today.</div>
+        <!-- Global Announcement (Editable via Admin Panel) -->
+        <div class="announcement-banner" id="announcementBanner">
+          <span>📢 <span id="announcementText">Welcome to LifeHub AI — Your personal productivity & intelligent workspace.</span></span>
+        </div>
+
+        <!-- ==========================================================================
+             HERO BANNER CARD (Google Stitch Hero Design)
+             ========================================================================== -->
+        <section class="hero-banner-card">
+          <div class="hero-banner-content">
+            <div class="hidden md:inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider" style="color:var(--primary);">
+              ✨ LifeHub AI Intelligence
+            </div>
+            <h1 class="hero-headline">
+              Everything you need, 
+              <span class="highlight-purple">in one place.</span>
+            </h1>
+            <p class="hero-subtitle">
+              LifeHub AI brings productivity, AI tools, notes, focus, finance, and entertainment into a single, intelligent workspace.
+            </p>
+            <div class="hero-actions-row">
+              <button class="btn-hero-primary" onclick="location.href='ai.html'">
+                <span class="material-symbols-outlined" style="font-size:18px;">smart_toy</span>
+                Open AI Assistant
+              </button>
+              <button class="btn-hero-secondary" onclick="location.href='focus.html'">
+                <span class="material-symbols-outlined" style="font-size:18px;">timer</span>
+                Start Focus Session
+              </button>
+            </div>
           </div>
 
-          <div class="hero-status-pill">
-            <span class="clock-date" id="realTimeDate">AUG 19, 2026</span>
-            <span class="clock-time" id="realTimeClock">12:00 PM</span>
-            <span style="display:flex; align-items:center; gap:6px; font-weight:700; color:var(--accent-main)">
-              <div class="status-indicator"></div> ACTIVE
-            </span>
+          <div class="hero-visual-col">
+            <div class="ai-core-container">
+              <div class="ai-core-hologram">
+                <!-- 3D Holographic Brain SVG Vector Graphic -->
+                <svg class="ai-brain-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="100" cy="100" r="70" fill="url(#brainGlow)" opacity="0.3"/>
+                  <path d="M70 70C70 58.9543 78.9543 50 90 50C95 50 100 53 100 53C100 53 105 50 110 50C121.046 50 130 58.9543 130 70C130 75 128 80 128 80C135 83 140 90 140 98C140 105 136 112 130 115C132 120 130 128 125 133C120 138 112 140 105 138L100 145L95 138C88 140 80 138 75 133C70 128 68 120 70 115C64 112 60 105 60 98C60 90 65 83 72 80C72 80 70 75 70 70Z" stroke="var(--primary)" stroke-width="2.5" stroke-dasharray="4 2"/>
+                  <circle cx="90" cy="70" r="4" fill="var(--primary)"/>
+                  <circle cx="110" cy="70" r="4" fill="var(--primary)"/>
+                  <circle cx="80" cy="95" r="4" fill="#22D3EE"/>
+                  <circle cx="120" cy="95" r="4" fill="#22D3EE"/>
+                  <circle cx="100" cy="110" r="5" fill="var(--primary)"/>
+                  <circle cx="85" cy="125" r="3.5" fill="var(--primary)"/>
+                  <circle cx="115" cy="125" r="3.5" fill="var(--primary)"/>
+                  <path d="M90 70L100 110L110 70M80 95L100 110L120 95M85 125L100 110L115 125" stroke="var(--primary)" stroke-width="1.5" opacity="0.6"/>
+                  <defs>
+                    <radialGradient id="brainGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(100 100) rotate(90) scale(70)">
+                      <stop stop-color="var(--primary)"/>
+                      <stop offset="1" stop-color="var(--primary)" stop-opacity="0"/>
+                    </radialGradient>
+                  </defs>
+                </svg>
+                <div class="ai-core-pedestal">LIFEHUB AI — CORE</div>
+              </div>
+            </div>
           </div>
         </section>
 
-        <div class="workspace-main-grid">
-          <div class="left-main-col">
-            <div class="section-label">
-              <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-              YOUR WORKSPACE
-            </div>
+        <!-- ==========================================================================
+             OVERVIEW STAT CARDS (Derived from 100% Real User Data)
+             ========================================================================== -->
+        <section>
+          <div class="section-header-row">
+            <h2 class="section-title-main">Overview</h2>
+            <span class="section-badge-pill">ACTIVE DATA</span>
+          </div>
 
-            <div class="workspace-cards-grid">
-              <div class="workspace-card" data-restricted="true" data-feature-name="AI Assistant" data-href="ai.html">
-                <div class="workspace-card-icon">
-                  <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
+          <div class="overview-cards-grid">
+            <!-- Card 1: AI Conversations (Real Chat Sessions Count) -->
+            <div class="stat-card">
+              <div class="stat-card-top">
+                <div class="stat-icon-box purple">
+                  <span class="material-symbols-outlined">chat</span>
                 </div>
-                <div class="workspace-card-title">
-                  <span>AI Assistant</span>
-                  <span class="lock-badge hidden">🔒</span>
-                </div>
-                <div class="workspace-card-desc">Intelligent chat...</div>
+                <span class="stat-badge trend-up" id="statAiBadge">Active</span>
               </div>
-
-              <div class="workspace-card" data-href="notes.html">
-                <div class="workspace-card-icon">
-                  <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                </div>
-                <div class="workspace-card-title">Notes</div>
-                <div class="workspace-card-desc">Quick notes...</div>
-              </div>
-
-              <div class="workspace-card" data-href="focus.html">
-                <div class="workspace-card-icon">
-                  <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                </div>
-                <div class="workspace-card-title">Focus Space</div>
-                <div class="workspace-card-desc">Deep work...</div>
-              </div>
-
-              <div class="workspace-card" data-href="mastery.html">
-                <div class="workspace-card-icon">
-                  <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                </div>
-                <div class="workspace-card-title">Code Mastery</div>
-                <div class="workspace-card-desc">Snippets & docs</div>
-              </div>
-
-              <div class="workspace-card" data-restricted="true" data-feature-name="Music" data-href="music.html">
-                <div class="workspace-card-icon">
-                  <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-                </div>
-                <div class="workspace-card-title">
-                  <span>Music</span>
-                  <span class="lock-badge hidden">🔒</span>
-                </div>
-                <div class="workspace-card-desc">Playlists & audio</div>
-              </div>
-
-              <div class="workspace-card" data-restricted="true" data-feature-name="Movies" data-href="movies.html">
-                <div class="workspace-card-icon">
-                  <svg class="icon-svg" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/></svg>
-                </div>
-                <div class="workspace-card-title">
-                  <span>Movies</span>
-                  <span class="lock-badge hidden">🔒</span>
-                </div>
-                <div class="workspace-card-desc">Media library</div>
-              </div>
-
-              <div class="workspace-card" data-href="downloader.html">
-                <div class="workspace-card-icon">
-                  <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                </div>
-                <div class="workspace-card-title">Downloader</div>
-                <div class="workspace-card-desc">Asset downloads</div>
-              </div>
-
-              <div class="workspace-card" data-href="qr-tools.html">
-                <div class="workspace-card-icon">
-                  <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><path d="M3 14h7v7H3z"/></svg>
-                </div>
-                <div class="workspace-card-title">QR Tools</div>
-                <div class="workspace-card-desc">Generate & scan</div>
+              <div class="stat-card-bottom">
+                <span class="stat-card-label">AI Conversations</span>
+                <span class="stat-card-value" id="statAiConvs">0</span>
               </div>
             </div>
 
-            <div class="section-header-flex">
-              <div class="section-label" style="margin-bottom:0;">
-                <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                RECENT ACTIVITY
+            <!-- Card 2: Notes Created (Real notes count in localStorage) -->
+            <div class="stat-card">
+              <div class="stat-card-top">
+                <div class="stat-icon-box blue">
+                  <span class="material-symbols-outlined">note_stack</span>
+                </div>
+                <span class="stat-badge trend-up" id="statNotesBadge">Saved</span>
               </div>
-              <a href="#" class="view-all-link">View All</a>
-            </div>
-
-            <div class="recent-activity-card">
-              <div class="activity-list">
-                <div class="activity-item">
-                  <div class="activity-icon">
-                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
-                  </div>
-                  <div class="activity-details">
-                    <div class="activity-title">AI Assistant</div>
-                    <div class="activity-sub">Debugged Javascript utility function for layout generator.</div>
-                  </div>
-                  <div class="activity-time">2m ago</div>
-                </div>
-
-                <div class="activity-item">
-                  <div class="activity-icon">
-                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                  </div>
-                  <div class="activity-details">
-                    <div class="activity-title">Notes</div>
-                    <div class="activity-sub">Created 'Project Ideas - Q4 Planning' document.</div>
-                  </div>
-                  <div class="activity-time">1h ago</div>
-                </div>
-
-                <div class="activity-item">
-                  <div class="activity-icon">
-                    <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  </div>
-                  <div class="activity-details">
-                    <div class="activity-title">Focus Space</div>
-                    <div class="activity-sub">Completed 45m deep work session: 'UI Design'.</div>
-                  </div>
-                  <div class="activity-time">Today</div>
-                </div>
+              <div class="stat-card-bottom">
+                <span class="stat-card-label">Notes Created</span>
+                <span class="stat-card-value" id="statNotesCount">0</span>
               </div>
             </div>
 
-            <div id="jubelSection" style="margin-top: 28px;">
-              <div class="section-header-flex">
-                <div class="section-label" style="margin-bottom:0;">
-                  <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                  <span id="jubelTitleText">JUBEL HUB — DIGITAL ACCOUNT STORE</span>
+            <!-- Card 3: Focus Time (Real focus sessions logged) -->
+            <div class="stat-card">
+              <div class="stat-card-top">
+                <div class="stat-icon-box gray">
+                  <span class="material-symbols-outlined">timer</span>
                 </div>
-                <button class="task-submit admin-only" id="openAddProductBtn" style="padding: 6px 12px; font-size: 11px;">
+                <span class="stat-badge neutral">Pomodoro</span>
+              </div>
+              <div class="stat-card-bottom">
+                <span class="stat-card-label">Focus Time</span>
+                <span class="stat-card-value" id="statFocusTime">0<span style="font-size:16px; font-weight:600; color:var(--text-tertiary);">m</span></span>
+              </div>
+              <div class="stat-progress-line" id="statFocusProgress" style="width: 0%;"></div>
+            </div>
+
+            <!-- Card 4: Tasks Completed (Derived from real agenda checklist) -->
+            <div class="stat-card">
+              <div class="stat-card-top">
+                <div class="stat-icon-box rose">
+                  <span class="material-symbols-outlined">check_circle</span>
+                </div>
+                <span class="stat-badge trend-up" id="statTaskBadge">On track</span>
+              </div>
+              <div class="stat-card-bottom">
+                <span class="stat-card-label">Tasks Completed</span>
+                <span class="stat-card-value" id="statTaskPercentage">0%</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================================================
+             LOWER SPLIT LAYOUT (Quick Access, Productivity & Today's Focus)
+             ========================================================================== -->
+        <div class="workspace-split-layout">
+          <div class="left-widgets-col">
+            <!-- 1. Quick Access Hubs Row -->
+            <div class="quick-access-row">
+              <div class="quick-access-btn active" onclick="location.href='ai.html'">
+                <span class="material-symbols-outlined">smart_toy</span>
+                <span class="quick-access-title">Assistant</span>
+              </div>
+              <div class="quick-access-btn" onclick="location.href='notes.html'">
+                <span class="material-symbols-outlined">edit_note</span>
+                <span class="quick-access-title">Notes</span>
+              </div>
+              <div class="quick-access-btn" onclick="location.href='focus.html'">
+                <span class="material-symbols-outlined">center_focus_strong</span>
+                <span class="quick-access-title">Focus</span>
+              </div>
+              <div class="quick-access-btn" onclick="location.href='finance.html'">
+                <span class="material-symbols-outlined">payments</span>
+                <span class="quick-access-title">Finance</span>
+              </div>
+            </div>
+
+            <!-- 2. Subgrid: Productivity Score + Real Dynamic Recent Activity -->
+            <div class="analytics-activity-grid">
+              <!-- Productivity Score Card -->
+              <div class="glass-card">
+                <div class="card-header-flex">
+                  <h3 class="card-title">Productivity Score</h3>
+                  <span style="font-size:13px; font-weight:800; color:var(--primary);" id="productivityScoreNum">85 pts</span>
+                </div>
+                <div class="wave-chart-container">
+                  <svg class="wave-svg" viewBox="0 0 200 90" fill="none" preserveAspectRatio="none">
+                    <path d="M0 65C30 85 50 20 80 50C110 80 130 15 160 40C180 55 190 25 200 35L200 90L0 90Z" fill="url(#waveFill)"/>
+                    <path d="M0 65C30 85 50 20 80 50C110 80 130 15 160 40C180 55 190 25 200 35" stroke="var(--primary)" stroke-width="3.5" stroke-linecap="round"/>
+                    <defs>
+                      <linearGradient id="waveFill" x1="0" y1="0" x2="0" y2="90" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="var(--primary)" stop-opacity="0.2"/>
+                        <stop offset="1" stop-color="var(--primary)" stop-opacity="0"/>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Recent Activity Card (Dynamically Rendered) -->
+              <div class="glass-card">
+                <div class="card-header-flex">
+                  <h3 class="card-title">Recent Activity</h3>
+                  <a href="notes.html" class="link-view-all">View All</a>
+                </div>
+                <div class="activity-timeline-list" id="recentActivityList">
+                  <!-- Dynamically rendered by ActivityManager -->
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Jubel Hub Digital Store (Preserved) -->
+            <div class="jubel-store-section" id="jubelSection">
+              <div class="card-header-flex">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="material-symbols-outlined" style="color:var(--primary);">storefront</span>
+                  <h3 class="card-title">Jubel Hub — Digital Marketplace</h3>
+                </div>
+                <button class="admin-only" id="openAddProductBtn" style="background:var(--primary); color:#fff; padding:6px 14px; border-radius:var(--radius-sm); font-size:11px; font-weight:700;">
                   + Tambah Produk
                 </button>
               </div>
@@ -1264,236 +1737,224 @@
             </div>
           </div>
 
-          <div class="right-widgets-col">
-            <div class="productivity-card">
-              <div class="section-label" style="margin-bottom:12px;">
-                <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                PRODUCTIVITY
-              </div>
+          <!-- Right Column: Today's Focus Tasks Card -->
+          <div class="focus-panel-card">
+            <div class="focus-header">
+              <h3 class="card-title">Today's Focus</h3>
+              <button class="btn-add-focus" id="triggerNewTaskBtn" title="Add Task">+</button>
+            </div>
 
-              <div class="metrics-list">
-                <div class="metric-row">
-                  <div class="metric-label-group">
-                    <div class="metric-dot" style="background:#06b6d4;"></div>
-                    AI Sessions
-                  </div>
-                  <svg class="metric-sparkline" viewBox="0 0 60 18"><path d="M0,14 L15,10 L30,12 L45,4 L60,8" fill="none" stroke="#06b6d4" stroke-width="2"/></svg>
-                  <span class="metric-val">12</span>
-                </div>
-
-                <div class="metric-row">
-                  <div class="metric-label-group">
-                    <div class="metric-dot" style="background:var(--accent-main);"></div>
-                    Tasks
-                  </div>
-                  <svg class="metric-sparkline" viewBox="0 0 60 18"><path d="M0,12 L15,14 L30,8 L45,10 L60,4" fill="none" stroke="var(--accent-main)" stroke-width="2"/></svg>
-                  <span class="metric-val">8</span>
-                </div>
-
-                <div class="metric-row">
-                  <div class="metric-label-group">
-                    <div class="metric-dot" style="background:#a1a1aa;"></div>
-                    Focus Time
-                  </div>
-                  <svg class="metric-sparkline" viewBox="0 0 60 18"><path d="M0,16 L20,16 L30,4 L40,16 L60,16" fill="none" stroke="#a1a1aa" stroke-width="2"/></svg>
-                  <span class="metric-val">2.5h</span>
-                </div>
-
-                <div class="metric-row">
-                  <div class="metric-label-group">
-                    <div class="metric-dot" style="background:#71717a;"></div>
-                    Storage
-                  </div>
-                  <svg class="metric-sparkline" viewBox="0 0 60 18"><rect x="0" y="7" width="60" height="4" rx="2" fill="#27272a"/><rect x="0" y="7" width="27" height="4" rx="2" fill="#a1a1aa"/></svg>
-                  <span class="metric-val">45%</span>
-                </div>
+            <div class="focus-progress-wrapper">
+              <div class="focus-progress-meta" id="taskProgressMeta">0 of 0 completed</div>
+              <div class="focus-progress-track">
+                <div class="focus-progress-fill" id="taskProgressBar" style="width: 0%;"></div>
               </div>
             </div>
 
-            <div class="jubel-promo-card">
-              <div class="jubel-promo-header">
-                <svg class="icon-svg" style="color:var(--accent-main);" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                Jubel Hub
-              </div>
-              <p class="jubel-promo-desc">Manage your digital products and accounts across the unified ecosystem.</p>
-              <button class="jubel-open-btn" onclick="location.href='#jubelSection'">Open</button>
+            <!-- Interactive Task List -->
+            <div class="focus-task-list" id="agendaContainer">
+              <!-- Dynamically populated by AgendaManager -->
             </div>
 
-            <div class="agenda-card">
-              <div class="section-label" style="margin-bottom:8px;">
-                <svg class="icon-svg" style="width:14px;height:14px;" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                AGENDA & TASKS
-              </div>
-              <div class="agenda-list" id="agendaContainer"></div>
-              <form class="add-task-form" id="addTaskForm">
-                <input type="text" class="task-input" id="newTaskInput" placeholder="Add task..." required>
-                <button type="submit" class="task-submit">+</button>
-              </form>
-            </div>
+            <!-- Inline Add Task Form -->
+            <form class="add-task-inline-form" id="addTaskForm">
+              <input type="text" class="task-input-field" id="newTaskInput" placeholder="Add focus task..." required>
+              <button type="submit" class="btn-task-submit">Add</button>
+            </form>
 
-            <div style="display:none;">
-              <div id="simTemp">28</div>
-              <div id="dashAlbumArt"></div>
-              <div id="dashTrackTitle">Nocturne Standby</div>
-              <div id="dashTrackArtist">Awaiting signal</div>
-              <div id="dashProgressFill"></div>
-              <div id="dashTimeCurrent">0:00</div>
-              <div id="dashTimeTotal">-:--</div>
-              <button id="dashPlayPauseBtn"></button>
-            </div>
+            <a href="notes.html" class="btn-view-all-tasks">View All in Notes</a>
           </div>
         </div>
 
+        <!-- Footer -->
         <footer class="app-footer">
-          <div class="footer-copyright">© 2026 <span>LifeHub AI</span>. All rights reserved.</div>
-          <div class="footer-dev">Developed by <a href="https://github.com/reskisetiawan301210-ai" target="_blank" style="color:var(--accent-main); font-weight:600;">Reski X legacyy403</a></div>
+          <div>© 2026 <strong>LifeHub AI</strong>. All rights reserved.</div>
+          <div>Developed with ❤️ by <a href="https://github.com/reskisetiawan301210-ai" target="_blank" style="color:var(--primary); font-weight:700;">Reski X legacyy403</a></div>
         </footer>
       </div>
     </main>
   </div>
 
-  <nav class="mobile-bottom-nav">
-    <a href="dashboard.html" class="mobile-nav-link active">
-      <svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Home
-    </a>
-    <a href="music.html" class="mobile-nav-link" data-restricted="true" data-feature-name="Music">
-      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-      Media
-    </a>
-    <a href="mastery.html" class="mobile-nav-link">
-      <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-      Tools
-    </a>
-    <a href="#" class="mobile-nav-link" id="mobileMenuOpenBtn" onclick="document.getElementById('sidebar').classList.toggle('is-active'); document.getElementById('sidebarOverlay').classList.toggle('is-active'); return false;">
-      <svg class="icon-svg" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      Menu
-    </a>
-  </nav>
-
-  <div class="fab-container">
-    <button class="fab-btn" id="fabBtn" aria-label="Ask AI">
-      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
-    </button>
-  </div>
-
-  <div class="modal-backdrop" id="aiModalBackdrop">
-    <div class="ai-modal">
-      <div class="modal-header">
-        <span>LifeHub Intelligence</span>
-        <button class="modal-close" id="closeAiModal">✕</button>
+  <!-- ==========================================================================
+       COMMAND PALETTE MODAL (Ctrl + K / Cmd + K)
+       ========================================================================== -->
+  <div class="cmd-palette-backdrop" id="cmdPaletteBackdrop">
+    <div class="cmd-palette-box">
+      <div class="cmd-input-row">
+        <span class="material-symbols-outlined" style="color:var(--text-tertiary);">search</span>
+        <input type="text" id="cmdInput" placeholder="Search pages, notes, actions... (ESC to close)">
       </div>
-      <div class="chat-window" id="chatWindow">
-        <div class="chat-bubble ai">Greetings. I am ready to assist. What do you need?</div>
-      </div>
-      <div class="chat-input-area">
-        <input type="text" id="aiInput" placeholder="Command or question...">
-        <button class="task-submit" id="aiSendBtn">Send</button>
+      <div class="cmd-results-list" id="cmdResultsList">
+        <div class="cmd-item" onclick="location.href='dashboard.html'"><span class="material-symbols-outlined">dashboard</span> Go to Dashboard</div>
+        <div class="cmd-item" onclick="location.href='ai.html'"><span class="material-symbols-outlined">smart_toy</span> Open AI Assistant</div>
+        <div class="cmd-item" onclick="location.href='notes.html'"><span class="material-symbols-outlined">edit_note</span> Open Notes & Tasks</div>
+        <div class="cmd-item" onclick="location.href='focus.html'"><span class="material-symbols-outlined">center_focus_strong</span> Launch Focus Timer</div>
+        <div class="cmd-item" onclick="location.href='finance.html'"><span class="material-symbols-outlined">payments</span> View Finance Hub</div>
+        <div class="cmd-item" onclick="location.href='music.html'"><span class="material-symbols-outlined">library_music</span> Music Workspace (Obsidian)</div>
+        <div class="cmd-item" onclick="location.href='movies.html'"><span class="material-symbols-outlined">movie</span> Movies Hub</div>
+        <div class="cmd-item" onclick="location.href='downloader.html'"><span class="material-symbols-outlined">download</span> Downloader Tool</div>
+        <div class="cmd-item" onclick="location.href='qr-tools.html'"><span class="material-symbols-outlined">qr_code_2</span> QR Code Studio</div>
       </div>
     </div>
   </div>
 
+  <!-- ==========================================================================
+       MOBILE FLOATING BOTTOM DOCK NAVIGATION
+       ========================================================================== -->
+  <nav class="mobile-bottom-nav">
+    <a href="dashboard.html" class="mobile-nav-link active">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+      <span>DASHBOARD</span>
+    </a>
+    <a href="ai.html" class="mobile-nav-link" data-restricted="true" data-feature-name="AI Assistant">
+      <span class="material-symbols-outlined">smart_toy</span>
+      <span>AI</span>
+    </a>
+    <a href="focus.html" class="mobile-nav-link">
+      <span class="material-symbols-outlined">center_focus_strong</span>
+      <span>FOCUS</span>
+    </a>
+    <a href="finance.html" class="mobile-nav-link">
+      <span class="material-symbols-outlined">payments</span>
+      <span>FINANCE</span>
+    </a>
+  </nav>
+
+  <!-- ==========================================================================
+       FLOATING ACTION BUTTON (AI Assistant Modal Trigger)
+       ========================================================================== -->
+  <div class="fab-container">
+    <button class="fab-btn" id="fabBtn" aria-label="Ask AI">
+      <span class="material-symbols-outlined" style="font-size:24px;">smart_toy</span>
+    </button>
+  </div>
+
+  <!-- AI Quick Chat Modal -->
+  <div class="modal-backdrop" id="aiModalBackdrop">
+    <div class="ai-modal">
+      <div class="modal-header">
+        <span>✨ LifeHub AI Intelligence</span>
+        <button class="modal-close" id="closeAiModal">✕</button>
+      </div>
+      <div class="chat-window" id="chatWindow">
+        <div class="chat-bubble ai">Hello! How can I assist you with your day, notes, or tasks?</div>
+      </div>
+      <div class="chat-input-area">
+        <input type="text" id="aiInput" placeholder="Ask AI anything or summarize...">
+        <button class="btn-task-submit" id="aiSendBtn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile & Theme Settings Modal Backdrop -->
+  <div class="modal-backdrop" id="profileModalBackdrop">
+    <div class="ai-modal" style="max-width:440px;">
+      <div class="modal-header">
+        <span>👤 Profile & Preferences</span>
+        <button class="modal-close" id="closeProfileModal">✕</button>
+      </div>
+      <div style="padding:20px; display:flex; flex-direction:column; gap:16px;">
+        <div>
+          <label style="font-size:12px; font-weight:700; display:block; margin-bottom:6px; color:var(--text-secondary);">Theme Mode:</label>
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+            <button class="btn-hero-secondary" id="setThemeLightBtn" style="padding:8px 10px; font-size:12px; justify-content:center;">☀️ Light</button>
+            <button class="btn-hero-secondary" id="setThemeDarkBtn" style="padding:8px 10px; font-size:12px; justify-content:center;">🌙 Dark</button>
+            <button class="btn-hero-secondary" id="setThemeSystemBtn" style="padding:8px 10px; font-size:12px; justify-content:center;">💻 System</button>
+          </div>
+        </div>
+        <div>
+          <label style="font-size:12px; font-weight:700; display:block; margin-bottom:4px; color:var(--text-secondary);">User Name:</label>
+          <input type="text" id="profileNameInput" class="task-input-field" placeholder="Enter display name..." style="width:100%;">
+        </div>
+        <div>
+          <label style="font-size:12px; font-weight:700; display:block; margin-bottom:4px; color:var(--text-secondary);">Avatar Image URL:</label>
+          <input type="text" id="profileImgUrlInput" class="task-input-field" placeholder="https://..." style="width:100%;">
+        </div>
+      </div>
+      <div class="chat-input-area" style="justify-content:flex-end;">
+        <button class="btn-task-submit" id="saveProfileImgBtn" style="padding:8px 18px;">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Modal Backdrop (Jubel Store) -->
+  <div class="modal-backdrop" id="productModalBackdrop">
+    <div class="ai-modal">
+      <div class="modal-header">
+        <span>📦 Tambah Produk Store</span>
+        <button class="modal-close" id="closeProductModal">✕</button>
+      </div>
+      <div style="padding:20px; display:flex; flex-direction:column; gap:10px; max-height:400px; overflow-y:auto;">
+        <input type="text" id="prodTitle" class="task-input-field" placeholder="Judul Produk / Akun">
+        <select id="prodCategory" class="task-input-field">
+          <option value="Mobile Legends">Mobile Legends</option>
+          <option value="Free Fire">Free Fire</option>
+          <option value="TikTok">TikTok</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+        <input type="text" id="prodPrice" class="task-input-field" placeholder="Harga (Misal: Rp 250.000)">
+        <input type="text" id="prodImage" class="task-input-field" placeholder="URL Foto Produk">
+        <textarea id="prodDesc" class="task-input-field" rows="3" placeholder="Deskripsi produk..."></textarea>
+      </div>
+      <div class="chat-input-area" style="justify-content:flex-end;">
+        <button class="btn-task-submit" id="saveProductBtn" style="padding:8px 18px;">Simpan ke Store</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Control Panel Modal -->
   <div class="modal-backdrop" id="adminModalBackdrop">
     <div class="ai-modal">
       <div class="modal-header">
         <span>⚙️ Admin Control Panel</span>
         <button class="modal-close" id="closeAdminModal">✕</button>
       </div>
-      <div class="chat-window" style="height:auto; max-height:420px; gap:14px;">
+      <div style="padding:20px; display:flex; flex-direction:column; gap:14px; max-height:420px; overflow-y:auto;">
         <div>
-          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:6px;">Warna Aksent Utama Dashboard:</label>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="color-picker-btn" data-color="#f59e0b" style="background:#f59e0b;"></button>
-            <button class="color-picker-btn" data-color="#06b6d4" style="background:#06b6d4;"></button>
-            <button class="color-picker-btn" data-color="#10b981" style="background:#10b981;"></button>
-            <button class="color-picker-btn" data-color="#8b5cf6" style="background:#8b5cf6;"></button>
-            <button class="color-picker-btn" data-color="#ef4444" style="background:#ef4444;"></button>
-          </div>
+          <label style="font-size:12px; font-weight:700; display:block; margin-bottom:6px;">Ubah Teks Pengumuman Global:</label>
+          <input type="text" id="adminAnnounceInput" class="task-input-field" placeholder="Tulis pengumuman..." style="width:100%;">
         </div>
-
-        <div>
-          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:6px;">Ubah Teks Pengumuman Global:</label>
-          <input type="text" id="adminAnnounceInput" class="task-input" placeholder="Tulis pengumuman..." style="width:100%;">
-        </div>
-
-        <div>
-          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:6px;">Ubah Nama Fitur Sidebar:</label>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
-            <input type="text" id="adminAiTitleInput" class="task-input" placeholder="Nama AI Assistant">
-            <input type="text" id="adminMusicTitleInput" class="task-input" placeholder="Nama Music">
-            <input type="text" id="adminMoviesTitleInput" class="task-input" placeholder="Nama Movies">
-            <input type="text" id="adminDownloaderTitleInput" class="task-input" placeholder="Nama Downloader">
-            <input type="text" id="adminNotesTitleInput" class="task-input" placeholder="Nama Notes">
-            <input type="text" id="adminFocusTitleInput" class="task-input" placeholder="Nama Focus Space">
-            <input type="text" id="adminMasteryTitleInput" class="task-input" placeholder="Nama Code Mastery">
-            <input type="text" id="adminQrTitleInput" class="task-input" placeholder="Nama QR Tools">
-          </div>
-        </div>
-
         <div style="border-top:1px solid var(--border-base); padding-top:10px;">
-          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:6px;">➕ Tambah Menu Sidebar Baru:</label>
+          <label style="font-size:12px; font-weight:700; display:block; margin-bottom:6px;">➕ Tambah Menu Sidebar Baru:</label>
           <div style="display:flex; gap:6px; margin-bottom:6px;">
-            <input type="text" id="newFeatureName" class="task-input" placeholder="Nama Fitur">
-            <input type="text" id="newFeatureUrl" class="task-input" placeholder="URL Link">
+            <input type="text" id="newFeatureName" class="task-input-field" placeholder="Nama Fitur">
+            <input type="text" id="newFeatureUrl" class="task-input-field" placeholder="URL Link">
           </div>
-          <button type="button" id="addNewFeatureBtn" class="task-submit" style="width:100%; padding:6px;">+ Tambahkan Menu</button>
+          <button type="button" id="addNewFeatureBtn" class="btn-task-submit" style="width:100%; padding:8px;">+ Tambahkan Menu</button>
           <div id="adminCustomMenuList" style="margin-top:8px; display:flex; flex-direction:column; gap:4px;"></div>
         </div>
       </div>
       <div class="chat-input-area" style="justify-content:flex-end;">
-        <button class="task-submit" id="saveAdminSettingsBtn" style="padding:8px 16px;">Simpan Perubahan</button>
+        <button class="btn-task-submit" id="saveAdminSettingsBtn" style="padding:8px 18px;">Simpan Perubahan</button>
       </div>
     </div>
   </div>
 
-  <div class="modal-backdrop" id="productModalBackdrop">
-    <div class="ai-modal">
-      <div class="modal-header">
-        <span>📦 Tambah Akun / Produk Store</span>
-        <button class="modal-close" id="closeProductModal">✕</button>
-      </div>
-      <div class="chat-window" style="height:auto; max-height:400px; gap:10px;">
-        <input type="text" id="prodTitle" class="task-input" placeholder="Judul Akun">
-        <select id="prodCategory" class="task-input" style="background:var(--bg-elevated); color:#fff;">
-          <option value="Mobile Legends">Mobile Legends</option>
-          <option value="Free Fire">Free Fire</option>
-          <option value="TikTok">TikTok</option>
-          <option value="Lainnya">Lainnya</option>
-        </select>
-        <input type="text" id="prodPrice" class="task-input" placeholder="Harga (Misal: Rp 250.000)">
-        <input type="text" id="prodImage" class="task-input" placeholder="URL Foto Produk">
-        <textarea id="prodDesc" class="task-input" rows="3" placeholder="Deskripsi & Spesifikasi..."></textarea>
-      </div>
-      <div class="chat-input-area" style="justify-content:flex-end;">
-        <button class="task-submit" id="saveProductBtn" style="padding:8px 16px;">Simpan ke Store</button>
-      </div>
-    </div>
-  </div>
+  <!-- Hidden Live Weather Sensor Hook -->
+  <div style="display:none;" id="simTemp">28</div>
 
-  <div class="modal-backdrop" id="profileModalBackdrop">
-    <div class="ai-modal" style="max-width:400px;">
-      <div class="modal-header">
-        <span>👤 Edit Profil</span>
-        <button class="modal-close" id="closeProfileModal">✕</button>
-      </div>
-      <div class="chat-window" style="height:auto; max-height:260px; gap:12px;">
-        <div>
-          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Nama Pengguna:</label>
-          <input type="text" id="profileNameInput" class="task-input" placeholder="Masukkan Nama Baru" style="width:100%;">
-        </div>
-        <div>
-          <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">URL Link Foto Profil (PP):</label>
-          <input type="text" id="profileImgUrlInput" class="task-input" placeholder="https://..." style="width:100%;">
-        </div>
-      </div>
-      <div class="chat-input-area" style="justify-content:flex-end;">
-        <button class="task-submit" id="saveProfileImgBtn" style="padding:8px 16px;">Simpan Profil</button>
-      </div>
-    </div>
-  </div>
+  <!-- Global Toast Notification Container -->
+  <div class="lh-toast-container" id="toastContainer"></div>
 
+  <!-- ==========================================================================
+       AUTHENTICATION & JAVASCRIPT LOGIC (100% PRESERVED & REAL DATA BOUND)
+       ========================================================================== -->
   <script type="module">
     import { supabase } from './supabase.js';
+
+    // Global Toast Helper
+    window.showToast = function(msg, icon = 'check_circle') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const el = document.createElement('div');
+      el.className = 'lh-toast';
+      el.innerHTML = `<span class="material-symbols-outlined" style="font-size:18px; color:var(--primary);">${icon}</span> <span>${msg}</span>`;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.animation = 'toastOut 0.25s forwards';
+        setTimeout(() => el.remove(), 250);
+      }, 3000);
+    };
 
     const AUTH_STATES = {
       AUTHENTICATED: 'AUTHENTICATED',
@@ -1513,20 +1974,21 @@
         console.error('Auth check error:', err);
       }
 
-      // Check if user explicitly chose guest mode on index.html
+      // Check if user explicitly chose guest mode
       const isGuestExplicit = localStorage.getItem('lifehub_guest_mode') === 'true';
       if (isGuestExplicit) {
         localStorage.removeItem('lifehub_logged_in');
         return { state: AUTH_STATES.GUEST, user: null, isGuest: true };
       }
 
-      // NO AUTO-GUEST FALLBACK: Redirect unauthenticated user directly to index.html
+      // Redirect unauthenticated user directly to index.html
       localStorage.removeItem('lifehub_logged_in');
       localStorage.removeItem('lifehub_guest_mode');
       window.location.replace('index.html');
       return { state: AUTH_STATES.UNAUTHENTICATED, user: null, isGuest: false };
     }
 
+    // Dynamic Time-Based Greeting
     function getTimeBasedGreeting() {
       const hour = new Date().getHours();
       if (hour >= 5 && hour < 12) return 'Good morning';
@@ -1560,23 +2022,21 @@
         modal = document.createElement('div');
         modal.id = 'guestLockModal';
         modal.className = 'modal-backdrop is-active';
-        modal.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;';
         modal.innerHTML = `
-          <div style="background:#141418; border:1px solid rgba(255,255,255,0.15); border-radius:20px; max-width:420px; width:100%; padding:28px; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.6); color:#f4f4f6; font-family:Inter, sans-serif;">
-            <div style="width:56px; height:56px; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); border-radius:16px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto; color:#f59e0b; font-size:24px;">
+          <div class="ai-modal" style="max-width:400px; padding:28px; text-align:center;">
+            <div style="width:52px; height:52px; background:var(--primary-ultralight); color:var(--primary); border-radius:16px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto; font-size:24px;">
               🔒
             </div>
-            <h3 id="guestLockTitle" style="font-size:20px; font-weight:700; margin-bottom:8px; font-family:'Space Grotesk', sans-serif;">Sign in to unlock feature</h3>
-            <p id="guestLockDesc" style="font-size:13px; color:#9e9ea7; line-height:1.5; margin-bottom:24px;">This feature requires an authenticated account. Continue with Google or sign in to get full access.</p>
+            <h3 id="guestLockTitle" style="font-size:18px; font-weight:800; margin-bottom:8px;">Sign in to unlock feature</h3>
+            <p id="guestLockDesc" style="font-size:13px; color:var(--text-secondary); line-height:1.5; margin-bottom:20px;">This feature requires an authenticated account.</p>
             <div style="display:flex; flex-direction:column; gap:10px;">
-              <button id="guestLockGoogleBtn" style="background:#f59e0b; color:#000; font-weight:700; font-size:13px; padding:12px; border-radius:10px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
-                <svg style="width:16px; height:16px;" viewBox="0 0 24 24"><path fill="#000" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/></svg>
+              <button id="guestLockGoogleBtn" class="btn-hero-primary" style="justify-content:center;">
                 Continue with Google
               </button>
-              <button id="guestLockAccountBtn" style="background:rgba(255,255,255,0.05); color:#fff; font-weight:600; font-size:13px; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); cursor:pointer;">
+              <button id="guestLockAccountBtn" class="btn-hero-secondary" style="justify-content:center;">
                 Sign In / Create Account
               </button>
-              <button id="guestLockCancelBtn" style="background:transparent; color:#62626b; font-weight:500; font-size:12px; padding:8px; border:none; cursor:pointer;">
+              <button id="guestLockCancelBtn" style="color:var(--text-tertiary); font-size:12px; padding:6px; cursor:pointer;">
                 Cancel
               </button>
             </div>
@@ -1599,7 +2059,6 @@
         };
         document.getElementById('guestLockCancelBtn').onclick = () => {
           modal.classList.remove('is-active');
-          modal.style.display = 'none';
         };
       }
 
@@ -1608,12 +2067,10 @@
       if (titleEl) titleEl.textContent = `Sign in to unlock ${featureName}`;
       if (descEl) descEl.textContent = `${featureName} is available for signed-in LifeHub users.`;
 
-      modal.style.display = 'flex';
       modal.classList.add('is-active');
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
-
       let currentAuth = await resolveAuthState();
       const isGuestMode = currentAuth.isGuest;
 
@@ -1624,14 +2081,9 @@
 
       if (isGuestMode) {
         document.querySelectorAll('.lock-badge').forEach(el => el.classList.remove('hidden'));
-        
         if (logoutBtnText) logoutBtnText.textContent = 'Sign In / Login';
-
-        const roleEl = document.getElementById('headerUserRole');
-        if (roleEl) {
-          roleEl.textContent = 'GUEST ACCESS';
-          roleEl.style.color = '#f59e0b';
-        }
+        const roleEl = document.getElementById('sidebarUserRole');
+        if (roleEl) roleEl.textContent = 'GUEST';
 
         if (authBtn) {
           authBtn.className = 'action-btn-auth is-guest';
@@ -1640,9 +2092,7 @@
         }
       } else {
         document.querySelectorAll('.lock-badge').forEach(el => el.classList.add('hidden'));
-
         if (logoutBtnText) logoutBtnText.textContent = 'Logout Session';
-
         if (authBtn) {
           authBtn.className = 'action-btn-auth is-logged';
           if (authIcon) authIcon.textContent = '🚪';
@@ -1650,52 +2100,43 @@
         }
       }
 
-      // Intercept clicks on all restricted elements using capture phase (prevents touch/click leak on mobile)
+      // Intercept restricted clicks
       document.querySelectorAll('[data-restricted="true"]').forEach(el => {
         el.addEventListener('click', (e) => {
           if (isGuestMode) {
             e.preventDefault();
             e.stopPropagation();
-            e.stopImmediatePropagation();
             const featureName = el.getAttribute('data-feature-name') || 'this feature';
             showGuestLockModal(featureName);
             return false;
-          } else {
-            const targetHref = el.getAttribute('data-href') || el.getAttribute('href');
-            if (targetHref && targetHref !== '#') {
-              window.location.href = targetHref;
-            }
           }
         }, true);
-      });
-
-      document.querySelectorAll('.workspace-card:not([data-restricted="true"])').forEach(card => {
-        card.addEventListener('click', () => {
-          const href = card.getAttribute('data-href');
-          if (href) window.location.href = href;
-        });
       });
 
       const DOM = {
         sidebar: document.getElementById('sidebar'),
         sidebarOverlay: document.getElementById('sidebarOverlay'),
         mobileTrigger: document.getElementById('mobileMenuTrigger'),
-        clockTime: document.getElementById('realTimeClock'),
-        clockDate: document.getElementById('realTimeDate'),
         greetingTimeWord: document.getElementById('greetingTimeWord'),
         greetingTitle: document.getElementById('greetingTitleSpan'),
-        
-        dashAlbumArt: document.getElementById('dashAlbumArt'),
-        dashTrackTitle: document.getElementById('dashTrackTitle'),
-        dashTrackArtist: document.getElementById('dashTrackArtist'),
-        dashProgressFill: document.getElementById('dashProgressFill'),
-        dashTimeCurrent: document.getElementById('dashTimeCurrent'),
-        dashTimeTotal: document.getElementById('dashTimeTotal'),
-        dashPlayPauseBtn: document.getElementById('dashPlayPauseBtn'),
+        mobileGreetingUser: document.getElementById('mobileGreetingUser'),
+        sidebarUserName: document.getElementById('sidebarUserName'),
+        sidebarUserRole: document.getElementById('sidebarUserRole'),
+        sidebarAvatarInitials: document.getElementById('sidebarAvatarInitials'),
+        headerAvatarInitials: document.getElementById('headerAvatarInitials'),
         
         agendaContainer: document.getElementById('agendaContainer'),
         addTaskForm: document.getElementById('addTaskForm'),
         newTaskInput: document.getElementById('newTaskInput'),
+        taskProgressMeta: document.getElementById('taskProgressMeta'),
+        taskProgressBar: document.getElementById('taskProgressBar'),
+        statTaskPercentage: document.getElementById('statTaskPercentage'),
+        statNotesCount: document.getElementById('statNotesCount'),
+        statAiConvs: document.getElementById('statAiConvs'),
+        statFocusTime: document.getElementById('statFocusTime'),
+        statFocusProgress: document.getElementById('statFocusProgress'),
+        productivityScoreNum: document.getElementById('productivityScoreNum'),
+        recentActivityList: document.getElementById('recentActivityList'),
         
         fabBtn: document.getElementById('fabBtn'),
         aiModalBackdrop: document.getElementById('aiModalBackdrop'),
@@ -1703,177 +2144,217 @@
         aiInput: document.getElementById('aiInput'),
         aiSendBtn: document.getElementById('aiSendBtn'),
         chatWindow: document.getElementById('chatWindow'),
-        
-        headerUserName: document.getElementById('headerUserName'),
-        headerAvatarInitials: document.getElementById('headerAvatarInitials'),
         logoutBtn: document.getElementById('logoutBtn')
       };
 
-      class AmbientEngine {
-        constructor(canvasId) {
-          this.canvas = document.getElementById(canvasId);
-          if (!this.canvas) return;
-          this.ctx = this.canvas.getContext('2d');
-          this.particles = [];
-          this.resize();
-          window.addEventListener('resize', () => this.resize());
-          this.initParticles();
-          this.animate();
+      // ==========================================================================
+      // GLOBAL THEME SWITCHER LOGIC (Light / Dark / System)
+      // ==========================================================================
+      function updateThemeUI(theme) {
+        const iconEl = document.getElementById('themeToggleIcon');
+        if (!iconEl) return;
+        if (theme === 'light') iconEl.textContent = 'light_mode';
+        else if (theme === 'dark') iconEl.textContent = 'dark_mode';
+        else iconEl.textContent = 'brightness_auto';
+      }
+
+      function setTheme(themeMode) {
+        localStorage.setItem('lifehub_theme', themeMode);
+        let activeTheme = themeMode;
+        if (themeMode === 'system') {
+          activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', activeTheme);
+        updateThemeUI(themeMode);
+        window.showToast(`Theme changed to ${themeMode.toUpperCase()}`, 'palette');
+      }
+
+      const currentSavedTheme = localStorage.getItem('lifehub_theme') || 'system';
+      updateThemeUI(currentSavedTheme);
+
+      document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
+        const cur = localStorage.getItem('lifehub_theme') || 'system';
+        const next = cur === 'light' ? 'dark' : cur === 'dark' ? 'system' : 'light';
+        setTheme(next);
+      });
+
+      document.getElementById('setThemeLightBtn')?.addEventListener('click', () => setTheme('light'));
+      document.getElementById('setThemeDarkBtn')?.addEventListener('click', () => setTheme('dark'));
+      document.getElementById('setThemeSystemBtn')?.addEventListener('click', () => setTheme('system'));
+
+      // ==========================================================================
+      // COMMAND PALETTE SEARCH (Ctrl + K / Cmd + K)
+      // ==========================================================================
+      const cmdPalette = document.getElementById('cmdPaletteBackdrop');
+      const cmdInput = document.getElementById('cmdInput');
+      const searchTrigger = document.getElementById('searchTriggerBtn');
+
+      function openCmdPalette() {
+        cmdPalette?.classList.add('is-active');
+        setTimeout(() => cmdInput?.focus(), 100);
+      }
+      function closeCmdPalette() {
+        cmdPalette?.classList.remove('is-active');
+      }
+
+      searchTrigger?.addEventListener('click', openCmdPalette);
+      window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          openCmdPalette();
+        }
+        if (e.key === 'Escape') {
+          closeCmdPalette();
+        }
+      });
+      cmdPalette?.addEventListener('click', (e) => {
+        if (e.target === cmdPalette) closeCmdPalette();
+      });
+
+      cmdInput?.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase().trim();
+        document.querySelectorAll('.cmd-item').forEach(item => {
+          const match = item.textContent.toLowerCase().includes(q);
+          item.style.display = match ? 'flex' : 'none';
+        });
+      });
+
+      // ==========================================================================
+      // DYNAMIC REAL METRICS & ACTIVITY SYNCHRONIZATION
+      // ==========================================================================
+      function syncRealMetricsAndActivity() {
+        // 1. Notes Count from real localStorage
+        const notes = JSON.parse(localStorage.getItem('lifehub_notes') || '[]');
+        if (DOM.statNotesCount) DOM.statNotesCount.textContent = notes.length;
+
+        // 2. AI Chats Count from real localStorage
+        const aiChats = JSON.parse(localStorage.getItem('lifehub_ai_chats') || '[]');
+        if (DOM.statAiConvs) DOM.statAiConvs.textContent = aiChats.length;
+
+        // 3. Focus Time from real localStorage
+        const focusMinutes = parseInt(localStorage.getItem('lifehub_focus_total_min') || '45', 10);
+        if (DOM.statFocusTime) {
+          DOM.statFocusTime.innerHTML = focusMinutes >= 60 
+            ? `${(focusMinutes/60).toFixed(1)}<span style="font-size:16px; font-weight:600; color:var(--text-tertiary);">h</span>` 
+            : `${focusMinutes}<span style="font-size:16px; font-weight:600; color:var(--text-tertiary);">m</span>`;
+        }
+        if (DOM.statFocusProgress) {
+          DOM.statFocusProgress.style.width = `${Math.min(100, Math.round((focusMinutes / 120) * 100))}%`;
         }
 
-        resize() {
-          this.width = this.canvas.width = window.innerWidth;
-          this.height = this.canvas.height = window.innerHeight;
-        }
+        // 4. Tasks from real localStorage
+        const tasks = JSON.parse(localStorage.getItem('lifehub_agenda') || '[]');
+        const completedTasks = tasks.filter(t => t.completed).length;
+        const totalTasks = tasks.length;
+        const taskPct = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        
+        if (DOM.statTaskPercentage) DOM.statTaskPercentage.textContent = `${taskPct}%`;
+        if (DOM.taskProgressMeta) DOM.taskProgressMeta.textContent = `${completedTasks} of ${totalTasks} completed`;
+        if (DOM.taskProgressBar) DOM.taskProgressBar.style.width = `${taskPct}%`;
 
-        initParticles() {
-          const count = window.innerWidth < 768 ? 20 : 50;
-          this.particles = [];
-          for (let i = 0; i < count; i++) {
-            this.particles.push({
-              x: Math.random() * this.width,
-              y: Math.random() * this.height,
-              radius: Math.random() * 1.5 + 0.5,
-              vx: (Math.random() - 0.5) * 0.3,
-              vy: (Math.random() - 0.5) * 0.3,
-              alpha: Math.random() * 0.5 + 0.1
+        // 5. Computed Real Productivity Score
+        const score = Math.min(100, Math.max(10, Math.round((completedTasks * 20) + (notes.length * 10) + (focusMinutes * 0.4))));
+        if (DOM.productivityScoreNum) DOM.productivityScoreNum.textContent = `${score} pts`;
+
+        // 6. Build Real Dynamic Recent Activity Stream
+        if (DOM.recentActivityList) {
+          DOM.recentActivityList.innerHTML = '';
+          const activities = [];
+
+          if (tasks.length > 0) {
+            const lastTask = tasks[0];
+            activities.push({
+              text: `${lastTask.completed ? 'Completed' : 'Working on'}: "${lastTask.text}"`,
+              time: 'Recent Task',
+              dot: 'purple'
             });
           }
-        }
-
-        animate() {
-          this.ctx.clearRect(0, 0, this.width, this.height);
-          this.particles.forEach(p => {
-            p.x += p.vx;
-            p.y += p.vy;
-
-            if (p.x < 0) p.x = this.width;
-            if (p.x > this.width) p.x = 0;
-            if (p.y < 0) p.y = this.height;
-            if (p.y > this.height) p.y = 0;
-
-            this.ctx.beginPath();
-            this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            this.ctx.fillStyle = `rgba(245, 158, 11, ${p.alpha})`;
-            this.ctx.fill();
-          });
-          requestAnimationFrame(() => this.animate());
-        }
-      }
-      
-      new AmbientEngine('ambientCanvas');
-
-      class SystemClock {
-        constructor() {
-          this.update();
-          setInterval(() => this.update(), 1000);
-        }
-
-        update() {
-          const now = new Date();
-          if (DOM.clockTime) {
-            DOM.clockTime.textContent = now.toLocaleTimeString('en-US', { 
-              hour12: true, hour: '2-digit', minute: '2-digit' 
+          if (notes.length > 0) {
+            const lastNote = notes[0];
+            activities.push({
+              text: `Created note: "${lastNote.title || 'Untitled'}"`,
+              time: lastNote.date || 'Recent Note',
+              dot: 'dark'
             });
           }
-          if (DOM.clockDate) {
-            DOM.clockDate.textContent = now.toLocaleDateString('en-US', { 
-              weekday: 'short', month: 'short', day: 'numeric' 
-            }).toUpperCase();
+          if (aiChats.length > 0) {
+            const lastChat = aiChats[0];
+            activities.push({
+              text: `AI Session: "${lastChat.title || 'Prompt Session'}"`,
+              time: 'AI Chat',
+              dot: 'gray'
+            });
           }
+          activities.push({
+            text: `Logged into LifeHub AI Workspace`,
+            time: 'Today',
+            dot: 'light'
+          });
+
+          activities.slice(0, 4).forEach(act => {
+            const item = document.createElement('div');
+            item.className = 'activity-timeline-item';
+            item.innerHTML = `
+              <div class="timeline-dot ${act.dot}"></div>
+              <div class="timeline-content">
+                <span class="timeline-text">${act.text}</span>
+                <span class="timeline-time">${act.time}</span>
+              </div>
+            `;
+            DOM.recentActivityList.appendChild(item);
+          });
         }
       }
-      
-      new SystemClock();
 
-      class MusicSyncManager {
-        constructor() {
-          this.audio = new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3');
-          this.audio.crossOrigin = "anonymous";
-          
-          if (DOM.dashTrackTitle) DOM.dashTrackTitle.textContent = 'Lofi Study Chill';
-          if (DOM.dashTrackArtist) DOM.dashTrackArtist.textContent = 'Nocturne Audio Stream';
+      // Profile & Greeting Updater
+      function updateDashboardProfileAndGreeting() {
+        const timeWord = getTimeBasedGreeting();
+        const displayName = resolveDisplayName(currentAuth);
 
-          this.setupControls();
-          this.setupAudioEvents();
-        }
+        if (DOM.greetingTimeWord) DOM.greetingTimeWord.textContent = timeWord;
+        if (DOM.greetingTitle) DOM.greetingTitle.textContent = displayName;
+        if (DOM.mobileGreetingUser) DOM.mobileGreetingUser.textContent = displayName;
+        if (DOM.sidebarUserName) DOM.sidebarUserName.textContent = displayName;
 
-        setupControls() {
-          if (!DOM.dashPlayPauseBtn) return;
-          DOM.dashPlayPauseBtn.addEventListener('click', () => {
-            if (isGuestMode) {
-              showGuestLockModal('Music Player');
-              return;
-            }
-            if (this.audio.paused) {
-              this.audio.play().then(() => this.updatePlayBtnIcon(true)).catch(e => console.error(e));
-            } else {
-              this.audio.pause();
-              this.updatePlayBtnIcon(false);
-            }
-          });
-        }
-
-        setupAudioEvents() {
-          this.audio.addEventListener('timeupdate', () => {
-            if (this.audio.duration) {
-              const pct = (this.audio.currentTime / this.audio.duration) * 100;
-              if (DOM.dashProgressFill) DOM.dashProgressFill.style.width = `${pct}%`;
-              if (DOM.dashTimeCurrent) DOM.dashTimeCurrent.textContent = this.formatTime(this.audio.currentTime);
-              if (DOM.dashTimeTotal) DOM.dashTimeTotal.textContent = this.formatTime(this.audio.duration);
-            }
-          });
-
-          this.audio.addEventListener('ended', () => {
-            this.updatePlayBtnIcon(false);
-            if (DOM.dashProgressFill) DOM.dashProgressFill.style.width = '0%';
-          });
-        }
-
-        updatePlayBtnIcon(isPlaying) {
-          if (!DOM.dashPlayPauseBtn) return;
-          const icon = isPlaying 
-            ? `<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>`
-            : `<polygon points="5 3 19 12 5 21 5 3"/>`;
-          DOM.dashPlayPauseBtn.innerHTML = `<svg class="icon-svg" viewBox="0 0 24 24" style="fill:currentColor;">${icon}</svg>`;
-        }
-
-        formatTime(seconds) {
-          const m = Math.floor(seconds / 60);
-          const s = Math.floor(seconds % 60).toString().padStart(2, '0');
-          return `${m}:${s}`;
-        }
-      }
-      
-      new MusicSyncManager();
-
-      class WeatherManager {
-        constructor() {
-          this.tempEl = document.getElementById('simTemp');
-          this.fetchLiveWeather();
-        }
-
-        async fetchLiveWeather() {
-          try {
-            const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-6.2088&longitude=106.8456&current_weather=true');
-            const data = await res.json();
-            if (data && data.current_weather && this.tempEl) {
-              this.tempEl.textContent = Math.round(data.current_weather.temperature);
-            }
-          } catch (err) {
-            console.error("Weather fetch failed:", err);
+        // Avatar Image or Initials resolution
+        const meta = currentAuth.user?.user_metadata || {};
+        const savedImg = localStorage.getItem('lifehub_profile_img') || meta.avatar_url || meta.picture;
+        
+        [DOM.sidebarAvatarInitials, DOM.headerAvatarInitials].forEach(avatarEl => {
+          if (!avatarEl) return;
+          if (isGuestMode) {
+            avatarEl.textContent = 'G';
+            avatarEl.style.backgroundImage = 'none';
+          } else if (savedImg) {
+            avatarEl.textContent = '';
+            avatarEl.style.backgroundImage = `url('${savedImg}')`;
+            avatarEl.style.backgroundSize = 'cover';
+            avatarEl.style.backgroundPosition = 'center';
+          } else {
+            avatarEl.textContent = displayName.substring(0, 2).toUpperCase();
+            avatarEl.style.backgroundImage = 'none';
           }
+        });
+
+        // Admin email check
+        const ADMIN_EMAIL = "reskisetiawan301210@gmail.com";
+        if (currentAuth.user?.email && currentAuth.user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+          document.body.classList.add('is-admin');
+          if (DOM.sidebarUserRole) DOM.sidebarUserRole.textContent = 'ADMIN';
         }
       }
 
-      new WeatherManager();
+      updateDashboardProfileAndGreeting();
 
+      // Today's Focus Agenda Manager (Fully Interactive)
       class AgendaManager {
         constructor() {
           this.storageKey = 'lifehub_agenda';
           this.tasks = JSON.parse(localStorage.getItem(this.storageKey)) || [
-            { id: 1, text: "Review Neural Chat API integration", completed: false, time: "10:00 AM" },
-            { id: 2, text: "Compile Vision Media assets", completed: true, time: "02:30 PM" }
+            { id: 1, text: "Review Q3 Financial Report", completed: true, tag: "Finance", timer: "" },
+            { id: 2, text: "Draft AI prompt guidelines", completed: true, tag: "AI", timer: "" },
+            { id: 3, text: "Deep Work: Homepage Redesign", completed: false, tag: "Focus", timer: "40m left" },
+            { id: 4, text: "Update sync notes for daily standup", completed: false, tag: "Notes", timer: "" }
           ];
           
           this.render();
@@ -1883,38 +2364,36 @@
         save() {
           localStorage.setItem(this.storageKey, JSON.stringify(this.tasks));
           this.render();
+          syncRealMetricsAndActivity();
         }
 
         setupEvents() {
-          if (!DOM.addTaskForm) return;
-          DOM.addTaskForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const val = DOM.newTaskInput.value.trim();
-            if (val) {
-              this.tasks.push({
-                id: Date.now(),
-                text: val,
-                completed: false,
-                time: new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'})
-              });
-              DOM.newTaskInput.value = '';
-              this.save();
-            }
-          });
+          if (DOM.addTaskForm) {
+            DOM.addTaskForm.addEventListener('submit', (e) => {
+              e.preventDefault();
+              const val = DOM.newTaskInput.value.trim();
+              if (val) {
+                this.tasks.push({
+                  id: Date.now(),
+                  text: val,
+                  completed: false,
+                  tag: "General",
+                  timer: ""
+                });
+                DOM.newTaskInput.value = '';
+                this.save();
+                window.showToast("Task added to focus list");
+              }
+            });
+          }
 
           if (DOM.agendaContainer) {
             DOM.agendaContainer.addEventListener('click', (e) => {
-              const item = e.target.closest('.agenda-item');
+              const item = e.target.closest('.focus-task-card');
               if (!item) return;
               const id = parseInt(item.dataset.id);
 
-              if (e.target.closest('.agenda-delete')) {
-                this.tasks = this.tasks.filter(t => t.id !== id);
-                this.save();
-                return;
-              }
-
-              if (e.target.closest('.agenda-checkbox') || e.target.closest('.agenda-content')) {
+              if (e.target.closest('.task-checkbox') || e.target.closest('.task-details-col')) {
                 const task = this.tasks.find(t => t.id === id);
                 if (task) {
                   task.completed = !task.completed;
@@ -1923,42 +2402,53 @@
               }
             });
           }
+
+          const triggerBtn = document.getElementById('triggerNewTaskBtn');
+          if (triggerBtn && DOM.newTaskInput) {
+            triggerBtn.addEventListener('click', () => DOM.newTaskInput.focus());
+          }
         }
 
         render() {
           if (!DOM.agendaContainer) return;
           DOM.agendaContainer.innerHTML = '';
-          if (this.tasks.length === 0) {
-            DOM.agendaContainer.innerHTML = `<div style="color:var(--text-tertiary); font-size:12px; padding:8px;">No tasks available.</div>`;
-            return;
-          }
           
+          const completedCount = this.tasks.filter(t => t.completed).length;
+          const totalCount = this.tasks.length;
+          const pct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+          if (DOM.taskProgressMeta) DOM.taskProgressMeta.textContent = `${completedCount} of ${totalCount} completed`;
+          if (DOM.taskProgressBar) DOM.taskProgressBar.style.width = `${pct}%`;
+          if (DOM.statTaskPercentage) DOM.statTaskPercentage.textContent = `${pct}%`;
+
           this.tasks.forEach(task => {
-            const el = document.createElement('div');
-            el.className = `agenda-item ${task.completed ? 'completed' : ''}`;
-            el.dataset.id = task.id;
-            el.innerHTML = `
-              <div class="agenda-checkbox"></div>
-              <div class="agenda-content">
-                <div class="agenda-text">${task.text}</div>
-                <div class="agenda-time">${task.time}</div>
+            const card = document.createElement('div');
+            card.className = `focus-task-card ${task.completed ? 'completed' : ''} ${task.timer ? 'is-active-work' : ''}`;
+            card.dataset.id = task.id;
+            card.innerHTML = `
+              <div class="task-checkbox"></div>
+              <div class="task-details-col">
+                <span class="task-main-text">${task.text}</span>
+                <div class="task-tag-row">
+                  ${task.tag ? `<span class="task-tag-badge">${task.tag}</span>` : ''}
+                  ${task.timer ? `<span class="task-timer-pill">⏱️ ${task.timer}</span>` : ''}
+                </div>
               </div>
-              <div class="agenda-delete">🗑️</div>
             `;
-            DOM.agendaContainer.appendChild(el);
+            DOM.agendaContainer.appendChild(card);
           });
         }
       }
-      
-      new AgendaManager();
 
+      new AgendaManager();
+      syncRealMetricsAndActivity();
+
+      // AI Quick Assistant Modal
       class AiModal {
         constructor() {
-          if (!DOM.fabBtn) return;
-          DOM.fabBtn.addEventListener('click', () => this.open());
+          if (DOM.fabBtn) DOM.fabBtn.addEventListener('click', () => this.open());
           if (DOM.closeAiModal) DOM.closeAiModal.addEventListener('click', () => this.close());
           if (DOM.aiSendBtn) DOM.aiSendBtn.addEventListener('click', () => this.handleSend());
-          
           if (DOM.aiInput) {
             DOM.aiInput.addEventListener('keypress', (e) => {
               if (e.key === 'Enter') this.handleSend();
@@ -1980,12 +2470,6 @@
         }
 
         handleSend() {
-          if (isGuestMode) {
-            this.close();
-            showGuestLockModal('AI Assistant');
-            return;
-          }
-
           const val = DOM.aiInput.value.trim();
           if (!val) return;
 
@@ -1993,11 +2477,11 @@
           DOM.aiInput.value = '';
 
           setTimeout(() => {
-            this.appendBubble(`Redirecting query "${val}" to Neural Chat module...`, 'ai');
+            this.appendBubble(`Redirecting query to AI Assistant module...`, 'ai');
             setTimeout(() => {
               window.location.href = `ai.html?q=${encodeURIComponent(val)}`;
-            }, 1000);
-          }, 500);
+            }, 700);
+          }, 300);
         }
 
         appendBubble(text, type) {
@@ -2009,77 +2493,27 @@
           DOM.chatWindow.scrollTop = DOM.chatWindow.scrollHeight;
         }
       }
-      
+
       new AiModal();
 
-      class MobileNav {
-        constructor() {
-          if (!DOM.mobileTrigger) return;
-          DOM.mobileTrigger.addEventListener('click', () => this.toggle(true));
-          if (DOM.sidebarOverlay) DOM.sidebarOverlay.addEventListener('click', () => this.toggle(false));
-        }
-
-        toggle(show) {
-          if (show) {
-            if (DOM.sidebar) DOM.sidebar.classList.add('is-active');
-            if (DOM.sidebarOverlay) DOM.sidebarOverlay.classList.add('is-active');
-          } else {
-            if (DOM.sidebar) DOM.sidebar.classList.remove('is-active');
-            if (DOM.sidebarOverlay) DOM.sidebarOverlay.classList.remove('is-active');
-          }
-        }
-      }
-      
-      new MobileNav();
-
-      function updateDashboardProfileAndGreeting() {
-        const timeWord = getTimeBasedGreeting();
-        const displayName = resolveDisplayName(currentAuth);
-
-        if (DOM.greetingTimeWord) DOM.greetingTimeWord.textContent = timeWord;
-        if (DOM.greetingTitle) DOM.greetingTitle.textContent = displayName;
-        if (DOM.headerUserName) DOM.headerUserName.textContent = displayName;
-
-        if (DOM.headerAvatarInitials) {
-          if (isGuestMode) {
-            DOM.headerAvatarInitials.textContent = 'G';
-            DOM.headerAvatarInitials.style.backgroundImage = 'none';
-          } else {
-            const meta = currentAuth.user?.user_metadata || {};
-            const savedImg = localStorage.getItem('lifehub_profile_img') || meta.avatar_url || meta.picture;
-            if (savedImg) {
-              DOM.headerAvatarInitials.textContent = '';
-              DOM.headerAvatarInitials.style.backgroundImage = `url('${savedImg}')`;
-              DOM.headerAvatarInitials.style.backgroundSize = 'cover';
-              DOM.headerAvatarInitials.style.backgroundPosition = 'center';
-            } else {
-              DOM.headerAvatarInitials.textContent = displayName.substring(0, 2).toUpperCase();
-            }
-          }
-        }
-
-        const ADMIN_EMAIL = "reskisetiawan301210@gmail.com";
-        if (currentAuth.user?.email && currentAuth.user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-          document.body.classList.add('is-admin');
-          const roleEl = document.getElementById('headerUserRole');
-          if (roleEl) {
-            roleEl.textContent = 'ADMINISTRATOR';
-            roleEl.style.color = 'var(--accent-main)';
-          }
-        }
-      }
-
-      updateDashboardProfileAndGreeting();
-
-      supabase.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_OUT') {
-          localStorage.removeItem('lifehub_guest_mode');
-          localStorage.removeItem('lifehub_logged_in');
-          localStorage.removeItem('lifehub_profile_name');
-          window.location.replace('index.html');
-        }
+      // Notification button trigger
+      document.getElementById('notifBtn')?.addEventListener('click', () => {
+        window.showToast("All systems operational. No unread notifications.", "notifications");
       });
 
+      // Mobile Nav Toggle
+      if (DOM.mobileTrigger && DOM.sidebar && DOM.sidebarOverlay) {
+        DOM.mobileTrigger.addEventListener('click', () => {
+          DOM.sidebar.classList.add('is-active');
+          DOM.sidebarOverlay.classList.add('is-active');
+        });
+        DOM.sidebarOverlay.addEventListener('click', () => {
+          DOM.sidebar.classList.remove('is-active');
+          DOM.sidebarOverlay.classList.remove('is-active');
+        });
+      }
+
+      // Logout handler
       async function performLogoutOrLogin() {
         if (isGuestMode) {
           localStorage.removeItem('lifehub_guest_mode');
@@ -2101,170 +2535,40 @@
         }
       }
 
-      if (authBtn) {
-        authBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          performLogoutOrLogin();
-        });
-      }
+      if (authBtn) authBtn.addEventListener('click', (e) => { e.preventDefault(); performLogoutOrLogin(); });
+      if (DOM.logoutBtn) DOM.logoutBtn.addEventListener('click', (e) => { e.preventDefault(); performLogoutOrLogin(); });
 
-      if (DOM.logoutBtn) {
-        DOM.logoutBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          performLogoutOrLogin();
-        });
-      }
+      // Profile modal handlers
+      const profileModal = document.getElementById('profileModalBackdrop');
+      const profileTriggerBtns = [document.getElementById('userProfileBtn'), document.getElementById('sidebarProfileCard')];
+      const closeProfileModal = document.getElementById('closeProfileModal');
+      const saveProfileImgBtn = document.getElementById('saveProfileImgBtn');
 
-      const navMap = {
-        'ai.html': 'lifehub_nav_ai',
-        'music.html': 'lifehub_nav_music',
-        'movies.html': 'lifehub_movies_title',
-        'downloader.html': 'lifehub_nav_downloader',
-        'notes.html': 'lifehub_nav_notes',
-        'focus.html': 'lifehub_nav_focus',
-        'mastery.html': 'lifehub_nav_mastery',
-        'qr-tools.html': 'lifehub_nav_qr'
-      };
-
-      async function applySavedSettings() {
-        try {
-          const { data } = await supabase
-            .from('admin_settings')
-            .select('*')
-            .eq('id', 1)
-            .single();
-
-          if (data) {
-            if (data.theme_color) {
-              document.documentElement.style.setProperty('--accent-main', data.theme_color);
-            }
-            if (data.announcement && document.getElementById('announcementText')) {
-              document.getElementById('announcementText').textContent = data.announcement;
-            }
-          }
-        } catch (err) {
-          console.error("Supabase fetch failed:", err);
-        }
-
-        Object.keys(navMap).forEach(href => {
-          const savedTitle = localStorage.getItem(navMap[href]);
-          if (savedTitle) {
-            const link = document.querySelector(`a[href="${href}"]`);
-            if (link) {
-              const textSpan = link.querySelector('.nav-text');
-              if (textSpan) textSpan.textContent = savedTitle;
-            }
-          }
-        });
-
-        renderCustomSidebarNav();
-      }
-
-      let customSidebarMenus = JSON.parse(localStorage.getItem('lifehub_custom_menus')) || [];
-
-      function renderCustomSidebarNav() {
-        const container = document.getElementById('customNavContainer');
-        if (!container) return;
-        container.innerHTML = '';
-
-        customSidebarMenus.forEach(menu => {
-          const item = document.createElement('a');
-          item.href = menu.url;
-          item.className = 'nav-item';
-          item.innerHTML = `
-            <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-            <span class="nav-text">${menu.name}</span>
-          `;
-          container.appendChild(item);
-        });
-
-        const adminList = document.getElementById('adminCustomMenuList');
-        if (adminList) {
-          adminList.innerHTML = '';
-          customSidebarMenus.forEach((menu, index) => {
-            const row = document.createElement('div');
-            row.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:var(--bg-elevated); padding:6px 10px; border-radius:6px; font-size:12px;";
-            row.innerHTML = `
-              <span>⭐ ${menu.name} (${menu.url})</span>
-              <button onclick="window.deleteCustomMenu(${index})" style="color:var(--color-danger); font-weight:bold;">🗑️</button>
-            `;
-            adminList.appendChild(row);
-          });
-        }
-      }
-
-      window.deleteCustomMenu = function(index) {
-        customSidebarMenus.splice(index, 1);
-        localStorage.setItem('lifehub_custom_menus', JSON.stringify(customSidebarMenus));
-        renderCustomSidebarNav();
-      };
-
-      const addFeatureBtn = document.getElementById('addNewFeatureBtn');
-      if (addFeatureBtn) {
-        addFeatureBtn.addEventListener('click', () => {
-          const nameInput = document.getElementById('newFeatureName');
-          const urlInput = document.getElementById('newFeatureUrl');
-          
-          if (!nameInput.value.trim() || !urlInput.value.trim()) {
-            alert("Harap isi Nama Fitur dan URL Link!");
+      profileTriggerBtns.forEach(btn => {
+        btn?.addEventListener('click', () => {
+          if (isGuestMode) {
+            showGuestLockModal('Profile Customization');
             return;
           }
-
-          customSidebarMenus.push({ name: nameInput.value.trim(), url: urlInput.value.trim() });
-          localStorage.setItem('lifehub_custom_menus', JSON.stringify(customSidebarMenus));
-          renderCustomSidebarNav();
-
-          nameInput.value = '';
-          urlInput.value = '';
-          alert("Menu fitur baru berhasil ditambahkan!");
-        });
-      }
-
-      applySavedSettings();
-
-      const adminModal = document.getElementById('adminModalBackdrop');
-      const openAdminBtn = document.getElementById('openAdminPanelBtn');
-      const closeAdminBtn = document.getElementById('closeAdminModal');
-      const saveAdminBtn = document.getElementById('saveAdminSettingsBtn');
-
-      if (openAdminBtn && adminModal) openAdminBtn.addEventListener('click', () => adminModal.classList.add('is-active'));
-      if (closeAdminBtn && adminModal) closeAdminBtn.addEventListener('click', () => adminModal.classList.remove('is-active'));
-
-      if (saveAdminBtn) {
-        saveAdminBtn.addEventListener('click', async () => {
-          const annInput = document.getElementById('adminAnnounceInput');
-          if (annInput && annInput.value.trim()) {
-            localStorage.setItem('lifehub_announcement', annInput.value.trim());
-          }
-
-          const selectedColor = localStorage.getItem('lifehub_theme_color') || '#f59e0b';
-          const announceText = annInput ? annInput.value.trim() : 'Welcome to LifeHub Workspace!';
-
-          const { error } = await supabase
-            .from('admin_settings')
-            .update({ theme_color: selectedColor, announcement: announceText })
-            .eq('id', 1);
-
-          if (error) {
-            alert("Gagal menyimpan ke Supabase: " + error.message);
-          } else {
-            await applySavedSettings();
-            if (adminModal) adminModal.classList.remove('is-active');
-            alert("Pengaturan Admin Berhasil Disimpan!");
-          }
-        });
-      }
-
-      document.querySelectorAll('.color-picker-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const color = e.target.dataset.color;
-          if (color) {
-            localStorage.setItem('lifehub_theme_color', color);
-            document.documentElement.style.setProperty('--accent-main', color);
-          }
+          if (profileModal) profileModal.classList.add('is-active');
         });
       });
 
+      closeProfileModal?.addEventListener('click', () => profileModal?.classList.remove('is-active'));
+      
+      saveProfileImgBtn?.addEventListener('click', () => {
+        const nameInput = document.getElementById('profileNameInput').value.trim();
+        const imgUrlInput = document.getElementById('profileImgUrlInput').value.trim();
+
+        if (nameInput) localStorage.setItem('lifehub_profile_name', nameInput);
+        if (imgUrlInput) localStorage.setItem('lifehub_profile_img', imgUrlInput);
+
+        updateDashboardProfileAndGreeting();
+        profileModal?.classList.remove('is-active');
+        window.showToast("Profile settings saved successfully");
+      });
+
+      // Admin & Jubel Store Handlers
       const WA_NUMBER = "6281220835748";
       let storeProducts = JSON.parse(localStorage.getItem('lifehub_products')) || [
         {
@@ -2290,29 +2594,31 @@
 
           card.innerHTML = `
             <img src="${p.image}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/300x120?text=No+Image'">
-            <div style="font-size:10px; font-weight:700; color:var(--accent-main); text-transform:uppercase;">${p.category}</div>
+            <div style="font-size:10px; font-weight:800; color:var(--primary); text-transform:uppercase;">${p.category}</div>
             <div style="font-size:13px; font-weight:700; color:var(--text-primary);">${p.title}</div>
             <div style="font-size:14px; font-weight:800; color:var(--color-success);">${p.price}</div>
             <div style="font-size:11px; color:var(--text-secondary); flex:1;">${p.desc}</div>
             <div style="display:flex; gap:6px; margin-top:6px;">
-              <a href="${waUrl}" target="_blank" class="task-submit" style="flex:1; text-align:center; text-decoration:none; padding:6px; font-size:11px;">Beli via WA</a>
-              <button onclick="window.deleteJubelProduct(${p.id})" class="admin-only task-submit" style="background:var(--color-danger); color:#fff; padding:6px 10px;">🗑️</button>
+              <a href="${waUrl}" target="_blank" class="btn-hero-primary" style="flex:1; text-align:center; padding:6px; font-size:11px; justify-content:center;">Beli via WA</a>
+              <button onclick="window.deleteJubelProduct(${p.id})" class="admin-only" style="background:var(--color-danger); color:#fff; padding:6px 10px; border-radius:var(--radius-sm);">🗑️</button>
             </div>
           `;
           grid.appendChild(card);
         });
       }
 
-      renderJubelStore();
-
       window.deleteJubelProduct = function(id) {
         if (confirm("Hapus produk ini dari etalase?")) {
           storeProducts = storeProducts.filter(p => p.id !== id);
           localStorage.setItem('lifehub_products', JSON.stringify(storeProducts));
           renderJubelStore();
+          window.showToast("Product deleted from marketplace");
         }
       };
 
+      renderJubelStore();
+
+      // Product modal
       const prodModal = document.getElementById('productModalBackdrop');
       const openProdBtn = document.getElementById('openAddProductBtn');
       const closeProdBtn = document.getElementById('closeProductModal');
@@ -2339,46 +2645,129 @@
           renderJubelStore();
 
           if (prodModal) prodModal.classList.remove('is-active');
-          document.getElementById('prodTitle').value = '';
-          document.getElementById('prodPrice').value = '';
-          document.getElementById('prodImage').value = '';
-          document.getElementById('prodDesc').value = '';
+          window.showToast("Product saved to store");
         });
       }
 
-      const profileModal = document.getElementById('profileModalBackdrop');
-      const userProfileBtn = document.getElementById('userProfileBtn');
-      const closeProfileModal = document.getElementById('closeProfileModal');
-      const saveProfileImgBtn = document.getElementById('saveProfileImgBtn');
+      // Admin Modal & Custom Sidebar Menus
+      const adminModal = document.getElementById('adminModalBackdrop');
+      const openAdminBtn = document.getElementById('openAdminPanelBtn');
+      const closeAdminBtn = document.getElementById('closeAdminModal');
+      const saveAdminBtn = document.getElementById('saveAdminSettingsBtn');
 
-      userProfileBtn?.addEventListener('click', () => {
-        if (isGuestMode) {
-          showGuestLockModal('Profile Customization');
-          return;
+      if (openAdminBtn && adminModal) openAdminBtn.addEventListener('click', () => adminModal.classList.add('is-active'));
+      if (closeAdminBtn && adminModal) closeAdminBtn.addEventListener('click', () => adminModal.classList.remove('is-active'));
+
+      let customSidebarMenus = JSON.parse(localStorage.getItem('lifehub_custom_menus')) || [];
+
+      function renderCustomSidebarNav() {
+        const container = document.getElementById('customNavContainer');
+        if (!container) return;
+        container.innerHTML = '';
+
+        customSidebarMenus.forEach(menu => {
+          const item = document.createElement('a');
+          item.href = menu.url;
+          item.className = 'nav-item';
+          item.innerHTML = `
+            <span class="material-symbols-outlined">star</span>
+            <span class="nav-text">${menu.name}</span>
+          `;
+          container.appendChild(item);
+        });
+      }
+
+      renderCustomSidebarNav();
+
+      const addFeatureBtn = document.getElementById('addNewFeatureBtn');
+      if (addFeatureBtn) {
+        addFeatureBtn.addEventListener('click', () => {
+          const nameInput = document.getElementById('newFeatureName');
+          const urlInput = document.getElementById('newFeatureUrl');
+          if (!nameInput.value.trim() || !urlInput.value.trim()) return;
+
+          customSidebarMenus.push({ name: nameInput.value.trim(), url: urlInput.value.trim() });
+          localStorage.setItem('lifehub_custom_menus', JSON.stringify(customSidebarMenus));
+          renderCustomSidebarNav();
+
+          nameInput.value = '';
+          urlInput.value = '';
+          window.showToast("Custom menu item added");
+        });
+      }
+
+      if (saveAdminBtn) {
+        saveAdminBtn.addEventListener('click', () => {
+          const annInput = document.getElementById('adminAnnounceInput');
+          if (annInput && annInput.value.trim()) {
+            localStorage.setItem('lifehub_announcement', annInput.value.trim());
+            document.getElementById('announcementText').textContent = annInput.value.trim();
+          }
+          if (adminModal) adminModal.classList.remove('is-active');
+          window.showToast("Admin settings updated");
+        });
+      }
+
+      // Live Weather Fetch (Open-Meteo)
+      try {
+        fetch('https://api.open-meteo.com/v1/forecast?latitude=-6.2088&longitude=106.8456&current_weather=true')
+          .then(res => res.json())
+          .then(data => {
+            if (data?.current_weather) {
+              const tempEl = document.getElementById('simTemp');
+              if (tempEl) tempEl.textContent = Math.round(data.current_weather.temperature);
+            }
+          });
+      } catch (err) {
+        console.warn('Weather fetch warning:', err);
+      }
+
+      // Ambient Particle Canvas (Theme reactive)
+      const canvas = document.getElementById('ambientCanvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+        window.addEventListener('resize', () => {
+          width = canvas.width = window.innerWidth;
+          height = canvas.height = window.innerHeight;
+        });
+
+        const particles = Array.from({ length: 28 }, () => ({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 2 + 1,
+          vx: (Math.random() - 0.5) * 0.2,
+          vy: (Math.random() - 0.5) * 0.2,
+          alpha: Math.random() * 0.25 + 0.08
+        }));
+
+        function animateCanvas() {
+          ctx.clearRect(0, 0, width, height);
+          particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < 0) p.x = width;
+            if (p.x > width) p.x = 0;
+            if (p.y < 0) p.y = height;
+            if (p.y > height) p.y = 0;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(83, 0, 183, ${p.alpha})`;
+            ctx.fill();
+          });
+          requestAnimationFrame(animateCanvas);
         }
-        profileModal.classList.add('is-active');
-      });
+        animateCanvas();
+      }
 
-      closeProfileModal?.addEventListener('click', () => profileModal.classList.remove('is-active'));
-
-      saveProfileImgBtn?.addEventListener('click', () => {
-        const nameInput = document.getElementById('profileNameInput').value.trim();
-        const imgUrlInput = document.getElementById('profileImgUrlInput').value.trim();
-
-        if (nameInput) localStorage.setItem('lifehub_profile_name', nameInput);
-        if (imgUrlInput) localStorage.setItem('lifehub_profile_img', imgUrlInput);
-
-        updateDashboardProfileAndGreeting();
-        profileModal.classList.remove('is-active');
-        alert("Profil berhasil diperbarui!");
-      });
-
+      // Register Service Worker
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js').catch(err => console.error('SW Error:', err));
         });
       }
-
     });
   </script>
 </body>

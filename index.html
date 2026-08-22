@@ -36,9 +36,15 @@
 </script>
 <link rel="stylesheet" href="/css/styles.css" />
 </head>
-<body data-hub="dashboard" class="font-body min-h-screen flex items-center justify-center px-4 bg-[#0B0F19] text-white">
+<body data-hub="dashboard" class="font-body min-h-screen flex items-center justify-center px-4 bg-[#0B0F19] text-white relative overflow-hidden">
 
-  <main class="w-full max-w-md">
+  <!-- Ambient Glow Background (Kiri Atas Cyan & Kanan Atas Violet) -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute -top-40 -left-40 w-[550px] h-[550px] bg-lhcyan/20 rounded-full blur-[130px]"></div>
+    <div class="absolute -top-40 -right-40 w-[550px] h-[550px] bg-lhviolet/25 rounded-full blur-[130px]"></div>
+  </div>
+
+  <main class="relative z-10 w-full max-w-md">
 
     <div class="text-center mb-8">
       <span class="lh-display text-2xl font-semibold tracking-tight">LifeHub <span class="text-lhviolet">AI</span></span>
