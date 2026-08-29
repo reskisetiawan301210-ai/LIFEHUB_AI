@@ -569,9 +569,16 @@
         <aside class="right-side-panel">
           <!-- Now Playing Widget -->
           <div class="widget-box">
-            <div class="widget-title">NOW PLAYING</div>
-            <div class="now-playing-art-wrap">
-              <img id="rightPanelArt" src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&w=600&q=80" alt="Cover">
+            <div class="widget-title" style="display:flex; justify-content:space-between; align-items:center;">
+              <span>NOW PLAYING</span>
+              <div style="display:flex; gap:4px; background:var(--bg-2); padding:2px; border-radius:var(--radius-sm); border:1px solid var(--border-base);">
+                <button id="audioModeBtn" style="font-size:10px; font-weight:700; padding:4px 8px; border-radius:4px; background:var(--bg-elevated); color:var(--accent-main); transition:all 0.3s;">🎵 AUDIO</button>
+                <button id="videoModeBtn" style="font-size:10px; font-weight:700; padding:4px 8px; border-radius:4px; color:var(--ink-2); background:transparent; transition:all 0.3s;">🎬 VIDEO</button>
+              </div>
+            </div>
+            <div class="now-playing-art-wrap" id="nowPlayingArtWrap" style="position:relative; overflow:hidden;">
+              <img id="rightPanelArt" src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&w=600&q=80" alt="Cover" style="transition: opacity 0.3s ease; width:100%; height:100%; object-fit:cover; position:absolute; inset:0; z-index:1;">
+              <div id="rightPanelVideoContainer" style="position:absolute; inset:0; z-index:2; display:none; background:#000; border-radius:var(--radius-md); overflow:hidden;"></div>
             </div>
             <div class="now-playing-meta">
               <div class="t" id="rightPanelTitle">Obsidian Resonance</div>
@@ -674,6 +681,58 @@
       AI
     </a>
   </nav>
+
+  <!-- Mobile Now Playing Fullscreen Modal -->
+  <div id="mobileNowPlaying" style="display:none; position:fixed; inset:0; z-index:150; background:var(--bg-1); flex-direction:column; padding:20px; padding-top:40px; transform:translateY(100%); transition:transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);">
+    <!-- Header -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:32px;">
+      <button id="closeMobileNP" style="color:var(--ink-1);"><span class="material-symbols-outlined" style="font-size:32px;">keyboard_arrow_down</span></button>
+      <div style="font-size:12px; font-weight:800; letter-spacing:1px; color:var(--ink-2);">NOW PLAYING</div>
+      <button style="color:var(--ink-1); opacity:0; pointer-events:none;"><span class="material-symbols-outlined" style="font-size:32px;">keyboard_arrow_down</span></button>
+    </div>
+
+    <!-- Art/Video Area -->
+    <div style="position:relative; width:100%; aspect-ratio:1; border-radius:var(--radius-lg); overflow:hidden; background:var(--bg-elevated); box-shadow:0 24px 40px rgba(0,0,0,0.5); margin-bottom:32px; flex-shrink:0;">
+      <img id="mobileNpArt" src="" style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0; transition:opacity 0.3s;" alt="">
+      <div id="mobileVideoContainer" style="position:absolute; inset:0; background:#000; display:none;"></div>
+    </div>
+
+    <!-- Toggle Audio/Video -->
+    <div style="display:flex; justify-content:center; gap:8px; margin-bottom:24px; flex-shrink:0;">
+      <div style="display:flex; gap:4px; background:var(--bg-2); padding:4px; border-radius:var(--radius-sm); border:1px solid var(--border-base);">
+        <button id="mobileAudioBtn" style="font-size:12px; font-weight:700; padding:8px 16px; border-radius:6px; background:var(--bg-elevated); color:var(--accent-main); transition:all 0.3s;">🎵 AUDIO</button>
+        <button id="mobileVideoBtn" style="font-size:12px; font-weight:700; padding:8px 16px; border-radius:6px; background:transparent; color:var(--ink-2); transition:all 0.3s;">🎬 VIDEO</button>
+      </div>
+    </div>
+
+    <!-- Meta -->
+    <div style="text-align:center; margin-bottom:32px; flex-shrink:0;">
+      <div id="mobileNpTitle" style="font-size:22px; font-weight:800; color:var(--ink-0); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Title</div>
+      <div id="mobileNpArtist" style="font-size:15px; color:var(--ink-2); margin-top:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Artist</div>
+    </div>
+
+    <!-- Progress -->
+    <div style="margin-bottom:32px; padding:0 16px; flex-shrink:0;">
+      <div class="progress" id="mobileSeekBar" style="height:6px; margin-bottom:12px; background:var(--bg-highlight);">
+        <div class="fill" id="mobileSeekFill" style="background:var(--accent-main); width:0%;"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--ink-2); font-weight:600; font-variant-numeric:tabular-nums;">
+        <span id="mobileCurTime">0:00</span>
+        <span id="mobileDurTime">0:00</span>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div style="display:flex; justify-content:space-around; align-items:center; padding:0 16px; flex-shrink:0;">
+      <button id="mobileShuffleBtn" style="color:var(--ink-2);"><span class="material-symbols-outlined" style="font-size:24px;">shuffle</span></button>
+      <button id="mobilePrevBtn" style="color:var(--ink-0);"><span class="material-symbols-outlined" style="font-size:40px;">skip_previous</span></button>
+      <button id="mobilePlayBtn" style="width:72px; height:72px; border-radius:50%; background:var(--accent-main); color:#000; box-shadow:0 8px 24px var(--accent-glow); display:flex; align-items:center; justify-content:center;">
+        <span class="material-symbols-outlined" id="mobilePlayIcon" style="font-size:40px;">play_arrow</span>
+      </button>
+      <button id="mobileNextBtn" style="color:var(--ink-0);"><span class="material-symbols-outlined" style="font-size:40px;">skip_next</span></button>
+      <button id="mobileRepeatBtn" style="color:var(--ink-2);"><span class="material-symbols-outlined" style="font-size:24px;">repeat</span></button>
+    </div>
+  </div>
 
   <!-- Side Drawers & Modal Windows -->
   <div class="drawer" id="drawer">
@@ -996,12 +1055,14 @@
             onStateChange: (e) => {
               if(e.data === YT.PlayerState.PLAYING){ 
                 $("#playIcon").textContent = 'pause'; 
+                if($("#mobilePlayIcon")) $("#mobilePlayIcon").textContent = 'pause';
                 $("#npBlock").classList.add("playing"); 
                 store.set("is_playing", true);
                 this._startTick(); 
               }
               else if(e.data === YT.PlayerState.PAUSED){ 
                 $("#playIcon").textContent = 'play_arrow'; 
+                if($("#mobilePlayIcon")) $("#mobilePlayIcon").textContent = 'play_arrow';
                 $("#npBlock").classList.remove("playing"); 
                 store.set("is_playing", false);
               }
@@ -1030,6 +1091,10 @@
           const p = dur ? (cur/dur)*100 : 0;
           $("#seekFill").style.width = p+"%";
           $("#curTime").textContent = fmtTime(cur); $("#durTime").textContent = fmtTime(dur);
+          
+          if($("#mobileSeekFill")) $("#mobileSeekFill").style.width = p+"%";
+          if($("#mobileCurTime")) $("#mobileCurTime").textContent = fmtTime(cur);
+          if($("#mobileDurTime")) $("#mobileDurTime").textContent = fmtTime(dur);
         }, 500);
       }
     };
@@ -1110,15 +1175,32 @@
     };
 
     audio.addEventListener("ended", ()=>{ store.set("is_playing", false); Player.next(); });
-    audio.addEventListener("play", ()=>{ $("#playIcon").textContent = 'pause'; $("#npBlock").classList.add("playing"); store.set("is_playing", true); });
-    audio.addEventListener("pause", ()=>{ $("#playIcon").textContent = 'play_arrow'; $("#npBlock").classList.remove("playing"); store.set("is_playing", false); });
+    audio.addEventListener("play", ()=>{ 
+      $("#playIcon").textContent = 'pause'; 
+      if($("#mobilePlayIcon")) $("#mobilePlayIcon").textContent = 'pause';
+      $("#npBlock").classList.add("playing"); 
+      store.set("is_playing", true); 
+    });
+    audio.addEventListener("pause", ()=>{ 
+      $("#playIcon").textContent = 'play_arrow'; 
+      if($("#mobilePlayIcon")) $("#mobilePlayIcon").textContent = 'play_arrow';
+      $("#npBlock").classList.remove("playing"); 
+      store.set("is_playing", false); 
+    });
     audio.addEventListener("timeupdate", ()=>{
       if(Player.activeEngine !== "audio") return;
       const p = audio.duration ? (audio.currentTime/audio.duration)*100 : 0;
       $("#seekFill").style.width = p+"%";
       $("#curTime").textContent = fmtTime(audio.currentTime);
+      if($("#mobileSeekFill")) $("#mobileSeekFill").style.width = p+"%";
+      if($("#mobileCurTime")) $("#mobileCurTime").textContent = fmtTime(audio.currentTime);
     });
-    audio.addEventListener("loadedmetadata", ()=>{ if(Player.activeEngine==="audio") $("#durTime").textContent = fmtTime(audio.duration); });
+    audio.addEventListener("loadedmetadata", ()=>{ 
+      if(Player.activeEngine==="audio") {
+        $("#durTime").textContent = fmtTime(audio.duration); 
+        if($("#mobileDurTime")) $("#mobileDurTime").textContent = fmtTime(audio.duration);
+      }
+    });
 
     let audioCtx, analyser, sourceNode;
     function initVisualizer(){
@@ -1403,16 +1485,25 @@
       const t = Player.current();
       if(!t){
         $("#npTitle").textContent="Select a track"; $("#npArtist").textContent="LifeHub AI Stream"; $("#npArt").src="";
+        if($("#mobileNpTitle")) $("#mobileNpTitle").textContent = "Select a track";
+        if($("#mobileNpArtist")) $("#mobileNpArtist").textContent = "LifeHub AI Stream";
         return;
       }
-      $("#npTitle").textContent = t.title; $("#npArtist").textContent = t.artist; $("#npArt").src = t.cover || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&w=600&q=80";
+      const cover = t.cover || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&w=600&q=80";
+      $("#npTitle").textContent = t.title; $("#npArtist").textContent = t.artist; $("#npArt").src = cover;
       
-      const rightArt = $("#rightPanelArt"); if(rightArt) rightArt.src = t.cover || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&w=600&q=80";
+      const rightArt = $("#rightPanelArt"); if(rightArt) rightArt.src = cover;
       const rightTitle = $("#rightPanelTitle"); if(rightTitle) rightTitle.textContent = t.title;
       const rightArtist = $("#rightPanelArtist"); if(rightArtist) rightArtist.textContent = t.artist;
 
+      const mobileArt = $("#mobileNpArt"); if(mobileArt) mobileArt.src = cover;
+      const mobileTitle = $("#mobileNpTitle"); if(mobileTitle) mobileTitle.textContent = t.title;
+      const mobileArtist = $("#mobileNpArtist"); if(mobileArtist) mobileArtist.textContent = t.artist;
+
       const liked = Library.isLiked(t.id);
       $("#npHeart").classList.toggle("liked", liked);
+
+      if(window.updateVideoMode) window.updateVideoMode();
     }
 
     function renderQueueDrawer(){
@@ -1560,6 +1651,14 @@
     });
 
     $("#queueBtn").addEventListener("click", ()=>openDrawer("Queue"));
+
+    // Mobile Now Playing Controls
+    $("#mobilePlayBtn")?.addEventListener("click", ()=>{ if(window.audioCtx && audioCtx.state==="suspended") audioCtx.resume(); Player.toggle(); });
+    $("#mobileNextBtn")?.addEventListener("click", ()=>Player.next());
+    $("#mobilePrevBtn")?.addEventListener("click", ()=>Player.prev());
+    $("#mobileShuffleBtn")?.addEventListener("click", (e)=>{ Player.shuffle=!Player.shuffle; e.currentTarget.style.color=Player.shuffle?"var(--accent-main)":"var(--ink-2)"; toast(Player.shuffle?"Shuffle on":"Shuffle off"); });
+    $("#mobileRepeatBtn")?.addEventListener("click", (e)=>{ Player.repeat=Player.repeat==="off"?"all":Player.repeat==="all"?"one":"off"; e.currentTarget.style.color=Player.repeat!=="off"?"var(--accent-main)":"var(--ink-2)"; toast("Repeat: "+Player.repeat); });
+    $("#mobileSeekBar")?.addEventListener("click", (e)=>{ const rect=e.currentTarget.getBoundingClientRect(); const p=Math.min(1,Math.max(0,(e.clientX-rect.left)/rect.width)); if(Player.activeEngine==="youtube"){ const dur=YT_ENGINE.player?.getDuration?.()||0; if(dur) YT_ENGINE.seek(p*dur); } else if(audio.duration) audio.currentTime=p*audio.duration; });
     $("#rightQueueToggleBtn")?.addEventListener("click", ()=>openDrawer("Queue"));
     $("#drawerClose").addEventListener("click", closeDrawer);
     $("#lyricsBtn").addEventListener("click", ()=>{ const t=Player.current(); if(t) loadLyrics(t); else toast("Nothing playing", "err"); });
@@ -1606,7 +1705,133 @@
       });
     }
 
+    let isVideoMode = false;
+    let isMobileNpOpen = false;
+    function initVideoMode() {
+      const audioBtn = $("#audioModeBtn");
+      const videoBtn = $("#videoModeBtn");
+      const img = $("#rightPanelArt");
+      const wrapper = $("#rightPanelVideoContainer");
+      
+      const mobileAudioBtn = $("#mobileAudioBtn");
+      const mobileVideoBtn = $("#mobileVideoBtn");
+      const mobileImg = $("#mobileNpArt");
+      const mobileWrapper = $("#mobileVideoContainer");
+      
+      if (!audioBtn || !videoBtn || !wrapper) return;
+      
+      const initialYt = document.getElementById("ytPlayer");
+      if(initialYt) wrapper.appendChild(initialYt);
+      
+      window.updateVideoMode = function() {
+        const ytNode = document.getElementById("ytPlayer");
+        
+        // Ensure ytNode is in the correct wrapper depending on open state
+        if(isMobileNpOpen && ytNode && ytNode.parentNode !== mobileWrapper) {
+          mobileWrapper.appendChild(ytNode);
+        } else if(!isMobileNpOpen && ytNode && ytNode.parentNode !== wrapper) {
+          wrapper.appendChild(ytNode);
+        }
+        
+        if (isVideoMode) {
+          audioBtn.style.background = 'transparent';
+          audioBtn.style.color = 'var(--ink-2)';
+          videoBtn.style.background = 'var(--bg-elevated)';
+          videoBtn.style.color = 'var(--accent-main)';
+          
+          if(mobileAudioBtn) {
+            mobileAudioBtn.style.background = 'transparent';
+            mobileAudioBtn.style.color = 'var(--ink-2)';
+            mobileVideoBtn.style.background = 'var(--bg-elevated)';
+            mobileVideoBtn.style.color = 'var(--accent-main)';
+          }
+          
+          wrapper.style.display = 'block';
+          img.style.opacity = '0';
+          
+          if(mobileWrapper) mobileWrapper.style.display = 'block';
+          if(mobileImg) mobileImg.style.opacity = '0';
+          
+          if(ytNode) {
+            ytNode.style.position = 'absolute';
+            ytNode.style.top = '0';
+            ytNode.style.left = '0';
+            ytNode.style.bottom = 'auto';
+            ytNode.style.right = 'auto';
+            ytNode.style.width = '100%';
+            ytNode.style.height = '100%';
+            ytNode.style.opacity = '1';
+            ytNode.style.pointerEvents = 'auto';
+            ytNode.style.borderRadius = 'var(--radius-md)';
+          }
+        } else {
+          videoBtn.style.background = 'transparent';
+          videoBtn.style.color = 'var(--ink-2)';
+          audioBtn.style.background = 'var(--bg-elevated)';
+          audioBtn.style.color = 'var(--accent-main)';
+          
+          if(mobileAudioBtn) {
+            mobileVideoBtn.style.background = 'transparent';
+            mobileVideoBtn.style.color = 'var(--ink-2)';
+            mobileAudioBtn.style.background = 'var(--bg-elevated)';
+            mobileAudioBtn.style.color = 'var(--accent-main)';
+          }
+          
+          wrapper.style.display = 'none';
+          img.style.opacity = '1';
+          
+          if(mobileWrapper) mobileWrapper.style.display = 'none';
+          if(mobileImg) mobileImg.style.opacity = '1';
+          
+          if(ytNode) {
+            ytNode.style.position = 'fixed';
+            ytNode.style.bottom = '0';
+            ytNode.style.right = '0';
+            ytNode.style.top = 'auto';
+            ytNode.style.left = 'auto';
+            ytNode.style.width = '1px';
+            ytNode.style.height = '1px';
+            ytNode.style.opacity = '0';
+            ytNode.style.pointerEvents = 'none';
+            ytNode.style.borderRadius = '0';
+          }
+        }
+      };
+      
+      audioBtn.addEventListener("click", () => { isVideoMode = false; window.updateVideoMode(); });
+      videoBtn.addEventListener("click", () => { isVideoMode = true; window.updateVideoMode(); });
+      
+      if(mobileAudioBtn) mobileAudioBtn.addEventListener("click", () => { isVideoMode = false; window.updateVideoMode(); });
+      if(mobileVideoBtn) mobileVideoBtn.addEventListener("click", () => { isVideoMode = true; window.updateVideoMode(); });
+      
+      // Mobile Modal Opening Logic
+      const mobileNowPlaying = document.getElementById("mobileNowPlaying");
+      const closeMobileNP = document.getElementById("closeMobileNP");
+      const npBlock = document.getElementById("npBlock"); // The mini player area
+      
+      if (mobileNowPlaying && closeMobileNP && npBlock) {
+        npBlock.addEventListener("click", () => {
+          if(window.innerWidth > 880) return; // Only on mobile
+          isMobileNpOpen = true;
+          mobileNowPlaying.style.display = 'flex';
+          // Small delay for smooth transform
+          setTimeout(() => { mobileNowPlaying.style.transform = 'translateY(0)'; }, 10);
+          window.updateVideoMode();
+        });
+        
+        closeMobileNP.addEventListener("click", () => {
+          isMobileNpOpen = false;
+          mobileNowPlaying.style.transform = 'translateY(100%)';
+          setTimeout(() => { mobileNowPlaying.style.display = 'none'; }, 400);
+          window.updateVideoMode();
+        });
+      }
+      
+      window.updateVideoMode();
+    }
+
     (function init(){
+      initVideoMode();
       const savedTheme = store.get("theme","dark");
       if(savedTheme==="light"){ document.documentElement.setAttribute("data-theme","light"); $("#themeToggle").checked = true; }
       populateFilters();
