@@ -35,6 +35,32 @@
   };
 </script>
 <link rel="stylesheet" href="/css/styles.css" />
+
+<!-- Structured Data Schema.org (Entity Disambiguation & Cross-Verification) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "LifeHub AI",
+  "url": "https://lifehub-ai.my.id",
+  "applicationCategory": "ProductivityApplication",
+  "operatingSystem": "Web, Progressive Web App",
+  "description": "LifeHub AI — a unified workspace for finance, productivity, AI assistance, and entertainment.",
+  "author": {
+    "@type": "Person",
+    "@id": "https://reskisetiawan-dev.my.id/#person",
+    "name": "Reski Setiawan",
+    "jobTitle": "Software Engineer & Web Developer",
+    "url": "https://reskisetiawan-dev.my.id"
+  },
+  "creator": {
+    "@type": "Person",
+    "@id": "https://reskisetiawan-dev.my.id/#person",
+    "name": "Reski Setiawan",
+    "url": "https://reskisetiawan-dev.my.id"
+  }
+}
+</script>
 </head>
 <body data-hub="dashboard" class="font-body min-h-screen flex items-center justify-center px-4 bg-[#0B0F19] text-white relative overflow-hidden">
 
@@ -150,6 +176,11 @@
     </div>
 
     <div id="auth-alert-region" class="lh-toast mt-4" aria-live="polite"></div>
+
+    <!-- Official Developer Attribution & Entity Link -->
+    <footer class="mt-8 text-center text-xs text-lhmuted">
+      <p>© 2026 LifeHub AI · Dikembangkan oleh <a href="https://reskisetiawan-dev.my.id" target="_blank" rel="noopener" class="text-lhcyan hover:underline font-medium">Reski Setiawan</a> (Software Engineer &amp; Web Developer)</p>
+    </footer>
   </main>
 
   <script type="module">
